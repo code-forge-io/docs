@@ -1,16 +1,47 @@
 @import "tailwindcss";
 
-@theme {
-	/* Your theme styles go here */
-	--animate-float: float 3s ease-in-out infinite;
+@layer base {
+	:root {
+		--color-background: #ffffff;
+		--color-border: #e5e7eb;
+		--color-text-normal: #6b7280;
+		--color-text-hover: #1f2937;
+		--color-text-active: #000000;
+		--color-background-hover: #f9fafb;
+		--color-background-active: #f3f4f6;
+		--color-line: #e5e7eb;
+		--color-text-version: #9ca3af;
+		--color-version-border: #e5e7eb;
+		--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
+	}
 
-	@keyframes float {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-10px);
+	[data-theme="dark"] {
+		--color-background: #111827;
+		--color-border: #374151;
+		--color-text-normal: #9ca3af;
+		--color-text-hover: #f3f4f6;
+		--color-text-active: #ffffff;
+		--color-background-hover: #1f2937;
+		--color-background-active: #374151;
+		--color-line: #374151;
+		--color-text-version: #6b7280;
+		--color-version-border: #374151;
+		--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme]) {
+			--color-background: #111827;
+			--color-border: #374151;
+			--color-text-normal: #9ca3af;
+			--color-text-hover: #f3f4f6;
+			--color-text-active: #ffffff;
+			--color-background-hover: #1f2937;
+			--color-background-active: #374151;
+			--color-line: #374151;
+			--color-text-version: #6b7280;
+			--color-version-border: #374151;
+			--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
 		}
 	}
 }

@@ -80,3 +80,9 @@ blob-report
 *.sqlite
 *.sqlite3
 *.db-journal
+
+
+# Documentation template
+.content-collections
+# TODO remove this `content` folder as this is not something we will have in the documentation template
+content

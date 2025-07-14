@@ -7,9 +7,12 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
 	const { t } = useTranslation()
+
 	return (
-		<div>
-			<h1>{t("hi")}</h1>
+		<div className="flex min-h-screen">
+			<main className="flex-1 p-8">
+				<h1>{t("hi")}</h1>
+			</main>
 		</div>
 	)
 }
