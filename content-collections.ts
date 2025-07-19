@@ -1,5 +1,6 @@
 import { defineCollection, defineConfig } from "@content-collections/core"
 import { compileMDX } from "@content-collections/mdx"
+import rehypeSlug from "rehype-slug"
 import { z } from "zod"
 
 const sectionSchema = z.object({
@@ -62,15 +63,20 @@ const page = defineCollection({
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
-		const content = await compileMDX(context, document)
+		const content = await compileMDX(context, document, {
+			rehypePlugins: [rehypeSlug],
+		})
 		const slug = document._meta.path
 		const segments = slug.split("/")
 		const section = segments[segments.length - 2]
+		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
+		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
 		return {
 			...document,
 			content,
 			slug: document._meta.path,
 			section,
+			rawMdx,
 		}
 	},
 })

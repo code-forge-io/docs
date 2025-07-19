@@ -1,10 +1,11 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @layer base {
 	:root {
 		--color-background: #ffffff;
 		--color-border: #e5e7eb;
-		--color-text-normal: #6b7280;
+		--color-text-normal: #806b6e;
 		--color-text-hover: #1f2937;
 		--color-text-active: #000000;
 		--color-background-hover: #f9fafb;
@@ -13,10 +14,18 @@
 		--color-text-version: #9ca3af;
 		--color-version-border: #e5e7eb;
 		--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
+		--color-text-link: #000000;
+
+		--color-code-inline-bg: #f5f5f5;
+		--color-code-inline-text: #a626a4;
+
+		--color-code-block-bg: #f3f3f3;
+		--color-code-block-text: #383a42;
+		--color-code-block-highlight: #50a14f;
 	}
 
 	[data-theme="dark"] {
-		--color-background: #111827;
+		--color-background: #070116;
 		--color-border: #374151;
 		--color-text-normal: #9ca3af;
 		--color-text-hover: #f3f4f6;
@@ -31,7 +40,7 @@
 
 	@media (prefers-color-scheme: dark) {
 		:root:not([data-theme]) {
-			--color-background: #111827;
+			--color-background: #070116;
 			--color-border: #374151;
 			--color-text-normal: #9ca3af;
 			--color-text-hover: #f3f4f6;
@@ -42,6 +51,7 @@
 			--color-text-version: #6b7280;
 			--color-version-border: #374151;
 			--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
+			--color-text-link: #ffffff;
 		}
 	}
 }

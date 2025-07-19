@@ -26,7 +26,7 @@ export default defineConfig({
 		reactRouter(),
 		reactRouterHonoServer({
 			dev: {
-				exclude: [/^\/(resources)\/.+/],
+				exclude: [/^\/(resources)\/.+/, /^\/(.content-collections)\/.+/],
 			},
 		}),
 		tsconfigPaths(),
