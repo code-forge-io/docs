@@ -9,7 +9,7 @@
 		"@babel/preset-typescript",
 		"babel-plugin-react-compiler",
 		"tailwindcss",
-		"tailwindcss/typography",
+		"@tailwindcss/typography",
 		"rehype-slug"
 	]
 }
