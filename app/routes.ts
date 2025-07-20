@@ -5,7 +5,7 @@ export default [
 	...prefix("docs", [
 		layout("routes/documentation-layout.tsx", [
 			index("routes/documentation-homepage.tsx"),
-			route(":version/:section/:filename", "routes/documentation-page.tsx"),
+			route(":version/:section/:subsection?/:filename", "routes/documentation-page.tsx"),
 		]),
 	]),
 	route("sitemap-index.xml", "routes/sitemap-index[.]xml.ts"),

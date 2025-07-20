@@ -3,7 +3,7 @@ import { cn } from "~/utils/css"
 import spriteHref from "./icons/icon.svg"
 import type { IconName } from "./icons/types"
 
-export enum IconSize {
+enum IconSize {
 	xs = "12",
 	sm = "16",
 	md = "24",
@@ -11,9 +11,9 @@ export enum IconSize {
 	xl = "40",
 }
 
-export type IconSizes = keyof typeof IconSize
+type IconSizes = keyof typeof IconSize
 
-export interface IconProps extends SVGProps<SVGSVGElement> {
+interface IconProps extends SVGProps<SVGSVGElement> {
 	name: IconName
 	testId?: string
 	className?: string
@@ -43,4 +43,3 @@ export const Icon = ({ name, testId, className, size = "md", ...props }: IconPro
 		</svg>
 	)
 }
-export type { IconName }

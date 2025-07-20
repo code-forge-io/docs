@@ -14,12 +14,13 @@ export function usePreviousNextPages(sections: Section[]) {
 		const item = flatPages[index]
 		if (!item) return undefined
 
-		const { version, section, fileName } = splitSlug(item.slug)
+		const { version, section, subsection, fileName } = splitSlug(item.slug)
 		return {
 			title: item.title,
-			to: href("/docs/:version/:section/:filename", {
+			to: href("/docs/:version/:section/:subsection?/:filename", {
 				version,
 				section,
+				subsection,
 				filename: fileName,
 			}),
 		}

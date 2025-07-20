@@ -1,17 +1,16 @@
 export function splitSlug(slug: string) {
 	const parts = slug.split("/")
-	// TODO mybe change/update this a little - this case should never happen?
-	if (parts.length < 3) {
-		return {
-			version: parts[0] || "",
-			section: "",
-			fileName: parts[1] || "",
-		}
+
+	if (parts.length < 3 || parts.length > 4) {
+		throw new Error(`Invalid slug format: expected 3 or 4 segments but got ${parts.length} — slug: ${slug}`)
 	}
 
-	const version = parts[0]
-	const fileName = parts[parts.length - 1]
-	const section = parts.slice(1, parts.length - 1).join("/")
+	const [version, section, third, fourth] = parts
 
-	return { version, section, fileName }
+	return {
+		version,
+		section,
+		subsection: parts.length === 4 ? third : undefined,
+		fileName: parts.length === 4 ? fourth : third,
+	}
 }

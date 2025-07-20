@@ -32,7 +32,7 @@ export default defineConfig({
 		tsconfigPaths(),
 		iconsSpritesheet({
 			inputDir: "./resources/icons",
-			outputDir: "./app/library/icon/icons",
+			outputDir: "./app/ui/icon/icons",
 			fileName: "icon.svg",
 			withTypes: true,
 			formatter: "biome",

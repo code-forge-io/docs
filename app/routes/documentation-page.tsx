@@ -2,6 +2,7 @@ import { MDXContent } from "@content-collections/mdx/react"
 import { allPages } from "content-collections"
 import { CodeBlock } from "~/components/code-block"
 import { InlineCode } from "~/components/inline-code"
+import { OrderedList } from "~/components/ordered-list"
 import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
@@ -10,7 +11,12 @@ import { extractHeadingTreeFromMarkdown } from "~/utils/table-of-content"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
-	const post = allPages.find((post) => post.slug === `${params.version}/${params.section}/${params.filename}`)
+	const { version, section, subsection, filename } = params
+	// if (!version || !section || !filename) {
+	// 	throw new Response("Missing parameters", { status: 400 })
+	// }
+	const slug = subsection ? `${version}/${section}/${subsection}/${filename}` : `${version}/${section}/${filename}`
+	const post = allPages.find((post) => post.slug === slug)
 	if (!post) {
 		throw new Response("Not Found", { status: 404 })
 	}
@@ -36,6 +42,8 @@ export default function Post({ loaderData }: Route.ComponentProps) {
 					components={{
 						code: InlineCode,
 						pre: CodeBlock,
+						ol: OrderedList,
+						// Add any other components you want to customize here
 					}}
 				/>
 				<Pager previous={previous} next={next} />
