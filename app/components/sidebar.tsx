@@ -150,7 +150,7 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 				</Accordion>
 			</nav>
 
-			<div className=" p-6">
+			<div className="p-6">
 				<div className="text-[var(--color-text-version)] text-xs">
 					{/* TODO remove this hardcoded version */}
 					<p className="font-medium">{t("p.version")} 1.0.1</p>

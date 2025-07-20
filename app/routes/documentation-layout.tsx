@@ -9,7 +9,7 @@ export default function DocumentationLayout() {
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] px-16 lg:flex">
 			<Sidebar items={sidebarItems} className="flex-shrink-0" />
-			<main className="mx-auto flex-1 p-8">
+			<main className="mx-auto flex-1 ">
 				<Outlet />
 			</main>
 		</div>
