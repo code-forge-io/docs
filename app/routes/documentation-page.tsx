@@ -43,7 +43,7 @@ export default function Post({ loaderData }: Route.ComponentProps) {
 						code: InlineCode,
 						pre: CodeBlock,
 						ol: OrderedList,
-						// Add any other components you want to customize here
+						// Add any other customized component, following the docs for available components in mdx https://mdxjs.com/table-of-components/#components
 					}}
 				/>
 				<Pager previous={previous} next={next} />
