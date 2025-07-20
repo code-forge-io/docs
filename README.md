@@ -87,6 +87,8 @@ position: 1
 
 ```
 
+### TODO add that this docs-template uses content-collections and some gray-matter and similar packages
+
 ## Getting started
 
 1. Fork the repository
