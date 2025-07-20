@@ -1,5 +1,13 @@
 import type { ComponentPropsWithoutRef } from "react"
 
+/**
+ * A styled wrapper around the native <pre> element, used to display preformatted code blocks with consistent styling.
+ *
+ * Example usage:
+ * <CodeBlock>
+ *   {`npm install forge42/base-stack`}
+ * </CodeBlock>
+ */
 export const CodeBlock = (props: ComponentPropsWithoutRef<"pre">) => {
 	return (
 		<pre

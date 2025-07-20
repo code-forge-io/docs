@@ -1,4 +1,3 @@
-import { useMemo } from "react"
 import { href, useLocation } from "react-router"
 import type { Section } from "~/utils/create-sidebar-tree"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
@@ -7,7 +6,7 @@ import { splitSlug } from "~/utils/split-slug"
 export function usePreviousNextPages(sections: Section[]) {
 	const { pathname } = useLocation()
 
-	const flatPages = useMemo(() => flattenSidebarItems(sections), [sections])
+	const flatPages = flattenSidebarItems(sections)
 	const currentIndex = flatPages.findIndex((p) => pathname.endsWith(p.slug))
 
 	const getNavItem = (index: number) => {

@@ -21,5 +21,13 @@
 			"title": "Something went wrong!",
 			"description": "Looks like something unexpected happened on the server."
 		}
+	},
+	"links": {
+		"previous": "Previous",
+		"next": "Next"
+	},
+	"p": {
+		"last_update": "Last updated: ",
+		"version": "Version"
 	}
 }

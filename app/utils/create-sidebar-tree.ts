@@ -1,6 +1,5 @@
 import { allPages, allSections } from "content-collections"
-// TODO maybe refactor this a little bit
-
+//TODO refactor this a little bit
 export type Section = {
 	title: string
 	slug: string
@@ -12,50 +11,11 @@ export type Section = {
 	}[]
 }
 
-// export function getSidebarTree(version: string) {
-// 	const sectionMap = new Map<string, Section>()
-
-// 	const sortedSections = allSections.filter((s) => s.version === version).sort((a, b) => a.position - b.position)
-
-// 	for (const s of sortedSections) {
-// 		sectionMap.set(s.slug, {
-// 			title: s.title,
-// 			slug: s.slug,
-// 			sectionId: s.sectionId,
-// 			subsections: [],
-// 			documentationPages: [],
-// 		})
-// 	}
-
-// 	for (const node of sectionMap.values()) {
-// 		if (node.sectionId !== version) {
-// 			const parent = sectionMap.get(`${version}/${node.sectionId}`)
-// 			if (parent) parent.subsections.push(node)
-// 		}
-// 	}
-
-// 	for (const p of allPages) {
-// 		if (p.slug.startsWith(`${version}/`)) {
-// 			const parent = sectionMap.get(`${version}/${p.section}`)
-// 			if (parent) {
-// 				parent.documentationPages.push({
-// 					title: p.title,
-// 					slug: p.slug,
-// 				})
-// 			}
-// 		}
-// 	}
-
-// 	return [...sectionMap.values()].filter((s) => s.sectionId === version)
-// }
-
 export function getSidebarTree(version: string) {
 	const sectionMap = new Map<string, Section>()
 
-	// Step 1: Filter and sort sections by position
 	const sortedSections = allSections.filter((s) => s.version === version).sort((a, b) => a.position - b.position)
 
-	// Step 2: Create initial section entries
 	for (const s of sortedSections) {
 		sectionMap.set(s.slug, {
 			title: s.title,
@@ -66,7 +26,6 @@ export function getSidebarTree(version: string) {
 		})
 	}
 
-	// Step 3: Build tree structure (parent → subsections)
 	for (const node of sectionMap.values()) {
 		if (node.sectionId !== version) {
 			const parent = sectionMap.get(`${version}/${node.sectionId}`)
@@ -76,21 +35,23 @@ export function getSidebarTree(version: string) {
 		}
 	}
 
-	// Step 4: Assign documentation pages to matching sections
+	const sectionSlugToSection = new Map<string, Section>()
+	for (const section of sectionMap.values()) {
+		sectionSlugToSection.set(section.slug, section)
+		sectionSlugToSection.set(section.slug.split("/").slice(-1).join(""), section)
+	}
+
 	for (const p of allPages) {
 		if (p.slug.startsWith(`${version}/`)) {
-			for (const section of sectionMap.values()) {
-				if (section.slug.endsWith(`/${p.section}`) || section.slug === `${version}/${p.section}`) {
-					section.documentationPages.push({
-						title: p.title,
-						slug: p.slug,
-					})
-					break
-				}
+			const section = sectionSlugToSection.get(`${version}/${p.section}`) ?? sectionSlugToSection.get(p.section)
+			if (section) {
+				section.documentationPages.push({
+					title: p.title,
+					slug: p.slug,
+				})
 			}
 		}
 	}
 
-	// Step 5: Return only top-level sections (roots)
 	return [...sectionMap.values()].filter((s) => s.sectionId === version)
 }

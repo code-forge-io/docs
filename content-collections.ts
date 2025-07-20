@@ -9,17 +9,18 @@ const sectionSchema = z.object({
 })
 
 /*
- * This collection defines documentation section shown in the sidebar of the package documentation
- * It includes the title of the section and its position in the sidebar.
- * The position is used to order the sections in the sidebar.
- * The title is used as the section header.
- * Every section must have a unique title and position.
- * Sections are represented as directories in the content directory.
- * Each section contains an index.md file that contains the metadata (title and position) for the section.
- * The index.md file is used to generate the sidebar.
- * Each section can have multiple .mdx files or folders with .mdx files inside it and index.md file.
+ * This collection defines a documentation section shown in the sidebar of the package documentation.
+ *
+ * Each section is represented by a directory in the `content` folder and must contain an `index.md` file
+ * with metadata (title and position).
+ *
+ * - `title`: Used as the section heading in the sidebar.
+ * - `position`: Determines the order of sections in the sidebar.
+ *
+ * Sections must have unique `title` and `position` values.
+ *
+ * Sections can contain multiple `.mdx` pages or subdirectories with their own `.mdx` pages and `index.md` files.
  */
-//FIXME for now sections are not clicable, but in future instead of index.md we can make to accept index.mdx so the section itself can have content
 const section = defineCollection({
 	name: "section",
 	directory: "content",
@@ -46,16 +47,22 @@ const pageSchema = z.object({
 		message: "Date must be in YYYY-MM-DD format",
 	}),
 	author: z.string(),
-	position: z.number().optional(),
+	position: z.number(),
 })
 
 /*
- * This collection defines a documentation page shown in the package's documentation.
- * It includes the title, summary, description, last updated date, author, and position of the page.
- * The position is used to order the pages in the sidebar or in the sidebar's sections.
- * The title is used as the page header.
- * Each page is represented as a .mdx file inside a section directory or inside a subdirectory of a section.
- * Each page must have a unique title and position within its section.
+ * This collection defines an individual documentation page within the package documentation.
+ *
+ * Pages are `.mdx` files located inside section folders or their subdirectories.
+ *
+ * - `title`: Displayed as the page header.
+ * - `summary`: A short summary of the page.
+ * - `description`: A more detailed explanation of the page content.
+ * - `lastUpdated`: ISO date in YYYY-MM-DD format.
+ * - `author`: Author of the documentation.
+ * - `position`: Used to order pages within a section.
+ *
+ * Each page must have a unique `title` and `position` within its section.
  */
 const page = defineCollection({
 	name: "page",

@@ -12,20 +12,17 @@ import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version, section, subsection, filename } = params
-	// if (!version || !section || !filename) {
-	// 	throw new Response("Missing parameters", { status: 400 })
-	// }
 	const slug = subsection ? `${version}/${section}/${subsection}/${filename}` : `${version}/${section}/${filename}`
-	const post = allPages.find((post) => post.slug === slug)
-	if (!post) {
+	const page = allPages.find((post) => post.slug === slug)
+	if (!page) {
 		throw new Response("Not Found", { status: 404 })
 	}
-	return { post }
+	return { page }
 }
 
-export default function Post({ loaderData }: Route.ComponentProps) {
-	const post = loaderData.post
-	const toc = extractHeadingTreeFromMarkdown(post.rawMdx)
+export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
+	const { page } = loaderData
+	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
 	//TODO get sections from the loader
 	const sections = getSidebarTree("v1.0.1")
 	const { previous, next } = usePreviousNextPages(sections)
@@ -33,17 +30,17 @@ export default function Post({ loaderData }: Route.ComponentProps) {
 		<div className="mx-auto flex max-w-7xl gap-8 px-4">
 			<article className="prose prose-invert max-w-none flex-grow pt-8 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)] md:px-8">
 				<header className="mb-10 border-[var(--color-border)] border-b pb-6">
-					<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{post.title}</h1>
-					{post.description && <p className="mt-2 text-[var(--color-text-muted)] text-lg">{post.description}</p>}
+					<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
+					{page.description && <p className="mt-2 text-[var(--color-text-muted)] text-lg">{page.description}</p>}
 				</header>
 
 				<MDXContent
-					code={post.content}
+					code={page.content}
 					components={{
 						code: InlineCode,
 						pre: CodeBlock,
 						ol: OrderedList,
-						// Add any other customized component, following the docs for available components in mdx https://mdxjs.com/table-of-components/#components
+						// Add any other customized component, following the docs for available components in mdx at the: https://mdxjs.com/table-of-components/#components
 					}}
 				/>
 				<Pager previous={previous} next={next} />

@@ -16,15 +16,28 @@ interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 /**
- * This component is used to display titles with consistent styling across the project.
- * It ensures that all titles have the same font size, line height, and other styling properties.
+ * A reusable, styled heading component for consistent typography across the project.
  *
- * The `Title` component supports different HTML elements (`h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `div`) to accommodate various design requirements.
- * It also allows for custom classes to be applied for additional styling.
+ * The `Title` component renders a heading element (`h1` through `h6`) with
+ * predefined responsive font sizes, weights, and line heights based on a design scale.
+ * It ensures consistent visual hierarchy and styling throughout the app.
  *
- * The `as` prop determines the HTML element to render, which can be a heading element (`h1` to `h6`) or a `div`.
+ * You can customize the appearance further using the `className` prop, and the rendered
+ * element type is controlled via the `as` prop.
  *
- * Returns a JSX element containing the title wrapped with project-specific styling.
+ * @param as - The HTML heading element to render (`h1` through `h6`). Required.
+ * @param children - The title content to display inside the heading.
+ * @param className - Optional additional Tailwind or custom classes to override or extend the default styles.
+ * @param props - Any additional valid HTML attributes for the heading element.
+ *
+ * @example
+ * ```tsx
+ * <Title as="h2" className="mb-4">
+ *   Getting Started
+ * </Title>
+ * ```
+ *
+ * @returns A JSX element with consistent project-specific title styling.
  */
 const Title = ({ children, as, className, ...props }: TitleProps) => {
 	const Component = as

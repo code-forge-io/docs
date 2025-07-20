@@ -1,5 +1,6 @@
 import slug from "slug"
 // TODO refactor this or use remark
+
 export type HeadingItem = {
 	slug: string
 	title: string

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { NavLink, href } from "react-router"
 import type { Section } from "~/utils/create-sidebar-tree"
 import { splitSlug } from "~/utils/split-slug"
@@ -8,31 +9,27 @@ interface SidebarProps {
 	className?: string
 }
 
+//TODO maybe refactor this a little bit to not duplicate the code
 const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => {
 	const indentClass = depth === 0 ? "ml-0" : depth === 1 ? "ml-4" : "ml-8"
 
-	//only use accordion for top-level sections (depth 0)
+	//we only use accordion for top-level sections (depth 0), not for the subsections
 	if (depth === 0) {
 		const content = (
 			<div>
 				{item.documentationPages.length > 0 && (
 					<div className="mb-4 space-y-1">
 						{item.documentationPages.map((doc) => {
-							const {
-								version: docVersion,
-								section: docSection,
-								subsection: docSubsection,
-								fileName: docFileName,
-							} = splitSlug(doc.slug)
+							const { version, section, subsection, fileName: filename } = splitSlug(doc.slug)
 							return (
 								<NavLink
 									prefetch="intent"
 									key={doc.slug}
 									to={href("/docs/:version/:section/:subsection?/:filename", {
-										version: docVersion,
-										section: docSection,
-										subsection: docSubsection,
-										filename: docFileName,
+										version,
+										section,
+										subsection,
+										filename,
 									})}
 									className={({ isActive }) =>
 										`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
@@ -72,7 +69,7 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 		)
 	}
 
-	//for subsections, use regular non-collapsible structure
+	//for subsections we use regular non-collapsible structure
 	return (
 		<div className="mb-6">
 			<h3
@@ -84,21 +81,16 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 			{item.documentationPages.length > 0 && (
 				<div className="mb-4 space-y-1">
 					{item.documentationPages.map((doc) => {
-						const {
-							version: docVersion,
-							section: docSection,
-							subsection: docSubsection,
-							fileName: docFileName,
-						} = splitSlug(doc.slug)
+						const { version, section, subsection, fileName: filename } = splitSlug(doc.slug)
 						return (
 							<NavLink
 								prefetch="intent"
 								key={doc.slug}
 								to={href("/docs/:version/:section/:subsection?/:filename", {
-									version: docVersion,
-									section: docSection,
-									subsection: docSubsection,
-									filename: docFileName,
+									version,
+									section,
+									subsection,
+									filename,
 								})}
 								className={({ isActive }) =>
 									`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
@@ -126,7 +118,28 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 	)
 }
 
+/**
+ * A recursive sidebar navigation component displaying a documentation
+ * sidebar tree with nested sections and pages.
+ *
+ * Top-level sections (depth 0) are rendered inside collapsible accordions,
+ * while subsections (depth == 1) are rendered as simple headings with
+ * indented links.
+ *
+ * Each documentation page is rendered as a `NavLink` with active link styling,
+ * and URLs are generated dynamically from the page slug.
+ *
+ * The sidebar also includes a sticky layout with a version and last updated
+ * info block at the bottom.
+ *
+ * Example usage:
+ * <Sidebar items={sidebarSections} className="custom-sidebar-class" />
+ *
+ * @param items - An array of documentation sections with nested pages and subsections.
+ * @param className - Optional additional CSS classes for the sidebar container.
+ */
 export const Sidebar = ({ items, className = "" }: SidebarProps) => {
+	const { t } = useTranslation()
 	return (
 		<div className={`sticky top-0 bottom-0 h-screen w-80 flex-col bg-[var(--color-background)] lg:flex ${className} `}>
 			<nav className="flex-1 overflow-y-auto p-3" aria-label="Sidebar navigation">
@@ -139,8 +152,11 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 
 			<div className=" p-6">
 				<div className="text-[var(--color-text-version)] text-xs">
-					<p className="font-medium">Version 1.0.1</p>
-					<p className="mt-1">Last updated: {new Date().toLocaleDateString()}</p>
+					{/* TODO remove this hardcoded version */}
+					<p className="font-medium">{t("p.version")} 1.0.1</p>
+					<p className="mt-1">
+						{t("p.last_update")} {new Date().toLocaleDateString()}
+					</p>
 				</div>
 			</div>
 		</div>

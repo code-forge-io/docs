@@ -21,5 +21,13 @@
 			"title": "Nešto je krenulo po zlu!",
 			"description": "Izgleda da se nešto desilo na serveru."
 		}
+	},
+	"links": {
+		"previous": "Prethodni",
+		"next": "Sljedeći"
+	},
+	"p": {
+		"last_update": "Posljednja izmjena:",
+		"version": "Verzija"
 	}
 }

@@ -29,6 +29,33 @@ const AccordionContent = ({ isOpen, children }: { isOpen: boolean; children: Rea
 	)
 }
 
+/**
+ * An expandable and collapsible content section used within the `Accordion` component.
+ *
+ * The title is rendered using the `Title` component and can be customized via `titleElement`
+ * (e.g. `"h2"`, `"h3"`, etc.) and styled with `titleClassName`.
+ * Content visibility toggles when the heading is clicked. Supports smooth transitions.
+ *
+ * @param title - The heading text for the accordion item.
+ * @param titleElement - The HTML heading element tag to render (`h1` through `h6`).
+ * @param titleClassName - Optional classes to customize the title's appearance.
+ * @param content - The content to show/hide when toggling the accordion.
+ * @param defaultOpen - Whether the item should be open by default.
+ *
+ * @example
+ * ```tsx
+ * <AccordionItem
+ *   title="Installation"
+ *   titleElement="h4"
+ *   content={
+ *     <ul>
+ *       <li>Run `npm install`</li>
+ *       <li>Configure your environment</li>
+ *     </ul>
+ *   }
+ * />
+ * ```
+ */
 export const AccordionItem = ({
 	title,
 	titleElement,
@@ -56,6 +83,28 @@ export const AccordionItem = ({
 	)
 }
 
+/**
+ * A container component for grouping multiple `AccordionItem`s.
+ * Typically used to structure expandable sections of content.
+ *
+ * @param children - The `AccordionItem` components to render inside the accordion.
+ * @param className - Optional additional classes for the accordion wrapper.
+ *
+ * @example
+ * ```tsx
+ * <Accordion>
+ *   <AccordionItem
+ *     title="What is this?"
+ *     content={<p>This is an accordion item.</p>}
+ *   />
+ *   <AccordionItem
+ *     title="Why use it?"
+ *     content={<p>To toggle sections of content easily.</p>}
+ *     defaultOpen
+ *   />
+ * </Accordion>
+ * ```
+ */
 export const Accordion = ({ children, className }: AccordionProps) => {
 	return <div className={cn("py-2", className)}>{children}</div>
 }

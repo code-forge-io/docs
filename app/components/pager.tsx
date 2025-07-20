@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 
 interface PagerProps {
@@ -11,16 +12,33 @@ interface PagerProps {
 	}
 }
 
+/**
+ * A pagination navigation component that displays "Previous" and "Next" links with
+ * accessible labels, styled arrows, and localized link text.
+ *
+ * It accepts optional `previous` and `next` props, each containing a `title` and `to` URL.
+ * When present, the component renders navigational links with arrow indicators.
+ *
+ * Example usage:
+ * <Pager
+ *   previous={{ title: "Getting Started", to: "/getting-started" }}
+ *   next={{ title: "Advanced Topics", to: "/advanced-topics" }}
+ * />
+ *
+ * @param previous - Optional previous page link data with title and path.
+ * @param next - Optional next page link data with title and path.
+ */
 export function Pager({ previous, next }: PagerProps) {
+	const { t } = useTranslation()
 	return (
 		<nav
 			className="mt-12 flex items-start justify-between border-t pt-6 text-[color:var(--color-text-muted)] text-sm"
 			aria-label="Pagination navigation"
 		>
-			{/* TODO refactor this to not duplicate content */}
+			{/* TODO refactor this to have PagerItem component to not duplicate the content */}
 			{previous ? (
 				<div>
-					<div className="font-semibold text-[color:var(--color-text-link)]">Previous</div>
+					<div className="font-semibold text-[color:var(--color-text-link)]">{t("links.previous")}</div>
 					<Link
 						to={previous.to}
 						prefetch="intent"
@@ -41,7 +59,7 @@ export function Pager({ previous, next }: PagerProps) {
 
 			{next ? (
 				<div className="text-right">
-					<div className="font-semibold text-[color:var(--color-text-link)]">Next</div>
+					<div className="font-semibold text-[color:var(--color-text-link)]">{t("links.next")}</div>
 					<Link
 						to={next.to}
 						prefetch="intent"
