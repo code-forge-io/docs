@@ -6,7 +6,10 @@ import { InlineCode } from "~/components/inline-code"
 import { OrderedList } from "~/components/ordered-list"
 import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
+
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
+import InfoAlert from "~/ui/info-alert"
+import WarningAlert from "~/ui/warning-alert"
 import { getSidebarTree } from "~/utils/create-sidebar-tree"
 import { extractHeadingTreeFromMarkdown } from "~/utils/table-of-content"
 import type { Route } from "./+types/documentation-page"
@@ -42,17 +45,20 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 							code: InlineCode,
 							pre: CodeBlock,
 							ol: OrderedList,
+							InfoAlert,
+							WarningAlert,
+							// you can add any custom component here or override existing ones following the MDX documentation: https://mdxjs.com/table-of-components/#components
 						}}
 					/>
 					<Pager previous={previous} next={next} />
 				</article>
 
 				<aside className="hidden w-64 flex-shrink-0 pt-8 lg:block">
-					<TableOfContents items={toc} />
+					<TableOfContents items={toc} pagePath={page._meta.filePath} />
 				</aside>
 			</main>
 
-			<Footer pagePath={page._meta.filePath} />
+			<Footer />
 		</div>
 	)
 }

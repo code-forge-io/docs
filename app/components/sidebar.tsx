@@ -3,6 +3,7 @@ import { NavLink, href } from "react-router"
 import type { Section } from "~/utils/create-sidebar-tree"
 import { splitSlug } from "~/utils/split-slug"
 import { Accordion, AccordionItem } from "../ui/accordion"
+import { ThemeToggleButton } from "./theme-toggle"
 
 interface SidebarProps {
 	items: Section[]
@@ -152,6 +153,10 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 
 			<div className="p-6">
 				<div className="text-[var(--color-text-version)] text-xs">
+					<div className="py-2">
+						{/* TODO remove toggle theme form here, add in header */}
+						<ThemeToggleButton />
+					</div>
 					{/* TODO remove this hardcoded version */}
 					<p className="font-medium">{t("p.version")} 1.0.1</p>
 					<p className="mt-1">

@@ -38,6 +38,23 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 				<ClientHintCheck />
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: TODO change this
+					dangerouslySetInnerHTML={{
+						__html: `
+			(function () {
+				try {
+					var theme = localStorage.getItem("theme");
+					if (!theme) {
+						theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+					}
+					document.documentElement.setAttribute("data-theme", theme);
+				} catch (_) {}
+			})();
+		`,
+					}}
+				/>
+
 				<Meta />
 				<Links />
 			</head>

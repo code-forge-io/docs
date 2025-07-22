@@ -2,6 +2,18 @@
 @plugin "@tailwindcss/typography";
 
 @layer base {
+	html {
+		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+	}
+
+	body {
+		transition: background-color 0.3s ease, color 0.3s ease;
+	}
+
+	* {
+		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+	}
+
 	:root {
 		--color-background: #ffffff;
 		--color-border: #e5e7eb;
@@ -22,6 +34,16 @@
 
 		--color-code-block-bg: #f3f3f3;
 		--color-code-block-text: #383a42;
+
+		--color-info-bg: #eff6ff;
+		--color-info-border: #bfdbfe;
+		--color-info-text: #1e40af;
+		--color-info-icon: #3b82f6;
+
+		--color-warning-bg: #fefce8;
+		--color-warning-border: #fde68a;
+		--color-warning-text: #92400e;
+		--color-warning-icon: #f59e0b;
 	}
 
 	[data-theme="dark"] {
@@ -43,9 +65,19 @@
 
 		--color-code-block-bg: #1f2937;
 		--color-code-block-text: #f5f5f5;
-	}
 
-	@media (prefers-color-scheme: dark) {
+		--color-info-bg: rgba(59, 130, 246, 0.1);
+		--color-info-border: rgba(59, 130, 246, 0.2);
+		--color-info-text: #93c5fd;
+		--color-info-icon: #60a5fa;
+
+		--color-warning-bg: rgba(245, 158, 11, 0.1);
+		--color-warning-border: rgba(245, 158, 11, 0.2);
+		--color-warning-text: #fbbf24;
+		--color-warning-icon: #f59e0b;
+	}
+}
+/* @media (prefers-color-scheme: dark) {
 		:root:not([data-theme]) {
 			--color-background: #070116;
 			--color-border: #374151;
@@ -67,4 +99,4 @@
 			--color-code-block-text: #f5f5f5;
 		}
 	}
-}
+} */

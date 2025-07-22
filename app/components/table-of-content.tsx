@@ -1,10 +1,13 @@
+import { useRouteLoaderData } from "react-router"
 import { useActiveHeadingId } from "~/hooks/use-active-heading-id"
+import { createGitHubContributionLinks } from "~/utils/create-github-contribution-links"
 import { scrollIntoView } from "~/utils/scroll-into-view"
 import type { HeadingItem } from "~/utils/table-of-content"
 
 interface TableOfContentsProps {
 	items: HeadingItem[]
 	className?: string
+	pagePath: string
 }
 
 const TocItem = ({
@@ -42,14 +45,40 @@ const TocItem = ({
 	)
 }
 
-export const TableOfContents = ({ items, className = "" }: TableOfContentsProps) => {
+export const TableOfContents = ({ items, className = "", pagePath }: TableOfContentsProps) => {
 	const activeId = useActiveHeadingId()
+	const { clientEnv } = useRouteLoaderData("root")
+	const { GITHUB_OWNER, GITHUB_REPO } = clientEnv
 
+	const { editUrl, issueUrl } = createGitHubContributionLinks({
+		pagePath,
+		owner: GITHUB_OWNER,
+		repo: GITHUB_REPO,
+	})
 	if (items.length === 0) return null
 
 	return (
 		<nav aria-label="Table of contents" className={`fixed top-14 ${className}`}>
 			<div className="rounded-lg bg-[var(--color-background)] p-4">
+				<div className="mb-3 flex gap-3 text-[var(--color-text-active)] text-xs">
+					<a
+						href={issueUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hover:text-[var(--color-text-accent)] hover:underline"
+					>
+						Report an issue with this page
+					</a>
+					<span>|</span>
+					<a
+						href={editUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hover:text-[var(--color-text-accent)] hover:underline"
+					>
+						Edit this page
+					</a>
+				</div>
 				<h2 className="mb-2 pb-2 font-semibold text-[var(--color-text-active)] text-sm">On this page</h2>
 				<div className="max-h-[calc(100vh-12rem)] space-y-1 overflow-y-auto border-[var(--color-border)] border-l">
 					{items.map((item) => (
