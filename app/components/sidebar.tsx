@@ -1,17 +1,16 @@
 import { useTranslation } from "react-i18next"
 import { NavLink, href } from "react-router"
-import type { Section } from "~/utils/create-sidebar-tree"
+import type { SidebarSection } from "~/utils/create-sidebar-tree"
 import { splitSlug } from "~/utils/split-slug"
 import { Accordion, AccordionItem } from "../ui/accordion"
-import { ThemeToggleButton } from "./theme-toggle"
 
 interface SidebarProps {
-	items: Section[]
+	items: SidebarSection[]
 	className?: string
 }
 
 //TODO maybe refactor this a little bit to not duplicate the code
-const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => {
+const SidebarItem = ({ item, depth = 0 }: { item: SidebarSection; depth?: number }) => {
 	const indentClass = depth === 0 ? "ml-0" : depth === 1 ? "ml-4" : "ml-8"
 
 	//we only use accordion for top-level sections (depth 0), not for the subsections
@@ -33,7 +32,7 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 										filename,
 									})}
 									className={({ isActive }) =>
-										`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
+										`block rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${indentClass} ${
 											isActive
 												? "border-[var(--color-code-inline-text)] border-l-2 bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
 												: "text-[var(--color-text-normal)] hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
@@ -94,7 +93,7 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 									filename,
 								})}
 								className={({ isActive }) =>
-									`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
+									`block rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${indentClass} ${
 										isActive
 											? "border-[var(--color-code-inline-text)] border-l-2 bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
 											: "text-[var(--color-text-normal)] hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
@@ -142,8 +141,8 @@ const SidebarItem = ({ item, depth = 0 }: { item: Section; depth?: number }) => 
 export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 	const { t } = useTranslation()
 	return (
-		<div className={`sticky top-0 bottom-0 h-screen w-80 flex-col bg-[var(--color-background)] lg:flex ${className} `}>
-			<nav className="flex-1 overflow-y-auto p-3" aria-label="Sidebar navigation">
+		<div className={`sticky top-16 bottom-0 h-screen w-80 flex-col bg-[var(--color-background)] lg:flex ${className} `}>
+			<nav className=" h-32 flex-1 overflow-y-auto pr-2" aria-label="Sidebar navigation">
 				<Accordion>
 					{items.map((item) => (
 						<SidebarItem key={item.slug} item={item} />
@@ -153,10 +152,6 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 
 			<div className="p-6">
 				<div className="text-[var(--color-text-version)] text-xs">
-					<div className="py-2">
-						{/* TODO remove toggle theme form here, add in header */}
-						<ThemeToggleButton />
-					</div>
 					{/* TODO remove this hardcoded version */}
 					<p className="font-medium">{t("p.version")} 1.0.1</p>
 					<p className="mt-1">

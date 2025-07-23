@@ -1,9 +1,9 @@
 import { href, useLocation } from "react-router"
-import type { Section } from "~/utils/create-sidebar-tree"
+import type { SidebarSection } from "~/utils/create-sidebar-tree"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
 import { splitSlug } from "~/utils/split-slug"
 
-export function usePreviousNextPages(sections: Section[]) {
+export function usePreviousNextPages(sections: SidebarSection[]) {
 	const { pathname } = useLocation()
 
 	const flatPages = flattenSidebarItems(sections)

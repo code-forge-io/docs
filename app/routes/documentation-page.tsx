@@ -32,8 +32,8 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 
 	return (
 		<div className="flex min-h-screen flex-col">
-			<main className="mx-auto flex w-full max-w-7xl flex-1 gap-8 px-4">
-				<article className="prose prose-invert max-w-none flex-grow pt-8 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)] md:px-8">
+			<div className="mx-auto flex w-full flex-1 gap-6 lg:gap-8">
+				<article className="prose prose-invert min-w-0 max-w-none flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)] lg:px-8">
 					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
 						<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
 						{page.description && <p className="mt-2 text-[var(--color-text-muted)] text-lg">{page.description}</p>}
@@ -56,7 +56,7 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 				<aside className="hidden w-64 flex-shrink-0 pt-8 lg:block">
 					<TableOfContents items={toc} pagePath={page._meta.filePath} />
 				</aside>
-			</main>
+			</div>
 
 			<Footer />
 		</div>

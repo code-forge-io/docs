@@ -5,6 +5,7 @@ import { useChangeLanguage } from "remix-i18next/react"
 import type { Route } from "./+types/root"
 import { ClientHintCheck, getHints } from "./services/client-hints"
 import tailwindcss from "./tailwind.css?url"
+import { fonts } from "./utils/fonts"
 
 export async function loader({ context, request }: Route.LoaderArgs) {
 	const { lang, clientEnv } = context
@@ -21,11 +22,26 @@ export const handle = {
 export default function App({ loaderData }: Route.ComponentProps) {
 	const { lang, clientEnv } = loaderData
 	useChangeLanguage(lang)
+	const fontFaceRules = fonts
+		.map(
+			(font) => `
+                @font-face {
+                    font-family: "${font.fontFamily}";
+                    font-style: ${font.fontStyle};
+                    font-weight: ${font.fontWeight};
+                    src: url(${font.src}) format("truetype");
+                    font-display: swap;
+                }
+            `
+		)
+		.join("\n")
 	return (
 		<>
 			<Outlet />
 			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: We set the window.env variable to the client env */}
 			<script dangerouslySetInnerHTML={{ __html: `window.env = ${JSON.stringify(clientEnv)}` }} />
+			{/* biome-ignore lint/security/noDangerouslySetInnerHtml: fonts loading*/}
+			<style dangerouslySetInnerHTML={{ __html: fontFaceRules }} />
 		</>
 	)
 }

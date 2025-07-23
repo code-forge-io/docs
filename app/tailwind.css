@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@theme {
+	--font-nerko-one: "Nerko One", sans-serif;
+	--font-oswald: "Oswald", sans-serif;
+}
+
 @layer base {
 	html {
 		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -32,8 +37,31 @@
 		--color-code-inline-bg: #f5f5f5;
 		--color-code-inline-text: #1f2937;
 
-		--color-code-block-bg: #f3f3f3;
-		--color-code-block-text: #383a42;
+		--color-code-block-bg: #f8fafc;
+		--color-code-block-border: #e2e8f0;
+		--color-code-block-text: #334155;
+		--color-code-line-numbers-bg: #f1f5f9;
+		--color-code-line-numbers-text: #64748b;
+		--color-code-copy-bg: #f1f5f9;
+		--color-code-copy-border: #cbd5e1;
+		--color-code-copy-text: #475569;
+		--color-code-copy-hover-bg: #e2e8f0;
+
+		/* Syntax highlighting - light theme */
+		--color-code-keyword: #0369a1;
+		--color-code-string: #059669;
+		--color-code-number: #ea580c;
+		--color-code-comment: #64748b;
+		--color-code-operator: #be185d;
+		--color-code-punctuation: #64748b;
+		--color-code-function: #7c3aed;
+
+		/* Diff colors - light theme */
+		--color-diff-added-bg: rgba(34, 197, 94, 0.1);
+		--color-diff-added-border: rgba(34, 197, 94, 0.3);
+		--color-diff-removed-bg: rgba(239, 68, 68, 0.1);
+		--color-diff-removed-border: rgba(239, 68, 68, 0.3);
+		--color-diff-indicator: #64748b;
 
 		--color-info-bg: #eff6ff;
 		--color-info-border: #bfdbfe;
@@ -44,11 +72,13 @@
 		--color-warning-border: #fde68a;
 		--color-warning-text: #92400e;
 		--color-warning-icon: #f59e0b;
+
+		--color-logo: #314158;
 	}
 
 	[data-theme="dark"] {
-		--color-background: #070116;
-		--color-border: #374151;
+		--color-background: #020617;
+		--color-border: #1b1f2e;
 		--color-text-normal: #9ca3af;
 		--color-text-hover: #f3f4f6;
 		--color-text-active: #ffffff;
@@ -63,8 +93,31 @@
 		--color-code-inline-bg: #1f2937;
 		--color-code-inline-text: #f5f5f5;
 
-		--color-code-block-bg: #1f2937;
-		--color-code-block-text: #f5f5f5;
+		--color-code-block-bg: #0f172a;
+		--color-code-block-border: #334155;
+		--color-code-block-text: #e2e8f0;
+		--color-code-line-numbers-bg: #1e293b;
+		--color-code-line-numbers-text: #64748b;
+		--color-code-copy-bg: #1e293b;
+		--color-code-copy-border: #475569;
+		--color-code-copy-text: #cbd5e1;
+		--color-code-copy-hover-bg: #334155;
+
+		/* Syntax highlighting - dark theme */
+		--color-code-keyword: #60a5fa;
+		--color-code-string: #34d399;
+		--color-code-number: #fb923c;
+		--color-code-comment: #64748b;
+		--color-code-operator: #f472b6;
+		--color-code-punctuation: #cbd5e1;
+		--color-code-function: #a78bfa;
+
+		/* Diff colors - dark theme */
+		--color-diff-added-bg: rgba(34, 197, 94, 0.15);
+		--color-diff-added-border: rgba(34, 197, 94, 0.4);
+		--color-diff-removed-bg: rgba(239, 68, 68, 0.15);
+		--color-diff-removed-border: rgba(239, 68, 68, 0.4);
+		--color-diff-indicator: #64748b;
 
 		--color-info-bg: rgba(59, 130, 246, 0.1);
 		--color-info-border: rgba(59, 130, 246, 0.2);
@@ -75,28 +128,7 @@
 		--color-warning-border: rgba(245, 158, 11, 0.2);
 		--color-warning-text: #fbbf24;
 		--color-warning-icon: #f59e0b;
+
+		--color-logo: #93c5fd;
 	}
 }
-/* @media (prefers-color-scheme: dark) {
-		:root:not([data-theme]) {
-			--color-background: #070116;
-			--color-border: #374151;
-			--color-text-normal: #9ca3af;
-			--color-text-hover: #f3f4f6;
-			--color-text-active: #ffffff;
-			--color-background-hover: #1f2937;
-			--color-background-active: #374151;
-			--color-line: #374151;
-			--color-text-version: #6b7280;
-			--color-version-border: #374151;
-			--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
-			--color-text-link: #ffffff;
-
-			--color-code-inline-bg: #1f2937;
-			--color-code-inline-text: #f5f5f5;
-
-			--color-code-block-bg: #1f2937;
-			--color-code-block-text: #f5f5f5;
-		}
-	}
-} */

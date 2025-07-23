@@ -1,10 +1,10 @@
 import { allPages, allSections } from "content-collections"
 //TODO refactor this a little bit
-export type Section = {
+export type SidebarSection = {
 	title: string
 	slug: string
 	sectionId: string
-	subsections: Section[]
+	subsections: SidebarSection[]
 	documentationPages: {
 		title: string
 		slug: string
@@ -12,7 +12,7 @@ export type Section = {
 }
 
 export function getSidebarTree(version: string) {
-	const sectionMap = new Map<string, Section>()
+	const sectionMap = new Map<string, SidebarSection>()
 
 	const sortedSections = allSections.filter((s) => s.version === version).sort((a, b) => a.position - b.position)
 
@@ -35,7 +35,7 @@ export function getSidebarTree(version: string) {
 		}
 	}
 
-	const sectionSlugToSection = new Map<string, Section>()
+	const sectionSlugToSection = new Map<string, SidebarSection>()
 	for (const section of sectionMap.values()) {
 		sectionSlugToSection.set(section.slug, section)
 		sectionSlugToSection.set(section.slug.split("/").slice(-1).join(""), section)
