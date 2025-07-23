@@ -24,7 +24,7 @@ export function ThemeToggle() {
 		<button
 			type="button"
 			onClick={handleClick}
-			className="group relative inline-flex items-center justify-center rounded-full p-2 text-[var(--color-logo)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border)] focus-visible:ring-offset-2"
+			className="group relative inline-flex items-center justify-center rounded-full p-2 text-[var(--color-text-active)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-border)] focus-visible:ring-offset-2"
 			aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
 		>
 			<Icon

@@ -72,8 +72,6 @@
 		--color-warning-border: #fde68a;
 		--color-warning-text: #92400e;
 		--color-warning-icon: #f59e0b;
-
-		--color-logo: #314158;
 	}
 
 	[data-theme="dark"] {
@@ -128,7 +126,5 @@
 		--color-warning-border: rgba(245, 158, 11, 0.2);
 		--color-warning-text: #fbbf24;
 		--color-warning-icon: #f59e0b;
-
-		--color-logo: #93c5fd;
 	}
 }
