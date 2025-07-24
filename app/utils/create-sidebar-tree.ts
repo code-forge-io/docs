@@ -14,9 +14,9 @@ export type SidebarSection = {
 export function getSidebarTree(version: string) {
 	const sectionMap = new Map<string, SidebarSection>()
 
-	const sortedSections = allSections.filter((s) => s.version === version).sort((a, b) => a.position - b.position)
+	const filteredSections = allSections.filter((s) => s.version === version)
 
-	for (const s of sortedSections) {
+	for (const s of filteredSections) {
 		sectionMap.set(s.slug, {
 			title: s.title,
 			slug: s.slug,
@@ -43,7 +43,9 @@ export function getSidebarTree(version: string) {
 
 	for (const p of allPages) {
 		if (p.slug.startsWith(`${version}/`)) {
-			const section = sectionSlugToSection.get(`${version}/${p.section}`) ?? sectionSlugToSection.get(p.section)
+			const cleanedSection = p.section.replace(/^\d{2,}-/, "")
+			const section =
+				sectionSlugToSection.get(`${version}/${cleanedSection}`) ?? sectionSlugToSection.get(cleanedSection)
 			if (section) {
 				section.documentationPages.push({
 					title: p.title,

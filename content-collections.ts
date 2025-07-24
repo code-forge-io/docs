@@ -5,19 +5,17 @@ import { z } from "zod"
 
 const sectionSchema = z.object({
 	title: z.string(),
-	position: z.number(),
 })
 
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
  *
  * Each section is represented by a directory in the `content` folder and must contain an `index.md` file
- * with metadata (title and position).
+ * with metadata (title).
  *
  * - `title`: Used as the section heading in the sidebar.
- * - `position`: Determines the order of sections in the sidebar.
  *
- * Sections must have unique `title` and `position` values.
+ * Sections must have unique `title` value.
  *
  * Sections can contain multiple `.mdx` pages or subdirectories with their own `.mdx` pages and `index.md` files.
  */
@@ -30,9 +28,12 @@ const section = defineCollection({
 		const segments = document._meta.path.split("/")
 		const version = segments[0]
 		const sectionId = segments.length > 1 ? segments[segments.length - 2] : segments[0]
+		const cleanedSlug = segments
+			.map((seg) => seg.replace(/^\d{2,}-/, "")) // removes "01-", "02-", etc.
+			.join("/")
 		return {
 			...document,
-			slug: document._meta.path,
+			slug: cleanedSlug,
 			sectionId,
 			version,
 		}
@@ -47,7 +48,6 @@ const pageSchema = z.object({
 		message: "Date must be in YYYY-MM-DD format",
 	}),
 	author: z.string(),
-	position: z.number(),
 })
 
 /*
@@ -60,9 +60,8 @@ const pageSchema = z.object({
  * - `description`: A more detailed explanation of the page content.
  * - `lastUpdated`: ISO date in YYYY-MM-DD format.
  * - `author`: Author of the documentation.
- * - `position`: Used to order pages within a section.
  *
- * Each page must have a unique `title` and `position` within its section.
+ * Each page must have a unique `title` within its section.
  */
 const page = defineCollection({
 	name: "page",
@@ -78,10 +77,11 @@ const page = defineCollection({
 		const section = segments[segments.length - 2]
 		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
+		const cleanedSlug = segments.map((seg) => seg.replace(/^\d{2,}-/, "")).join("/")
 		return {
 			...document,
 			content,
-			slug: document._meta.path,
+			slug: cleanedSlug,
 			section,
 			rawMdx,
 		}
