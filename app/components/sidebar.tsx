@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next"
 import { NavLink, href } from "react-router"
 import type { SidebarSection } from "~/utils/create-sidebar-tree"
 import { splitSlug } from "~/utils/split-slug"
@@ -139,7 +138,6 @@ const SidebarItem = ({ item, depth = 0 }: { item: SidebarSection; depth?: number
  * @param className - Optional additional CSS classes for the sidebar container.
  */
 export const Sidebar = ({ items, className = "" }: SidebarProps) => {
-	const { t } = useTranslation()
 	return (
 		<div className={`sticky top-16 bottom-0 h-screen w-80 flex-col bg-[var(--color-background)] lg:flex ${className} `}>
 			<nav className=" h-32 flex-1 overflow-y-auto pr-2" aria-label="Sidebar navigation">
@@ -150,15 +148,15 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 				</Accordion>
 			</nav>
 
-			<div className="p-6">
-				<div className="text-[var(--color-text-version)] text-xs">
-					{/* TODO remove this hardcoded version */}
-					<p className="font-medium">{t("p.version")} 1.0.1</p>
-					<p className="mt-1">
+			{/* <div className="p-6"> */}
+			{/* <div className="text-[var(--color-text-version)] text-xs"> */}
+			{/* TODO remove this hardcoded version */}
+			{/* <p className="font-medium">{t("p.version")} 1.0.1</p> */}
+			{/* <p className="mt-1">
 						{t("p.last_update")} {new Date().toLocaleDateString()}
-					</p>
-				</div>
-			</div>
+					</p> */}
+			{/* </div> */}
+			{/* </div> */}
 		</div>
 	)
 }

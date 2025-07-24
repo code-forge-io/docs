@@ -12,6 +12,56 @@ interface PagerProps {
 	}
 }
 
+interface PagerLinkProps {
+	item: { title: string; to: string }
+	direction: "previous" | "next"
+	label: string
+}
+
+/**
+ * Individual pager link component with consistent styling and behavior
+ */
+function PagerLink({ item, direction, label }: PagerLinkProps) {
+	const isPrevious = direction === "previous"
+	const arrow = isPrevious ? "←" : "→"
+
+	const linkClasses = [
+		"inline-flex items-center gap-1 rounded-md px-2 py-1",
+		"text-[var(--color-text-active)] text-lg no-underline",
+		"transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)]",
+		isPrevious ? "-ml-2 hover:-translate-x-1" : "-mr-2 hover:translate-x-1",
+	].join(" ")
+
+	const arrowClasses = [
+		"transition-transform duration-200 ease-in-out",
+		isPrevious ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5",
+	].join(" ")
+
+	return (
+		<div className={isPrevious ? "" : "text-right"}>
+			<div className="font-semibold text-[var(--color-text-active)]">{label}</div>
+			<Link
+				to={item.to}
+				prefetch="intent"
+				{...(direction === "next" && { viewTransition: true })}
+				className={linkClasses}
+			>
+				{isPrevious && (
+					<span aria-hidden="true" className={arrowClasses}>
+						{arrow}
+					</span>
+				)}
+				{item.title}
+				{!isPrevious && (
+					<span aria-hidden="true" className={arrowClasses}>
+						{arrow}
+					</span>
+				)}
+			</Link>
+		</div>
+	)
+}
+
 /**
  * A pagination navigation component that displays "Previous" and "Next" links with
  * accessible labels, styled arrows, and localized link text.
@@ -30,54 +80,16 @@ interface PagerProps {
  */
 export function Pager({ previous, next }: PagerProps) {
 	const { t } = useTranslation()
+
 	return (
 		<nav
-			className="mt-12 flex items-start justify-between border-t pt-6 text-[color:var(--color-text-muted)] text-sm"
+			className="mt-12 flex items-start justify-between border-t pt-6 text-[var(--color-text-active)] text-sm"
+			style={{ borderColor: "var(--color-border)" }}
 			aria-label="Pagination navigation"
 		>
-			{/* TODO refactor this to have PagerItem component to not duplicate the content */}
-			{previous ? (
-				<div>
-					<div className="font-semibold text-[color:var(--color-text-link)]">{t("links.previous")}</div>
-					<Link
-						to={previous.to}
-						prefetch="intent"
-						className="-ml-2 hover:-translate-x-1 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[color:var(--color-text-link)] text-lg no-underline transition-all duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)]"
-					>
-						<span
-							aria-hidden="true"
-							className="group-hover:-translate-x-0.5 transition-transform duration-200 ease-in-out"
-						>
-							←
-						</span>{" "}
-						{previous.title}
-					</Link>
-				</div>
-			) : (
-				<div />
-			)}
+			{previous ? <PagerLink item={previous} direction="previous" label={t("links.previous")} /> : <div />}
 
-			{next ? (
-				<div className="text-right">
-					<div className="font-semibold text-[color:var(--color-text-link)]">{t("links.next")}</div>
-					<Link
-						to={next.to}
-						prefetch="intent"
-						viewTransition
-						className="-mr-2 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[color:var(--color-text-link)] text-lg no-underline transition-all duration-200 ease-in-out hover:translate-x-1 hover:transform hover:text-[color:var(--color-text-hover)]"
-					>
-						{next.title}{" "}
-						<span
-							aria-hidden="true"
-							className="transition-transform duration-200 ease-in-out group-hover:translate-x-0.5"
-						>
-							→
-						</span>
-					</Link>
-				</div>
-			) : (
-				<div />
-			)}
+			{next ? <PagerLink item={next} direction="next" label={t("links.next")} /> : <div />}
 		</nav>
 	)
 }

@@ -28,6 +28,11 @@
 	},
 	"p": {
 		"last_update": "Last updated: ",
-		"version": "Version"
+		"version": "Version",
+		"all_rights_reserved": "All rights reserved."
+	},
+	"buttons": {
+		"copy": "Copy",
+		"copied": "Copied"
 	}
 }

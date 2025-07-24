@@ -1,65 +1,63 @@
 # Welcome to Forge 42 Documentation Template
-The documentation template is designed to support deeply nested sections and subsections, allowing you to organize your docs in a flexible, versioned structure. It comes with a whole UI implementation, which you can customize if desired.
+
+This template is built to support a flexible content structure using .md/.mdx files organized in folders. It allows for deeply nested sections and subsections, making it easy to structure complex documentation with a clear hierarchy.
 
 ## Documentation Template Structure Overview
-`app/`
-- components/: Reusable React components for documentation UI (e.g., sidebar, table of contents, code blocks, pager).
-- hooks/: Custom React hooks used inside components.
-- ui/: UI primitives.
-- utils/: Utility functions for sidebar trees, table of contents, etc.
-- tailwind.css: TailwindCSS styles.
 
-`scripts/`
-- validate-content-positions.ts: Script to validate content file positions and structure. you can run it with:
-```bash
-pnpm run validate-content-position
-```
+`app/`
+
+This folder contains React Router v7 web application folders and files, including components and UI primitives for the documentation site’s interface, internal hooks and utilities, and the tailwind.css file for styling.
+
+
 `resources/`
-- icons/: SVG icon assets for the UI.
+
+This folder contains all the resources used by the documentation site, such as SVG icons, fonts, and other assets.
 
 `content/`
-- .mdx files or sections and subsections with index.md and .mdx files.
+
+This folder contains sections and subsections with .mdx files that hold your documentation content. Below is the recommended structure to follow.
 
 
-## Documentation Content Directory Layout Example
-An example of a valid `content` folder structure containing your package documentation:
+## Documentation Content Directory Example
+
+An example of a valid content/ folder structure for organizing your package documentation:
+
 ```
 content/
-├── changelog.mdx
-├── introduction.mdx
-├── overview.mdx
-├── getting-started/
+├── 01-changelog.mdx
+├── 02-introduction.mdx
+├── 03-overview.mdx
+├── 04-getting-started/
 │   ├── index.md
-│   ├── installation.mdx
-│   ├── quick-start.mdx
-│   └── project-setup.mdx
-└── core-features/
+│   ├── 01-installation.mdx
+│   ├── 02-quick-start.mdx
+│   └── 03-project-setup.mdx
+└── 05-core-features/
     ├── index.md
-    ├── authentication.mdx
-    ├── authorization.mdx
-    ├── data-management/
+    ├── 01-authentication.mdx
+    ├── 02-authorization.mdx
+    ├── 03-data-management/
     │   ├── index.md
-    │   ├── fetching-data.mdx
-    │   └── caching-strategies.mdx
-    └── ui-components/
+    │   ├── 01-fetching-data.mdx
+    │   └── 02-caching-strategies.mdx
+    └── 04-ui-components/
         ├── index.md
-        ├── buttons.mdx
-        └── modals.mdx
+        ├── 01-buttons.mdx
+        └── 02-modals.mdx
 ```
-- Top-level .mdx files are allowed.
-- Sections (like getting-started, core-features) are subfolders.
-- Subsections (like data-management, ui-components) are nested folders within sections.
-- Each section or subsection should have an index.md file for its sidebar title and order.
+- Top-level .mdx files (like 01-changelog.mdx) are allowed.
+- Sections (like 04-getting-started, 05-core-features) are subfolders inside the content/ folder.
+- Subsections (like 03-data-management, 04-ui-components) are nested folders within sections.
+- Each section or subsection should have an index.md file for its sidebar title.
 
-### Example of the valid `introduction.mdx` file:
+### Example of the valid `02-introduction.mdx` file:
 ```
 ---
 title: "Introduction to Forge42 Base Stack"
 summary: "Overview of the Stack"
 description: "Get started with the Forge42 Base Stack — a modern web app starter template designed for speed, scalability, and developer experience."
 lastUpdated: 2025-07-20
-author: Forge 42
-position: 1
+author: forge-42
 ---
 
 ## What is Forge42 Base Stack?
@@ -78,16 +76,14 @@ cd my-app
 npm install
 ```
 
-### Example of the valid `getting-started/index.md` file:
+### Example of the valid `04-getting-started/index.md` file:
 ```
 ---
 title: Getting Started
-position: 1
 ---
 
 ```
 
-### TODO add that this docs-template uses content-collections and some gray-matter and similar packages
 
 ## Getting started
 
@@ -100,8 +96,6 @@ pnpm install
 3. Read through the README.md files in the project to understand our decisions.
 
 4. Add `content` folder
-
-5. TODO Run scripts...add this part
 
 5. Start the development server:
 ```bash

@@ -28,6 +28,11 @@
 	},
 	"p": {
 		"last_update": "Posljednja izmjena:",
-		"version": "Verzija"
+		"version": "Verzija",
+		"all_rights_reserved": "Sva prava zadržana."
+	},
+	"buttons": {
+		"copy": "Kopiraj",
+		"copied": "Kopirano"
 	}
 }

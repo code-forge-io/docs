@@ -2,12 +2,15 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-	--font-nerko-one: "Nerko One", sans-serif;
-	--font-oswald: "Oswald", sans-serif;
+	--font-dyna-puff: "Dyna Puff", sans-serif;
+	--font-inter: "Inter", sans-serif;
 }
 
 @layer base {
 	html {
+		font-family: var(--font-inter);
+	}
+	/* html {
 		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 	}
 
@@ -15,14 +18,18 @@
 		transition: background-color 0.3s ease, color 0.3s ease;
 	}
 
-	* {
-		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-	}
+	*,
+	*::before,
+	*::after {
+		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease,
+			outline-color 0.3s ease;
+	} */
 
 	:root {
 		--color-background: #ffffff;
 		--color-border: #e5e7eb;
 		--color-text-normal: #806b6e;
+		--color-text-muted: #9ca3af;
 		--color-text-hover: #1f2937;
 		--color-text-active: #000000;
 		--color-background-hover: #f9fafb;
@@ -78,6 +85,7 @@
 		--color-background: #020617;
 		--color-border: #1b1f2e;
 		--color-text-normal: #9ca3af;
+		--color-text-muted: #6b7280;
 		--color-text-hover: #f3f4f6;
 		--color-text-active: #ffffff;
 		--color-background-hover: #1f2937;
