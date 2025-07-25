@@ -24,7 +24,7 @@ const AccordionContent = ({ isOpen, children }: { isOpen: boolean; children: Rea
 				isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
 			)}
 		>
-			<div className="overflow-hidden p-2">{children}</div>
+			<div className="overflow-hidden p-1">{children}</div>
 		</div>
 	)
 }

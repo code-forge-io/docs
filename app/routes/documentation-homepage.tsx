@@ -1,4 +1,5 @@
 export default function DocumentationHomepage() {
+	// TODO change this to desired layout
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
 			<h1 className="font-bold text-4xl text-[var(--color-text-active)]">Welcome to Our Documentation</h1>

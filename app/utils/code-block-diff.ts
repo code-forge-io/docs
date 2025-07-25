@@ -1,4 +1,4 @@
-export type DiffType = "added" | "removed" | "normal"
+type DiffType = "added" | "removed" | "normal"
 
 const DIFF_PATTERNS: Record<string, DiffType> = {
 	"+ ": "added",

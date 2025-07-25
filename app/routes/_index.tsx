@@ -9,6 +9,7 @@ export default function Index() {
 	const { t } = useTranslation()
 
 	return (
+		// TODO change this to desired layout
 		<div className="flex min-h-screen">
 			<main className="flex-1 p-8">
 				<h1>{t("hi")}</h1>
