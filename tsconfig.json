@@ -26,7 +26,7 @@
 			"~/*": ["./app/*"],
 			"content-collections": ["./.content-collections/generated"]
 		},
-		"rootDirs": [".", "./.react-router/types"],
+		"rootDirs": [".", "./.react-router/types", "./.content-collections/generated"],
 		"plugins": [{ "name": "@react-router/dev" }],
 		// Vite takes care of building everything, not tsc.
 		"noEmit": true
