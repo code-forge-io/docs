@@ -10,6 +10,7 @@
 		"execute": "tsx",
 		"clean": "git clean -fdX --exclude=\"!.env\"",
 		"script": "tsx scripts/setup.ts",
+		"prebuild": "content-collections build",
 		"build": "react-router build",
 		"predev": "pnpm run typegen",
 		"dev": "react-router dev",
@@ -29,6 +30,7 @@
 		"typegen": "react-router typegen"
 	},
 	"dependencies": {
+		"@content-collections/cli": "0.1.6",
 		"@content-collections/core": "0.10.0",
 		"@content-collections/mdx": "0.2.2",
 		"@content-collections/remix-vite": "0.2.2",
