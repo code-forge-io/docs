@@ -1,5 +1,12 @@
 {
-	"include": ["env.d.ts", "**/*.ts", "**/*.tsx", "**/**/.server/**/*.ts", ".react-router/types/**/*"],
+	"include": [
+		"env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"**/**/.server/**/*.ts",
+		".react-router/types/**/*",
+		".content-collections/generated/**/*"
+	],
 	"compilerOptions": {
 		"types": ["vitest/globals", "@vitest/browser/providers/playwright"],
 		"lib": ["DOM", "DOM.Iterable", "ES2023"],
