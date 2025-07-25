@@ -24,7 +24,7 @@
 		"validate": "pnpm run check && pnpm run typecheck && pnpm run test && pnpm run check:unused",
 		"check": "biome check .",
 		"check:fix": "biome check --fix .",
-		"preknip": "pnpm run content-collections:build && pnpm run typegen",
+		"precheck:unused": "pnpm run content-collections:build && pnpm run typegen",
 		"check:unused": "knip --max-issues 1",
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
