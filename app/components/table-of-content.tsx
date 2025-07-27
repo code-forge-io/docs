@@ -58,7 +58,7 @@ export const TableOfContents = ({ items, className = "", pagePath }: TableOfCont
 	if (items.length === 0) return null
 
 	return (
-		<nav aria-label="Table of contents" className={`fixed top-14 ${className}`}>
+		<nav aria-label="Table of contents" className={`fixed top-14 hidden xl:block ${className}`}>
 			<div className="rounded-lg bg-[var(--color-background)] p-4">
 				<div className="mb-3 flex gap-3 text-[var(--color-text-active)] text-xs">
 					<a

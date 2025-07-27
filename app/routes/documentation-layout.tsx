@@ -14,13 +14,16 @@ export default function DocumentationLayout() {
 				<Logo />
 				<ThemeToggle />
 			</Header>
+
+			{/* Flex wrapper: sidebar + main */}
 			<div className="xl:flex">
-				<div className="mx-4 flex min-h-screen lg:mx-8 xl:mx-12 2xl:mx-20">
-					<Sidebar items={sidebarItems} className="flex-shrink-0" />
-					<main className="mx-auto flex-1">
-						<Outlet />
-					</main>
-				</div>
+				{/* Sidebar - no margin here */}
+				<Sidebar items={sidebarItems} className="flex-shrink-0" />
+
+				{/* Main content - apply responsive margin/padding here only */}
+				<main className="mx-4 flex-1 pt-10 pb-16 lg:mx-8 xl:mx-12 2xl:mx-20">
+					<Outlet />
+				</main>
 			</div>
 		</div>
 	)
