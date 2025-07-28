@@ -85,4 +85,4 @@ blob-report
 # Documentation template
 .content-collections
 # TODO should this be gitignored?
-content
+# content

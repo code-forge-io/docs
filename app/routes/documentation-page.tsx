@@ -1,12 +1,14 @@
 import { MDXContent } from "@content-collections/mdx/react"
 import { allPages } from "content-collections"
 import { CodeBlock } from "~/components/code-block"
-import { Footer } from "~/components/footer"
 import { InlineCode } from "~/components/inline-code"
 import { OrderedList } from "~/components/ordered-list"
 import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
 
+import { Anchor } from "~/components/anchor-tag"
+import { ListItem } from "~/components/list-item"
+import { Strong } from "~/components/strong-text"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import InfoAlert from "~/ui/info-alert"
 import WarningAlert from "~/ui/warning-alert"
@@ -32,11 +34,13 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 
 	return (
 		<div className="flex min-h-screen flex-col">
-			<div className="mx-auto flex w-full flex-1 gap-6 lg:gap-8">
-				<article className="prose prose-invert min-w-0 max-w-none flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)] lg:px-8">
+			{/* TODO use tailwind variables for this because it repeats on 2 places here and layout in main */}
+			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
+				<article className="prose prose-invert w-full min-w-0 max-w-4xl flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)]">
 					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
 						<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
 						{page.description && <p className="mt-2 text-[var(--color-text-muted)] text-lg">{page.description}</p>}
+						<p>Last updated: 2024-02-02 TODO </p>
 					</header>
 
 					<MDXContent
@@ -45,6 +49,9 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 							code: InlineCode,
 							pre: CodeBlock,
 							ol: OrderedList,
+							li: ListItem,
+							strong: Strong,
+							a: Anchor,
 							InfoAlert,
 							WarningAlert,
 							// you can add any custom component here or override existing ones following the MDX documentation: https://mdxjs.com/table-of-components/#components
@@ -53,12 +60,10 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 					<Pager previous={previous} next={next} />
 				</article>
 
-				<aside className="hidden w-64 flex-shrink-0 pt-8 lg:block">
-					<TableOfContents items={toc} pagePath={page._meta.filePath} />
-				</aside>
+				<TableOfContents items={toc} pagePath={page._meta.filePath} />
 			</div>
 
-			<Footer />
+			{/* <Footer /> */}
 		</div>
 	)
 }

@@ -1,4 +1,4 @@
-import { useRouteLoaderData } from "react-router"
+import { useLocation, useNavigate, useRouteLoaderData } from "react-router"
 import { useActiveHeadingId } from "~/hooks/use-active-heading-id"
 import { createGitHubContributionLinks } from "~/utils/create-github-contribution-links"
 import { scrollIntoView } from "~/utils/scroll-into-view"
@@ -14,10 +14,12 @@ const TocItem = ({
 	item,
 	depth = 0,
 	activeId,
+	onItemClick,
 }: {
 	item: HeadingItem
 	depth?: number
 	activeId: string | null
+	onItemClick: (slug: string) => Promise<void>
 }) => {
 	const paddingLeft = 12 + depth * 16
 	const isActive = activeId === item.slug
@@ -27,17 +29,24 @@ const TocItem = ({
 			<a
 				href={`#${item.slug}`}
 				style={{ paddingLeft }}
-				className={`block border-l py-1.5 text-sm transition-all duration-200 hover:border-[var(--color-code-inline-text)] hover:text-[var(--color-text-hover)]${depth === 0 ? "font-medium" : ""}
-					${isActive ? "border-[var(--color-text-accent)] text-[var(--color-text-accent)]" : "border-transparent text-[var(--color-text-normal)]"}
-				`}
-				onClick={(e) => scrollIntoView(e, item.slug)}
+				className={`block py-1.5 text-sm transition-all duration-200 hover:text-[var(--color-text-hover)] ${
+					depth === 0 ? "font-medium" : ""
+				} ${
+					isActive
+						? "border-[var(--color-text-accent)] font-bold text-[var(--color-text-accent)]"
+						: "border-transparent text-[var(--color-text-normal)]"
+				}`}
+				onClick={async (e) => {
+					e.preventDefault()
+					await onItemClick(item.slug)
+				}}
 			>
 				{item.title}
 			</a>
 			{item.children.length > 0 && (
 				<div className="space-y-0.5">
 					{item.children.map((child) => (
-						<TocItem key={child.slug} item={child} depth={depth + 1} activeId={activeId} />
+						<TocItem key={child.slug} item={child} depth={depth + 1} activeId={activeId} onItemClick={onItemClick} />
 					))}
 				</div>
 			)}
@@ -45,8 +54,10 @@ const TocItem = ({
 	)
 }
 
-export const TableOfContents = ({ items, className = "", pagePath }: TableOfContentsProps) => {
-	const activeId = useActiveHeadingId()
+export const TableOfContents = ({ items, pagePath }: TableOfContentsProps) => {
+	const location = useLocation()
+	const { activeId, setManualActiveId } = useActiveHeadingId(undefined, location.pathname)
+	const navigate = useNavigate()
 	const { clientEnv } = useRouteLoaderData("root")
 	const { GITHUB_OWNER, GITHUB_REPO } = clientEnv
 
@@ -55,12 +66,29 @@ export const TableOfContents = ({ items, className = "", pagePath }: TableOfCont
 		owner: GITHUB_OWNER,
 		repo: GITHUB_REPO,
 	})
+
+	const handleItemClick = async (slug: string): Promise<void> => {
+		// Immediately set the active ID to provide instant visual feedback
+		setManualActiveId(slug)
+
+		// Update URL
+		const newHash = `#${slug}`
+		if (location.hash !== newHash) {
+			navigate(`${location.pathname}${newHash}`, { replace: true })
+		}
+
+		// Scroll to the element
+		const fakeEvent = { preventDefault: () => {} } as React.MouseEvent
+		await scrollIntoView(fakeEvent, slug, -80)
+	}
+
 	if (items.length === 0) return null
 
+	// TODO use i18next for transltions
 	return (
-		<nav aria-label="Table of contents" className={`fixed top-14 hidden xl:block ${className}`}>
-			<div className="rounded-lg bg-[var(--color-background)] p-4">
-				<div className="mb-3 flex gap-3 text-[var(--color-text-active)] text-xs">
+		<div className="hidden w-56 min-w-min flex-shrink-0 2xl:block">
+			<div className="sticky top-37 pb-10">
+				<div className="mb-10 flex flex-col gap-3 text-[var(--color-text-active)] text-sm">
 					<a
 						href={issueUrl}
 						target="_blank"
@@ -69,7 +97,6 @@ export const TableOfContents = ({ items, className = "", pagePath }: TableOfCont
 					>
 						Report an issue with this page
 					</a>
-					<span>|</span>
 					<a
 						href={editUrl}
 						target="_blank"
@@ -79,13 +106,22 @@ export const TableOfContents = ({ items, className = "", pagePath }: TableOfCont
 						Edit this page
 					</a>
 				</div>
-				<h2 className="mb-2 pb-2 font-semibold text-[var(--color-text-active)] text-sm">On this page</h2>
-				<div className="max-h-[calc(100vh-12rem)] space-y-1 overflow-y-auto border-[var(--color-border)] border-l">
-					{items.map((item) => (
-						<TocItem key={item.slug} item={item} activeId={activeId} />
-					))}
-				</div>
+
+				<h2 className="mb-4 border-[var(--color-border)] border-b pb-2 font-semibold text-[var(--color-text-active)] text-base">
+					On this page
+				</h2>
+
+				<nav
+					aria-label="Table of contents"
+					className="-mr-4 max-h-[calc(100vh-var(--header-height))] overflow-y-auto pr-4"
+				>
+					<div className="space-y-1 pb-8">
+						{items.map((item) => (
+							<TocItem key={item.slug} item={item} activeId={activeId} onItemClick={handleItemClick} />
+						))}
+					</div>
+				</nav>
 			</div>
-		</nav>
+		</div>
 	)
 }

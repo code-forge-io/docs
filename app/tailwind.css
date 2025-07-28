@@ -4,11 +4,18 @@
 @theme {
 	--font-dyna-puff: "Dyna Puff", sans-serif;
 	--font-inter: "Inter", sans-serif;
+	--font-space: "Space", sans-serif;
 }
 
 @layer base {
 	html {
 		font-family: var(--font-inter);
+	}
+
+	h1,
+	h2,
+	h3 {
+		scroll-margin-top: 6rem; /* Adjust this to match your sticky header height */
 	}
 	/* html {
 		transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -26,6 +33,7 @@
 	} */
 
 	:root {
+		--header-height: 5rem;
 		--color-background: #ffffff;
 		--color-border: #e5e7eb;
 		--color-text-normal: #806b6e;
@@ -39,7 +47,7 @@
 		--color-version-border: #e5e7eb;
 		--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
 		--color-text-link: #000000;
-		--color-text-accent: #a626a4;
+		--color-text-accent: #1a202c;
 
 		--color-code-inline-bg: #f5f5f5;
 		--color-code-inline-text: #1f2937;
@@ -82,7 +90,7 @@
 	}
 
 	[data-theme="dark"] {
-		--color-background: #020617;
+		--color-background: #0f0f0f;
 		--color-border: #1b1f2e;
 		--color-text-normal: #9ca3af;
 		--color-text-muted: #6b7280;
@@ -94,12 +102,12 @@
 		--color-text-version: #6b7280;
 		--color-version-border: #374151;
 		--color-backdrop-mobile: rgba(0, 0, 0, 0.5);
-		--color-text-accent: #a626a4;
+		--color-text-accent: #e2e8f0;
 
 		--color-code-inline-bg: #1f2937;
 		--color-code-inline-text: #f5f5f5;
 
-		--color-code-block-bg: #0f172a;
+		--color-code-block-bg: #1a1a1a;
 		--color-code-block-border: #334155;
 		--color-code-block-text: #e2e8f0;
 		--color-code-line-numbers-bg: #1e293b;

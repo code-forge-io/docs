@@ -16,10 +16,9 @@ interface BreadcrumbItemProps {
 
 export const BreadcrumbItem = ({ children, href, isActive = false, className }: BreadcrumbItemProps) => {
 	const classes = cn(
-		"text-center font-normal text-base leading-6 transition-all duration-200 ease-in-out lg:text-xl",
-		"text-[color:var(--color-text-normal)]",
-		"hover:font-medium hover:text-[color:var(--color-text-hover)]",
-		isActive && "pointer-events-none font-bold text-[color:var(--color-text-active)]",
+		"inline-flex items-center font-medium text-sm transition-all duration-200 ease-in-out",
+		"text-[var(--color-text-normal)]",
+		isActive && "pointer-events-none font-semibold text-[var(--color-text-active)]",
 		className
 	)
 
@@ -41,14 +40,11 @@ export const Breadcrumbs = ({ children, className }: BreadcrumbsProps) => {
 
 	return (
 		<nav aria-label="Breadcrumbs" className={cn("", className)}>
-			<ol className="hidden list-none flex-wrap items-center md:flex">
+			<ol className="flex items-center space-x-2">
 				{breadcrumbItems.map((child, index) => (
 					<li key={child.props.href || index} className="flex items-center">
 						{index > 0 && (
-							<Icon
-								name="ChevronRight"
-								className="mx-2 h-4 w-4 flex-shrink-0 text-[color:var(--color-text-muted)] lg:h-5 lg:w-5"
-							/>
+							<Icon name="ChevronRight" className="mx-2 h-4 w-4 flex-shrink-0 text-[var(--color-text-muted)]" />
 						)}
 						{child}
 					</li>

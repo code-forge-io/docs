@@ -44,10 +44,13 @@ const pageSchema = z.object({
 	title: z.string(),
 	summary: z.string(),
 	description: z.string(),
-	lastUpdated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
-		message: "Date must be in YYYY-MM-DD format",
-	}),
-	author: z.string(),
+	lastUpdated: z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/, {
+			message: "Date must be in YYYY-MM-DD format",
+		})
+		.optional(),
+	author: z.string().optional(),
 })
 
 /*

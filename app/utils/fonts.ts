@@ -20,6 +20,8 @@ import interSemiBold from "../../resources/fonts/inter/Inter-SemiBold.ttf"
 import interSemiBoldItalic from "../../resources/fonts/inter/Inter-SemiBoldItalic.ttf"
 import interThin from "../../resources/fonts/inter/Inter-Thin.ttf"
 import interThinItalic from "../../resources/fonts/inter/Inter-ThinItalic.ttf"
+import spaceNormal from "../../resources/fonts/space/Space.woff2"
+
 export const fonts = [
 	{
 		fontFamily: "Dyna Puff",
@@ -152,5 +154,11 @@ export const fonts = [
 		fontStyle: "italic",
 		fontWeight: 100,
 		src: interThinItalic,
+	},
+	{
+		fontFamily: "Space",
+		fontStyle: "normal",
+		fontWeight: 400,
+		src: spaceNormal,
 	},
 ]

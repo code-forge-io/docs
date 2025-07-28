@@ -24,6 +24,7 @@ interface DocumentationLinkProps {
 	onItemClick?: () => void
 }
 
+//TODO ovo ne radi
 const getIndentClass = (depth: number) => {
 	const indentMap = { 0: "ml-0", 1: "ml-4", 2: "ml-8" }
 	return indentMap[depth as keyof typeof indentMap] || "ml-8"
@@ -79,10 +80,10 @@ const DocumentationLink = ({ doc, depth, onItemClick }: DocumentationLinkProps) 
 			})}
 			onClick={onItemClick}
 			className={({ isActive }) =>
-				`block rounded-md px-3 py-1.5 text-sm transition-all duration-200 ${indentClass} ${
+				`block rounded-md px-3 py-2 text-sm transition-transform duration-200 ${indentClass} ${
 					isActive
-						? "border-[var(--color-code-inline-text)] border-l-2 bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
-						: "text-[var(--color-text-normal)] hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
+						? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
+						: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:text-bold"
 				}`
 			}
 		>
@@ -95,7 +96,7 @@ const SectionTitle = ({ title, depth }: { title: string; depth: number }) => {
 	const indentClass = getIndentClass(depth)
 
 	return (
-		<h3 className={`mb-3 font-semibold text-[var(--color-text-active)] text-sm uppercase tracking-wide ${indentClass}`}>
+		<h3 className={`mb-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide ${indentClass}`}>
 			{title}
 		</h3>
 	)
@@ -129,7 +130,7 @@ const SidebarItem = ({ item, depth = 0, onItemClick }: SidebarItemProps) => {
 			<AccordionItem
 				title={item.title}
 				titleElement="h6"
-				titleClassName={`text-sm font-semibold uppercase tracking-wide text-[var(--color-text-active)] ${getIndentClass(depth)}`}
+				titleClassName={`text-sm font-semibold  tracking-wide text-[var(--color-text-active)] ${getIndentClass(depth)}`}
 				content={content}
 				defaultOpen={true}
 			/>
@@ -148,31 +149,30 @@ const MobileMenuButton = ({ onOpen }: { onOpen: () => void }) => (
 	// biome-ignore lint/a11y/useButtonType: <explanation>
 	<button
 		onClick={onOpen}
-		className="flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-[var(--color-text-normal)] shadow-sm transition-colors duration-200 hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
+		className="px-3 py-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
 		aria-label="Open navigation menu"
 	>
 		<Icon name="Menu" className="size-5" />
-		<span className="font-medium text-sm">Menu</span>
 	</button>
 )
 
-const CloseButton = ({ onClose }: { onClose: () => void }) => (
-	// biome-ignore lint/a11y/useButtonType: <explanation>
-	<button
-		onClick={onClose}
-		className="absolute top-2 right-2 z-10 rounded-full bg-[var(--color-background)] p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
-		aria-label="Close navigation menu"
-	>
-		<Icon name="X" className="size-6" />
-	</button>
-)
+// const CloseButton = ({ onClose }: { onClose: () => void }) => (
+// 	// biome-ignore lint/a11y/useButtonType: <explanation>
+// 	<button
+// 		onClick={onClose}
+// 		className="absolute top-1 right-1 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
+// 		aria-label="Close navigation menu"
+// 	>
+// 		<Icon name="X" className="size-5" />
+// 	</button>
+// )
 
 const SidebarContent = ({ items, onClose }: { items: SidebarSection[]; onClose?: () => void }) => {
 	const { isMobile } = useMobileView()
 
 	return (
-		<nav className="flex-1 overflow-y-auto pt-12 pr-2" aria-label="Documentation navigation">
-			{isMobile && onClose && <CloseButton onClose={onClose} />}
+		<nav className="flex-1 overflow-y-auto " aria-label="Documentation navigation">
+			{/* {isMobile && onClose && <CloseButton onClose={onClose} />} */}
 
 			<Accordion>
 				{items.map((item) => (
@@ -206,7 +206,7 @@ const MobileSidebarPanel = ({
 	className: string
 }) => (
 	<div
-		className={`fixed top-0 left-0 z-50 h-screen w-80 bg-[var(--color-background)] shadow-xl transition-transform duration-500 ease-in-out ${
+		className={`fixed top-[var(--header-height)] left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 shadow-xl transition-transform duration-500 ease-in-out ${
 			isOpen ? "translate-x-0" : "-translate-x-full"
 		} ${className}`}
 		// role="dialog"
@@ -226,13 +226,11 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 	if (isMobile) {
 		return (
 			<>
-				<div className="flex items-center gap-3">
+				<div className="fixed z-40 flex w-full items-center gap-3 border-[var(--color-border)] border-b bg-[var(--color-background)] px-4 py-3 ">
 					<MobileMenuButton onOpen={open} />
 					<Breadcrumbs className="text-sm">
-						{breadcrumbPath.map((item, index) => (
-							<BreadcrumbItem key={item} isActive={index === breadcrumbPath.length - 1}>
-								{item}
-							</BreadcrumbItem>
+						{breadcrumbPath.map((item) => (
+							<BreadcrumbItem key={item}>{item}</BreadcrumbItem>
 						))}
 					</Breadcrumbs>
 				</div>
@@ -244,7 +242,9 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 	}
 
 	return (
-		<div className={`sticky top-16 bottom-0 h-screen w-80 flex-col bg-[var(--color-background)] lg:flex ${className}`}>
+		<div
+			className={`sticky top-[var(--header-height)] h-[calc(100vh-var(--header-height))] w-80 flex-col overflow-hidden bg-[var(--color-background)] p-4 lg:flex ${className}`}
+		>
 			<SidebarContent items={items} />
 		</div>
 	)

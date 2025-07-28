@@ -1,5 +1,4 @@
 import slug from "slug"
-// TODO refactor this or use remark
 
 export type HeadingItem = {
 	slug: string
@@ -8,11 +7,9 @@ export type HeadingItem = {
 	children: HeadingItem[]
 }
 
-export function extractHeadingTreeFromMarkdown(content: string) {
+export function extractHeadingTreeFromMarkdown(content: string): HeadingItem[] {
 	const lines = content.split("\n")
-
 	const headings: HeadingItem[] = []
-
 	const headingRegex = /^(#{1,6})\s+(.+)$/
 
 	for (const line of lines) {
@@ -20,6 +17,8 @@ export function extractHeadingTreeFromMarkdown(content: string) {
 		if (!match) continue
 
 		const level = match[1].length
+		if (level > 3) continue // ⬅️ skip h4, h5, h6
+
 		const title = match[2].trim()
 		const sectionSlug = slug(title)
 

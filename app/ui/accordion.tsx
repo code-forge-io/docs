@@ -66,17 +66,17 @@ export const AccordionItem = ({
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 
 	const buttonClasses =
-		"flex justify-between items-center w-full p-2 transition-all duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:bg-[var(--color-background-hover)] rounded-md"
+		"flex  gap-2 items-center w-full p-2 transition-all duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:bg-[var(--color-background-hover)] rounded-md"
 
 	const iconClasses = "w-4 h-4 transition-transform duration-300"
 
 	return (
 		<div>
 			<button type="button" className={buttonClasses} onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
+				<Icon name="ChevronDown" className={cn(iconClasses, isOpen && "rotate-180")} />
 				<Title as={titleElement ?? "h6"} className={titleClassName}>
 					{title}
 				</Title>
-				<Icon name="ChevronDown" className={cn(iconClasses, isOpen && "rotate-180")} />
 			</button>
 			<AccordionContent isOpen={isOpen}>{content}</AccordionContent>
 		</div>
