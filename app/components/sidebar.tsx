@@ -36,7 +36,7 @@ const buildBreadcrumb = (items: SidebarSection[], currentPath: string) => {
 	const findInSection = (section: SidebarSection, path: string[]): boolean => {
 		for (const doc of section.documentationPages) {
 			const { version, section: sectionSlug, subsection, fileName } = splitSlug(doc.slug)
-			const docPath = href("/docs/:version/:section/:subsection?/:filename", {
+			const docPath = href("/:version/:section/:subsection?/:filename", {
 				version,
 				section: sectionSlug,
 				subsection,
@@ -72,7 +72,7 @@ const DocumentationLink = ({ doc, depth, onItemClick }: DocumentationLinkProps) 
 	return (
 		<NavLink
 			prefetch="intent"
-			to={href("/docs/:version/:section/:subsection?/:filename", {
+			to={href("/:version/:section/:subsection?/:filename", {
 				version,
 				section,
 				subsection,

@@ -16,7 +16,7 @@ export function usePreviousNextPages(sections: SidebarSection[]) {
 		const { version, section, subsection, fileName } = splitSlug(item.slug)
 		return {
 			title: item.title,
-			to: href("/docs/:version/:section/:subsection?/:filename", {
+			to: href("/:version/:section/:subsection?/:filename", {
 				version,
 				section,
 				subsection,

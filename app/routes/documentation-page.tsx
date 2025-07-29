@@ -1,17 +1,8 @@
-import { MDXContent } from "@content-collections/mdx/react"
 import { allPages } from "content-collections"
-import { CodeBlock } from "~/components/code-block"
-import { InlineCode } from "~/components/inline-code"
-import { OrderedList } from "~/components/ordered-list"
+import { MDXWrapper } from "~/components/mdx-wrapper"
 import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
-
-import { Anchor } from "~/components/anchor-tag"
-import { ListItem } from "~/components/list-item"
-import { Strong } from "~/components/strong-text"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
-import InfoAlert from "~/ui/info-alert"
-import WarningAlert from "~/ui/warning-alert"
 import { getSidebarTree } from "~/utils/create-sidebar-tree"
 import { extractHeadingTreeFromMarkdown } from "~/utils/table-of-content"
 import type { Route } from "./+types/documentation-page"
@@ -43,20 +34,7 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 						<p>Last updated: 2024-02-02 TODO </p>
 					</header>
 
-					<MDXContent
-						code={page.content}
-						components={{
-							code: InlineCode,
-							pre: CodeBlock,
-							ol: OrderedList,
-							li: ListItem,
-							strong: Strong,
-							a: Anchor,
-							InfoAlert,
-							WarningAlert,
-							// you can add any custom component here or override existing ones following the MDX documentation: https://mdxjs.com/table-of-components/#components
-						}}
-					/>
+					<MDXWrapper content={page.content} />
 					<Pager previous={previous} next={next} />
 				</article>
 

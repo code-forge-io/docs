@@ -1,16 +1,30 @@
-export default function DocumentationHomepage() {
-	// TODO change this to desired layout
-	return (
-		<div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-			<h1 className="font-bold text-4xl text-[var(--color-text-active)]">Welcome to Our Documentation</h1>
-			<p className="mt-6 max-w-2xl text-[var(--color-text-active)] text-lg">
-				Explore detailed guides, tutorials, and API references to help you get the most out of our product. Whether
-				you’re just starting or looking to deepen your knowledge, you’ll find everything you need here.
-			</p>
+import { allPages } from "content-collections"
+import { MDXWrapper } from "~/components/mdx-wrapper"
+import type { Route } from "./+types/documentation-homepage"
 
-			<p className="mt-12 text-[var(--color-text-active)] text-sm">
-				Select a version and section from the sidebar to get started.
-			</p>
+export async function loader() {
+	const page = allPages.find((post) => post.slug === "index")
+	if (!page) {
+		throw new Response("Not Found", { status: 404 })
+	}
+	return { page }
+}
+
+export default function DocumentationHomepage({ loaderData }: Route.ComponentProps) {
+	const { page } = loaderData
+	return (
+		<div className="flex min-h-screen flex-col">
+			{/* TODO use tailwind variables for this because it repeats on 2 places here and layout in main */}
+			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
+				<article className="prose prose-invert w-full min-w-0 max-w-4xl flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)]">
+					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
+						<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
+					</header>
+					<MDXWrapper content={page.content} />
+				</article>
+			</div>
+
+			{/* <Footer /> */}
 		</div>
 	)
 }
