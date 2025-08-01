@@ -3,7 +3,7 @@ import { MDXWrapper } from "~/components/mdx-wrapper"
 import type { Route } from "./+types/documentation-homepage"
 
 export async function loader() {
-	const page = allPages.find((post) => post.slug === "index")
+	const page = allPages.find((post) => post.slug === "_index")
 	if (!page) {
 		throw new Response("Not Found", { status: 404 })
 	}

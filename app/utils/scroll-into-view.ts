@@ -15,20 +15,16 @@ export function scrollIntoView(
 
 		const y = element.getBoundingClientRect().top + window.scrollY + offset
 
-		// Scroll to the element
 		window.scrollTo({ top: y, behavior })
 
-		// If smooth scrolling, wait for it to complete
 		if (behavior === "smooth") {
-			// Estimate scroll duration and add buffer
 			const scrollDistance = Math.abs(window.scrollY - y)
-			const estimatedDuration = Math.min(scrollDistance / 2, 1000) // Max 1 second
+			const estimatedDuration = Math.min(scrollDistance / 2, 1000)
 
 			setTimeout(() => {
 				resolve()
 			}, estimatedDuration)
 		} else {
-			// Immediate scroll
 			setTimeout(resolve, 0)
 		}
 	})

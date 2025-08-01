@@ -13,15 +13,9 @@ export function usePreviousNextPages(sections: SidebarSection[]) {
 		const item = flatPages[index]
 		if (!item) return undefined
 
-		const { version, section, subsection, fileName } = splitSlug(item.slug)
 		return {
 			title: item.title,
-			to: href("/:version/:section/:subsection?/:filename", {
-				version,
-				section,
-				subsection,
-				filename: fileName,
-			}),
+			to: href("/:version/:section/:subsection?/:filename", splitSlug(item.slug)),
 		}
 	}
 

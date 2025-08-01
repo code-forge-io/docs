@@ -17,7 +17,7 @@ export function extractHeadingTreeFromMarkdown(content: string): HeadingItem[] {
 		if (!match) continue
 
 		const level = match[1].length
-		if (level > 3) continue // ⬅️ skip h4, h5, h6
+		if (level > 3) continue
 
 		const title = match[2].trim()
 		const sectionSlug = slug(title)

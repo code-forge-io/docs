@@ -24,7 +24,6 @@ interface DocumentationLinkProps {
 	onItemClick?: () => void
 }
 
-//TODO ovo ne radi
 const getIndentClass = (depth: number) => {
 	const indentMap = { 0: "ml-0", 1: "ml-4", 2: "ml-8" }
 	return indentMap[depth as keyof typeof indentMap] || "ml-8"
@@ -32,55 +31,35 @@ const getIndentClass = (depth: number) => {
 
 const buildBreadcrumb = (items: SidebarSection[], currentPath: string) => {
 	const breadcrumb: string[] = []
-
-	const findInSection = (section: SidebarSection, path: string[]): boolean => {
-		for (const doc of section.documentationPages) {
-			const { version, section: sectionSlug, subsection, fileName } = splitSlug(doc.slug)
-			const docPath = href("/:version/:section/:subsection?/:filename", {
-				version,
-				section: sectionSlug,
-				subsection,
-				filename: fileName,
+	const findBreadcrumb = (section: SidebarSection, path: string[]): boolean => {
+		if (
+			section.documentationPages.some((doc) => {
+				const docPath = href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))
+				if (docPath === currentPath) {
+					breadcrumb.push(...path, doc.title)
+					return true
+				}
+				return false
 			})
-
-			if (docPath === currentPath) {
-				breadcrumb.push(...path, doc.title)
-				return true
-			}
+		) {
+			return true
 		}
-
-		for (const subsection of section.subsections) {
-			if (findInSection(subsection, [...path, section.title])) {
-				return true
-			}
-		}
-
-		return false
+		return section.subsections.some((sub) => findBreadcrumb(sub, [...path, section.title]))
 	}
-
-	for (const item of items) {
-		if (findInSection(item, [item.title])) break
-	}
-
+	items.some((item) => findBreadcrumb(item, [item.title]))
 	return breadcrumb
 }
 
 const DocumentationLink = ({ doc, depth, onItemClick }: DocumentationLinkProps) => {
-	const { version, section, subsection, fileName } = splitSlug(doc.slug)
 	const indentClass = getIndentClass(depth)
 
 	return (
 		<NavLink
 			prefetch="intent"
-			to={href("/:version/:section/:subsection?/:filename", {
-				version,
-				section,
-				subsection,
-				filename: fileName,
-			})}
+			to={href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))}
 			onClick={onItemClick}
 			className={({ isActive }) =>
-				`block rounded-md px-3 py-2 text-sm transition-transform duration-200 ${indentClass} ${
+				`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
 					isActive
 						? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
 						: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:text-bold"
@@ -146,8 +125,8 @@ const SidebarItem = ({ item, depth = 0, onItemClick }: SidebarItemProps) => {
 }
 
 const MobileMenuButton = ({ onOpen }: { onOpen: () => void }) => (
-	// biome-ignore lint/a11y/useButtonType: <explanation>
 	<button
+		type="button"
 		onClick={onOpen}
 		className="px-3 py-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
 		aria-label="Open navigation menu"
@@ -156,24 +135,22 @@ const MobileMenuButton = ({ onOpen }: { onOpen: () => void }) => (
 	</button>
 )
 
-// const CloseButton = ({ onClose }: { onClose: () => void }) => (
-// 	// biome-ignore lint/a11y/useButtonType: <explanation>
-// 	<button
-// 		onClick={onClose}
-// 		className="absolute top-1 right-1 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:bg-[var(--color-background-hover)] hover:text-[var(--color-text-hover)]"
-// 		aria-label="Close navigation menu"
-// 	>
-// 		<Icon name="X" className="size-5" />
-// 	</button>
-// )
+const CloseButton = ({ onClose }: { onClose: () => void }) => (
+	<button
+		type="button"
+		onClick={onClose}
+		className="absolute top-1 right-1 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
+		aria-label="Close navigation menu"
+	>
+		<Icon name="X" className="size-5" />
+	</button>
+)
 
 const SidebarContent = ({ items, onClose }: { items: SidebarSection[]; onClose?: () => void }) => {
 	const { isMobile } = useMobileView()
 
 	return (
 		<nav className="flex-1 overflow-y-auto " aria-label="Documentation navigation">
-			{/* {isMobile && onClose && <CloseButton onClose={onClose} />} */}
-
 			<Accordion>
 				{items.map((item) => (
 					<SidebarItem key={item.slug} item={item} onItemClick={isMobile ? onClose : undefined} />
@@ -184,7 +161,7 @@ const SidebarContent = ({ items, onClose }: { items: SidebarSection[]; onClose?:
 }
 
 const MobileOverlay = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => (
-	// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+	// biome-ignore lint/a11y/useKeyWithClickEvents: We don't need
 	<div
 		className={`fixed inset-0 z-40 bg-black transition-opacity duration-500 ${
 			isOpen ? "opacity-50" : "pointer-events-none opacity-0"
@@ -206,14 +183,14 @@ const MobileSidebarPanel = ({
 	className: string
 }) => (
 	<div
-		className={`fixed top-[var(--header-height)] left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 shadow-xl transition-transform duration-500 ease-in-out ${
+		className={`fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 border-[var(--color-border)] border-t bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out ${
 			isOpen ? "translate-x-0" : "-translate-x-full"
 		} ${className}`}
-		// role="dialog"
 		aria-modal="true"
 		aria-label="Navigation menu"
 	>
 		<SidebarContent items={items} onClose={onClose} />
+		<CloseButton onClose={onClose} />
 	</div>
 )
 
@@ -226,7 +203,7 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 	if (isMobile) {
 		return (
 			<>
-				<div className="fixed z-40 flex w-full items-center gap-3 border-[var(--color-border)] border-b bg-[var(--color-background)] px-4 py-3 ">
+				<div className="fixed top-[var(--header-height)] z-40 flex w-full items-center gap-3 border-[var(--color-border)] border-b bg-[var(--color-background)] px-4 py-3 ">
 					<MobileMenuButton onOpen={open} />
 					<Breadcrumbs className="text-sm">
 						{breadcrumbPath.map((item) => (

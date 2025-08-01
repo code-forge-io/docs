@@ -1,6 +1,9 @@
 # Welcome to Forge 42 Documentation Template
 
-This template is built to support a flexible content structure using .md/.mdx files organized in folders. It allows for deeply nested sections and subsections, making it easy to structure complex documentation with a clear hierarchy.
+This template is designed to support a flexible content structure using `.md` and `.mdx` files organized into folders. It enables deeply nested sections and subsections, making it easy to manage complex documentation with a clear and scalable hierarchy.
+
+The project is built using the [@forge-42/base-stack](https://github.com/forge-42/base-stack) and leverages the [content-collections](https://github.com/sdorra/content-collections).
+
 
 ## Documentation Template Structure Overview
 
@@ -18,12 +21,11 @@ This folder contains all the resources used by the documentation site, such as S
 This folder contains sections and subsections with .mdx files that hold your documentation content. Below is the recommended structure to follow.
 
 
-## Documentation Content Directory Example
-
 An example of a valid content/ folder structure for organizing your package documentation:
 
 ```
 content/
+├── _index.mdx
 ├── 01-changelog.mdx
 ├── 02-introduction.mdx
 ├── 03-overview.mdx
@@ -56,8 +58,6 @@ content/
 title: "Introduction to Forge42 Base Stack"
 summary: "Overview of the Stack"
 description: "Get started with the Forge42 Base Stack — a modern web app starter template designed for speed, scalability, and developer experience."
-lastUpdated: 2025-07-20
-author: forge-42
 ---
 
 ## What is Forge42 Base Stack?

@@ -11,6 +11,6 @@ export function splitSlug(slug: string) {
 		version,
 		section,
 		subsection: parts.length === 4 ? third : undefined,
-		fileName: parts.length === 4 ? fourth : third,
+		filename: parts.length === 4 ? fourth : third,
 	}
 }
