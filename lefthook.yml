@@ -10,3 +10,5 @@ pre-commit:
       run: pnpm run test
     unused-code:
       run: pnpm run check:unused
+    update:frontmatter:
+      run: pnpm run update:frontmatter

@@ -28,7 +28,8 @@
 		"check:unused": "knip --max-issues 1",
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
-		"content-collections:build": "content-collections build"
+		"content-collections:build": "content-collections build",
+		"update:frontmatter": "tsx scripts/update-frontmatter.ts"
 	},
 	"dependencies": {
 		"@content-collections/cli": "0.1.6",

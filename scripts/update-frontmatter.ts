@@ -1,14 +1,17 @@
 import { execSync } from "node:child_process"
 import fs from "node:fs"
-import path from "node:path"
 import matter from "gray-matter"
 
-function run(cmd: string) {
+function run(cmd: string): string {
 	return execSync(cmd, { encoding: "utf-8" }).trim()
 }
 
+function getStagedMdxFiles(): string[] {
+	const output = run("git diff --cached --name-only")
+	return output.split("\n").filter((f) => f.startsWith("content/") && f.endsWith(".mdx") && fs.existsSync(f))
+}
+
 function updateFrontmatter(file: string, author: string, date: string) {
-	if (!fs.existsSync(file)) return
 	const raw = fs.readFileSync(file, "utf-8")
 	const parsed = matter(raw)
 
@@ -16,25 +19,27 @@ function updateFrontmatter(file: string, author: string, date: string) {
 	parsed.data.lastUpdated = date
 
 	fs.writeFileSync(file, matter.stringify(parsed.content, parsed.data))
-	// biome-ignore lint/suspicious/noConsole: <explanation>
+
+	run(`git add ${file}`)
+
+	// biome-ignore lint/suspicious/noConsole: updating file info
 	console.log(`✅ Updated ${file}`)
 }
 
 function main() {
-	const commitHash = run("git rev-parse HEAD")
-	const [author, date] = run(`git log -1 --pretty=format:"%an|%ad" --date=short ${commitHash}`).split("|")
+	const author = run("git config user.name")
+	const date = new Date().toISOString().split("T")[0]
 
-	const changedFiles = run(`git diff-tree --no-commit-id --name-only -r ${commitHash}`).split("\n")
-	const mdxFiles = changedFiles.filter((f) => f.startsWith("content/") && f.endsWith(".mdx"))
+	const mdxFiles = getStagedMdxFiles()
 
 	if (!mdxFiles.length) {
-		// biome-ignore lint/suspicious/noConsole: <explanation>
-		console.log("No MDX files changed in last commit.")
+		// biome-ignore lint/suspicious/noConsole: no files to update
+		console.log("📭 No staged MDX files to update.")
 		return
 	}
 
 	for (const file of mdxFiles) {
-		updateFrontmatter(path.join(process.cwd(), file), author, date)
+		updateFrontmatter(file, author, date)
 	}
 }
 
