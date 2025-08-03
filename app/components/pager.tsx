@@ -27,7 +27,7 @@ function PagerLink({ item, direction, label }: PagerLinkProps) {
 
 	const linkClasses = [
 		"inline-flex items-center gap-1 rounded-md px-2 py-1",
-		"text-[var(--color-text-active)] text-lg no-underline",
+		"text-[var(--color-text-active)] text-sm md:text-lg no-underline",
 		"transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)]",
 		isPrevious ? "-ml-2 hover:-translate-x-1" : "-mr-2 hover:translate-x-1",
 	].join(" ")

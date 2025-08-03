@@ -203,7 +203,7 @@ export const Sidebar = ({ items, className = "" }: SidebarProps) => {
 	if (isMobile) {
 		return (
 			<>
-				<div className="fixed top-[var(--header-height)] z-40 flex w-full items-center gap-3 border-[var(--color-border)] border-b bg-[var(--color-background)] px-4 py-3 ">
+				<div className="fixed z-40 flex h-fit w-full items-center gap-3 border-[var(--color-border)] border-b-2 bg-[var(--color-background)] px-4 py-3 ">
 					<MobileMenuButton onOpen={open} />
 					<Breadcrumbs className="text-sm">
 						{breadcrumbPath.map((item) => (

@@ -1,4 +1,3 @@
-import type React from "react"
 import type { ReactNode } from "react"
 import { Icon } from "./icon/icon"
 
@@ -9,7 +8,7 @@ interface AlertProps {
 	className?: string
 }
 
-const Alert: React.FC<AlertProps> = ({ children, title, variant, className = "" }) => {
+export const Alert = ({ children, title, variant, className = "" }: AlertProps) => {
 	const getVariantStyles = () => {
 		switch (variant) {
 			case "info":
@@ -39,31 +38,27 @@ const Alert: React.FC<AlertProps> = ({ children, title, variant, className = "" 
 	const getIcon = () => {
 		switch (variant) {
 			case "info":
-				return <Icon name="Info" className="h-6 w-6" />
+				return <Icon name="Info" className="h-5 w-5" />
 			case "warning":
-				return <Icon name="TriangleAlert" className="h-6 w-6" />
+				return <Icon name="TriangleAlert" className="h-5 w-5" />
 			default:
 				return null
 		}
 	}
 
 	const styles = getVariantStyles()
-	// TODO use i18next
 	const defaultTitle = variant === "info" ? "Good to know" : "Warning"
 
 	return (
 		<div
-			className={`my-6 flex items-start gap-4 rounded-xl border p-6 transition-all duration-300 ${styles.container} ${className}`}
+			className={`my-6 flex flex-col gap-2 rounded-xl border p-6 transition-all duration-300 ${styles.container} ${className}`}
 		>
-			<div className={`mt-0.5 flex-shrink-0 ${styles.icon}`}>{getIcon()}</div>
-
-			<div className="min-w-0 flex-1">
-				<h3 className={`mb-2 font-semibold text-lg ${styles.title}`}>{title || defaultTitle}</h3>
-
-				<div className={`prose prose-sm max-w-none ${styles.content}`}>{children}</div>
+			<div className="flex items-center gap-2">
+				<div className={styles.icon}>{getIcon()}</div>
+				<h3 className={` font-semibold text-lg ${styles.title}`}>{title || defaultTitle}</h3>
 			</div>
+
+			<div className={`prose prose-sm max-w-none ${styles.content}`}>{children}</div>
 		</div>
 	)
 }
-
-export default Alert

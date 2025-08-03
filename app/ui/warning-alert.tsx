@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import Alert from "./alert"
+import { Alert } from "./alert"
 
 interface WarningAlertProps {
 	children: ReactNode
