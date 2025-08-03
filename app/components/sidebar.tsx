@@ -183,7 +183,7 @@ const MobileSidebarPanel = ({
 	className: string
 }) => (
 	<div
-		className={`fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 border-[var(--color-border)] border-t bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out ${
+		className={`fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out ${
 			isOpen ? "translate-x-0" : "-translate-x-full"
 		} ${className}`}
 		aria-modal="true"
