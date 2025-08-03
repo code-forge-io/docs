@@ -7,6 +7,16 @@ export type HeadingItem = {
 	children: HeadingItem[]
 }
 
+function cleanMarkdown(text: string): string {
+	return text
+		.replace(/`([^`]+)`/g, "$1")
+		.replace(/\*\*([^*]+)\*\*/g, "$1")
+		.replace(/\*([^*]+)\*/g, "$1")
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+		.replace(/\{[^}]*\}/g, "")
+		.trim()
+}
+
 export function extractHeadingTreeFromMarkdown(content: string): HeadingItem[] {
 	const lines = content.split("\n")
 	const headings: HeadingItem[] = []
@@ -19,7 +29,8 @@ export function extractHeadingTreeFromMarkdown(content: string): HeadingItem[] {
 		const level = match[1].length
 		if (level > 3) continue
 
-		const title = match[2].trim()
+		const rawTitle = match[2].trim()
+		const title = cleanMarkdown(rawTitle)
 		const sectionSlug = slug(title)
 
 		headings.push({ title, slug: sectionSlug, level, children: [] })
