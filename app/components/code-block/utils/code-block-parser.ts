@@ -7,19 +7,6 @@ interface ReactElementWithProps {
 	}
 }
 
-interface LineData {
-	diffType: string
-	cleanLine: string
-	tokens: Array<{ type: string; value: string }>
-	styles: {
-		backgroundColor: string
-		borderLeft: string
-		borderLeftColor: string
-		indicator: string
-	}
-	isNormalDiff: boolean
-}
-
 export const extractCodeContent = (children: string | ReactElementWithProps) =>
 	typeof children === "string" ? children : (children?.props?.children ?? "")
 
@@ -36,7 +23,7 @@ const filterEmptyLines = (lines: string[]) => {
 	})
 }
 
-export const createLineData = (line: string): LineData => {
+export const createLineData = (line: string) => {
 	const diffType = getDiffType(line)
 	const cleanLine = cleanDiffLine(line)
 	const tokens = tokenize(cleanLine)

@@ -1,45 +1,72 @@
-import { execSync } from "node:child_process"
-import fs from "node:fs"
+import { exec } from "node:child_process"
+import { access, readFile, writeFile } from "node:fs/promises"
+import { promisify } from "node:util"
 import matter from "gray-matter"
 
-function run(cmd: string): string {
-	return execSync(cmd, { encoding: "utf-8" }).trim()
+const execAsync = promisify(exec)
+
+async function run(cmd: string) {
+	const { stdout } = await execAsync(cmd)
+	return stdout.trim()
 }
 
-function getStagedMdxFiles(): string[] {
-	const output = run("git diff --cached --name-only")
-	return output.split("\n").filter((f) => f.startsWith("content/") && f.endsWith(".mdx") && fs.existsSync(f))
+async function fileExists(file: string) {
+	try {
+		await access(file)
+		return true
+	} catch {
+		return false
+	}
 }
 
-function updateFrontmatter(file: string, author: string, date: string) {
-	const raw = fs.readFileSync(file, "utf-8")
+async function getStagedMdxFiles() {
+	const output = await run("git diff --cached --name-only")
+	const files = output.split("\n").filter((f) => f.startsWith("content/") && f.endsWith(".mdx"))
+
+	const existenceChecks = await Promise.all(files.map(fileExists))
+	return files.filter((_, index) => existenceChecks[index])
+}
+
+async function updateFrontmatter(file: string, author: string, date: string) {
+	const raw = await readFile(file, "utf-8")
 	const parsed = matter(raw)
 
 	parsed.data.author = author
 	parsed.data.lastUpdated = date
 
-	fs.writeFileSync(file, matter.stringify(parsed.content, parsed.data))
-
-	run(`git add ${file}`)
+	const updated = matter.stringify(parsed.content, parsed.data)
+	await writeFile(file, updated)
 
 	// biome-ignore lint/suspicious/noConsole: updating file info
 	console.log(`✅ Updated ${file}`)
+
+	return file
 }
 
-function main() {
-	const author = run("git config user.name")
-	const date = new Date().toISOString().split("T")[0]
+async function main() {
+	try {
+		const [author, mdxFiles] = await Promise.all([run("git config user.name"), getStagedMdxFiles()])
 
-	const mdxFiles = getStagedMdxFiles()
+		if (!mdxFiles.length) {
+			// biome-ignore lint/suspicious/noConsole: no files to update
+			console.log("📭 No staged MDX files to update.")
+			return
+		}
 
-	if (!mdxFiles.length) {
-		// biome-ignore lint/suspicious/noConsole: no files to update
-		console.log("📭 No staged MDX files to update.")
-		return
-	}
+		const date = new Date().toISOString().split("T")[0]
 
-	for (const file of mdxFiles) {
-		updateFrontmatter(file, author, date)
+		const updatedFiles = await Promise.all(mdxFiles.map((file) => updateFrontmatter(file, author, date)))
+
+		if (updatedFiles.length > 0) {
+			await run(`git add ${updatedFiles.join(" ")}`)
+		}
+
+		// biome-ignore lint/suspicious/noConsole: completion message
+		console.log(`🎉 Successfully updated ${mdxFiles.length} file(s)`)
+	} catch (error) {
+		// biome-ignore lint/suspicious/noConsole: error handling
+		console.error("❌ Error:", error)
+		process.exit(1)
 	}
 }
 

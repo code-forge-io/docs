@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 
@@ -18,9 +19,6 @@ interface PagerLinkProps {
 	label: string
 }
 
-/**
- * Individual pager link component with consistent styling and behavior
- */
 function PagerLink({ item, direction, label }: PagerLinkProps) {
 	const isPrevious = direction === "previous"
 	const arrow = isPrevious ? "←" : "→"
@@ -38,7 +36,7 @@ function PagerLink({ item, direction, label }: PagerLinkProps) {
 	].join(" ")
 
 	return (
-		<div className={isPrevious ? "" : "text-right"}>
+		<div className={clsx({ "text-right": !isPrevious })}>
 			<div className="font-semibold text-[var(--color-text-active)]">{label}</div>
 			<Link
 				to={item.to}

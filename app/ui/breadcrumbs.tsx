@@ -40,7 +40,7 @@ export const Breadcrumbs = ({ children, className }: BreadcrumbsProps) => {
 
 	return (
 		<nav aria-label="Breadcrumbs" className={cn("", className)}>
-			<ol className="flex items-center space-x-2">
+			<ol className="flex items-center">
 				{breadcrumbItems.map((child, index) => (
 					<li key={child.props.href || index} className="flex items-center">
 						{index > 0 && (

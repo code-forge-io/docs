@@ -82,5 +82,5 @@ blob-report
 *.db-journal
 
 
-# Documentation template
+# Content collections output files
 .content-collections

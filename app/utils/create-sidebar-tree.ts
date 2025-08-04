@@ -1,5 +1,6 @@
 import { allPages, allSections } from "content-collections"
 //TODO refactor this a little bit
+//TODO this doesnt't work with subsections
 export type SidebarSection = {
 	title: string
 	slug: string

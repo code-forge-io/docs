@@ -12,18 +12,17 @@ export const CopyButton = ({ lines }: CopyButtonProps) => {
 	const { t } = useTranslation()
 
 	const handleCopy = async () => {
-		// Reconstruct content from lines and process for copy
 		const reconstructedContent = lines.join("\n")
 		const finalCode = processCopyContent(reconstructedContent)
 
 		await navigator.clipboard.writeText(finalCode)
 		setCopyState("copied")
-		setTimeout(() => setCopyState("copy"), 3000)
+		setTimeout(() => setCopyState("copy"), 2000)
 	}
 
 	const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if (copyState !== "copied") {
-			e.currentTarget.style.backgroundColor = "var(--color-code-copy-bg)"
+			e.currentTarget.style.backgroundColor = "var(--color-code-copy-hover-bg)"
 		}
 	}
 
@@ -38,18 +37,18 @@ export const CopyButton = ({ lines }: CopyButtonProps) => {
 			type="button"
 			onClick={handleCopy}
 			disabled={copyState === "copied"}
-			className="absolute top-3 right-3 flex items-center gap-1 rounded px-2 py-1 text-[var(--color-code-copy-text)] text-xs opacity-0 transition-all hover:cursor-pointer disabled:cursor-not-allowed group-hover:opacity-100"
+			className="absolute top-3 right-3 flex items-center gap-1 rounded bg-[var(--color-code-copy-bg)] px-2 py-1 text-[var(--color-code-copy-text)] text-xs opacity-0 transition-all hover:cursor-pointer disabled:cursor-not-allowed group-hover:opacity-100"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 		>
 			{copyState === "copy" ? (
 				<>
-					<Icon name="ClipboardCopy" width={14} height={14} />
+					<Icon name="ClipboardCopy" className="size-5" />
 					{t("buttons.copy")}
 				</>
 			) : (
 				<>
-					<Icon name="ClipboardCheck" width={14} height={14} />
+					<Icon name="ClipboardCheck" className="size-5" />
 					{t("buttons.copied")}
 				</>
 			)}

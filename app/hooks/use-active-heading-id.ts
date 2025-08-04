@@ -24,12 +24,10 @@ export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]", resetKey
 			return
 		}
 
-		// Set initial active heading from hash
 		const hash = location.hash.slice(1)
 		const hasValidHash = hash && Array.from(headings).some((h) => h.id === hash)
 		setActiveId(hasValidHash ? hash : null)
 
-		// Intersection observer for scroll-based active heading
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (isManualRef.current) return

@@ -1,31 +1,21 @@
-export function scrollIntoView(
-	e: React.MouseEvent,
-	id: string,
-	offset = -80,
-	behavior: ScrollBehavior = "smooth"
-): Promise<void> {
+export function scrollIntoView(e: React.MouseEvent, id: string, offset = -80, behavior: ScrollBehavior = "smooth") {
 	e.preventDefault()
 
+	const element = document.getElementById(id)
+	if (!element) return Promise.resolve()
+
+	const targetY = element.getBoundingClientRect().top + window.scrollY + offset
+
+	window.scrollTo({ top: targetY, behavior })
+
+	if (behavior !== "smooth") {
+		return Promise.resolve()
+	}
+
+	const distance = Math.abs(window.scrollY - targetY)
+	const duration = Math.min(distance / 2, 1000)
+
 	return new Promise((resolve) => {
-		const element = document.getElementById(id)
-		if (!element) {
-			resolve()
-			return
-		}
-
-		const y = element.getBoundingClientRect().top + window.scrollY + offset
-
-		window.scrollTo({ top: y, behavior })
-
-		if (behavior === "smooth") {
-			const scrollDistance = Math.abs(window.scrollY - y)
-			const estimatedDuration = Math.min(scrollDistance / 2, 1000)
-
-			setTimeout(() => {
-				resolve()
-			}, estimatedDuration)
-		} else {
-			setTimeout(resolve, 0)
-		}
+		setTimeout(resolve, duration)
 	})
 }

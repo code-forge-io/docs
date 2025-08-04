@@ -7,6 +7,36 @@ const sectionSchema = z.object({
 	title: z.string(),
 })
 
+/**
+ * Removes leading number prefixes like "01-", "02-" from each path segment.
+ */
+const cleanSlug = (path: string) =>
+	path
+		.split("/")
+		.map((seg) => seg.replace(/^\d{2,}-/, "")) // removes "01-", "02-", etc.
+		.join("/")
+
+/**
+ * Extracts the version from a path (assumes version is the first segment).
+ */
+const getVersion = (path: string) => path.split("/")[0]
+
+/**
+ * Extracts the section ID (usually the parent folder of index.md or the last folder).
+ */
+const getSectionId = (path: string) => {
+	const segments = path.split("/")
+	return segments.length > 1 ? segments[segments.length - 2] : segments[0]
+}
+
+/**
+ * Extracts the section name (usually the second-to-last segment).
+ */
+const getSectionName = (path: string) => {
+	const segments = path.split("/")
+	return segments[segments.length - 2] || ""
+}
+
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
  *
@@ -25,17 +55,11 @@ const section = defineCollection({
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
-		const segments = document._meta.path.split("/")
-		const version = segments[0]
-		const sectionId = segments.length > 1 ? segments[segments.length - 2] : segments[0]
-		const cleanedSlug = segments
-			.map((seg) => seg.replace(/^\d{2,}-/, "")) // removes "01-", "02-", etc.
-			.join("/")
 		return {
 			...document,
-			slug: cleanedSlug,
-			sectionId,
-			version,
+			slug: cleanSlug(document._meta.path),
+			sectionId: getSectionId(document._meta.path),
+			version: getVersion(document._meta.path),
 		}
 	},
 })
@@ -75,17 +99,13 @@ const page = defineCollection({
 		const content = await compileMDX(context, document, {
 			rehypePlugins: [rehypeSlug],
 		})
-		const slug = document._meta.path
-		const segments = slug.split("/")
-		const section = segments[segments.length - 2]
 		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
-		const cleanedSlug = segments.map((seg) => seg.replace(/^\d{2,}-/, "")).join("/")
 		return {
 			...document,
 			content,
-			slug: cleanedSlug,
-			section,
+			slug: cleanSlug(document._meta.path),
+			section: getSectionName(document._meta.path),
 			rawMdx,
 		}
 	},

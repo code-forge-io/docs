@@ -11,15 +11,15 @@ export default function DocumentationLayout() {
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
-				<Logo />
+				<Logo>
+					{/* FIXME replace with your Logo */}
+					<span>REACT ROUTER DEVTOOLS</span>
+				</Logo>
 				<ThemeToggle />
 			</Header>
 
 			<div className="xl:flex">
-				{/* Sidebar - no margin here */}
 				<Sidebar items={sidebarItems} className="flex-shrink-0" />
-
-				{/* Main content - apply responsive margin/padding here only */}
 				<main className="mx-4 flex-1 pt-10 pb-16 lg:mx-8">
 					<Outlet />
 				</main>

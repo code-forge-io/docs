@@ -2,8 +2,8 @@ import { useCallback } from "react"
 import { useLocation, useNavigate, useRouteLoaderData } from "react-router"
 import { useActiveHeadingId } from "~/hooks/use-active-heading-id"
 import { createGitHubContributionLinks } from "~/utils/create-github-contribution-links"
+import type { HeadingItem } from "~/utils/extract-heading-tree-from-mdx"
 import { scrollIntoView } from "~/utils/scroll-into-view"
-import type { HeadingItem } from "~/utils/table-of-content"
 
 interface TableOfContentsProps {
 	items: HeadingItem[]
@@ -129,6 +129,7 @@ export const TableOfContents = ({ items, pagePath }: TableOfContentsProps) => {
 		repo: GITHUB_REPO,
 	})
 
+	// TODO refactor this
 	const handleItemClick = useCallback(
 		async (slug: string) => {
 			setManualActiveId(slug)

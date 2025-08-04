@@ -1,19 +1,20 @@
 type DiffType = "added" | "removed" | "normal"
 
-const DIFF_PATTERNS: Record<string, DiffType> = {
+const DIFF_PATTERNS = {
 	"+ ": "added",
 	"- ": "removed",
+} as const
+
+type DiffPatternPrefix = keyof typeof DIFF_PATTERNS
+
+type DiffStyle = {
+	backgroundColor: string
+	borderLeft: string
+	borderLeftColor: string
+	indicator: string
 }
 
-const DIFF_STYLES: Record<
-	DiffType,
-	{
-		backgroundColor: string
-		borderLeft: string
-		borderLeftColor: string
-		indicator: string
-	}
-> = {
+const DIFF_STYLES = {
 	added: {
 		backgroundColor: "var(--color-diff-added-bg)",
 		borderLeft: "2px solid",
@@ -32,13 +33,17 @@ const DIFF_STYLES: Record<
 		borderLeftColor: "transparent",
 		indicator: "",
 	},
-}
+} as const satisfies Record<DiffType, DiffStyle>
 
 export const getDiffType = (line: string) => {
 	const trimmed = line.trimStart()
-	const pattern = Object.keys(DIFF_PATTERNS).find((p) => trimmed.startsWith(p))
-	return pattern ? DIFF_PATTERNS[pattern] : "normal"
+	const prefix = trimmed.slice(0, 2)
+
+	return isDiffPatternPrefix(prefix) ? DIFF_PATTERNS[prefix] : "normal"
 }
+
+const isDiffPatternPrefix = (value: string): value is DiffPatternPrefix =>
+	Object.prototype.hasOwnProperty.call(DIFF_PATTERNS, value)
 
 export const cleanDiffLine = (line: string) => line.replace(/^(\s*)[+-] /, "$1")
 

@@ -1,4 +1,4 @@
-export type TokenType = "keyword" | "string" | "number" | "comment" | "operator" | "punctuation" | "function" | "text"
+type TokenType = "keyword" | "string" | "number" | "comment" | "operator" | "punctuation" | "function" | "text"
 
 const MASTER_REGEX =
 	/(\s+|\/\/.*?(?=\n|$)|\/\*[\s\S]*?\*\/|(['"`])(?:(?!\2)[^\\]|\\.)*\2|\d+\.?\d*|[a-zA-Z_$][a-zA-Z0-9_$]*|===|!==|<=|>=|==|!=|&&|\|\||[+\-*/%=<>!?:(){}[\];,.]|\+\+|--|[+\-*/%]=|=>)/g
@@ -123,3 +123,7 @@ const TOKEN_COLORS = {
 }
 
 export const getTokenColor = (type: TokenType) => TOKEN_COLORS[type]
+
+export function isTokenType(value: unknown): value is TokenType {
+	return typeof value === "string" && value in TOKEN_COLORS
+}

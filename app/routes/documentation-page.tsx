@@ -4,7 +4,7 @@ import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { getSidebarTree } from "~/utils/create-sidebar-tree"
-import { extractHeadingTreeFromMarkdown } from "~/utils/table-of-content"
+import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
