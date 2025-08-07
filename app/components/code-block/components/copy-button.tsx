@@ -3,19 +3,15 @@ import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { processCopyContent } from "../utils/code-block-parser"
 
-interface CopyButtonProps {
-	lines: string[]
-}
-
-export const CopyButton = ({ lines }: CopyButtonProps) => {
+export const CopyButton = ({ lines }: { lines: string[] }) => {
 	const [copyState, setCopyState] = useState<"copy" | "copied">("copy")
 	const { t } = useTranslation()
 
 	const handleCopy = async () => {
 		const reconstructedContent = lines.join("\n")
-		const finalCode = processCopyContent(reconstructedContent)
+		const { code } = processCopyContent(reconstructedContent)
 
-		await navigator.clipboard.writeText(finalCode)
+		await navigator.clipboard.writeText(code)
 		setCopyState("copied")
 		setTimeout(() => setCopyState("copy"), 2000)
 	}

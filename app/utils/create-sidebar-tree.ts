@@ -1,16 +1,7 @@
 import { allPages, allSections } from "content-collections"
+import type { SidebarSection } from "~/components/sidebar"
 //TODO refactor this a little bit
 //TODO this doesnt't work with subsections
-export type SidebarSection = {
-	title: string
-	slug: string
-	sectionId: string
-	subsections: SidebarSection[]
-	documentationPages: {
-		title: string
-		slug: string
-	}[]
-}
 
 export function getSidebarTree(version: string) {
 	const sectionMap = new Map<string, SidebarSection>()

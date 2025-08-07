@@ -1,11 +1,11 @@
 import { MDXContent } from "@content-collections/mdx/react"
 import { Anchor } from "~/ui/anchor-tag"
-import InfoAlert from "~/ui/info-alert"
-import WarningAlert from "~/ui/warning-alert"
-import { InlineCode } from "../ui/inline-code"
-import { ListItem } from "../ui/list-item"
-import { OrderedList } from "../ui/ordered-list"
-import { Strong } from "../ui/strong-text"
+import { InfoAlert } from "~/ui/info-alert"
+import { InlineCode } from "~/ui/inline-code"
+import { ListItem } from "~/ui/list-item"
+import { OrderedList } from "~/ui/ordered-list"
+import { Strong } from "~/ui/strong-text"
+import { WarningAlert } from "~/ui/warning-alert"
 import { CodeBlock } from "./code-block/index"
 
 export const MDXWrapper = ({ content }: { content: string }) => (
@@ -20,7 +20,7 @@ export const MDXWrapper = ({ content }: { content: string }) => (
 			a: Anchor,
 			InfoAlert,
 			WarningAlert,
-			// you can add any custom component here or override existing ones following the MDX documentation: https://mdxjs.com/table-of-components/#components
+			// You can add any custom component here or override existing ones by following the MDX documentation: https://mdxjs.com/table-of-components/#components
 		}}
 	/>
 )

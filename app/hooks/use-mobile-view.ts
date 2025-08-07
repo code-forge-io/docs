@@ -5,18 +5,15 @@ import { useEffect, useState } from "react"
  * Returns true if mobile, false otherwise.
  */
 export function useMobileView(breakpoint = 1280) {
-	const [isMobile, setIsMobile] = useState(() => {
-		if (typeof window === "undefined") return false
-		return window.innerWidth < breakpoint
-	})
+	const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
 	useEffect(() => {
-		function handleResize() {
+		const update = () => {
 			setIsMobile(window.innerWidth < breakpoint)
 		}
-		window.addEventListener("resize", handleResize)
-		handleResize()
-		return () => window.removeEventListener("resize", handleResize)
+		update()
+		window.addEventListener("resize", update)
+		return () => window.removeEventListener("resize", update)
 	}, [breakpoint])
 
 	return { isMobile }

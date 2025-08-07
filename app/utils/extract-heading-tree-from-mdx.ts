@@ -7,7 +7,7 @@ export type HeadingItem = {
 	children: HeadingItem[]
 }
 
-const headingRegex = /^(#{1,6})\s+(.+)$/
+const headingRegex = /^\s*(#{1,6})\s+(.+?)\s*$/
 
 const cleanMarkdown = (text: string) =>
 	text
@@ -16,9 +16,9 @@ const cleanMarkdown = (text: string) =>
 		.replace(/\*([^*]+)\*/g, "$1")
 		.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
 		.replace(/\{[^}]*\}/g, "")
+		.replace(/<\/?[^>]+(>|$)/g, "")
 		.trim()
 
-// TODO this will need to be refactored to handle more cases, eg part with command K
 export function extractHeadingTreeFromMarkdown(content: string) {
 	const root: HeadingItem[] = []
 	const stack: HeadingItem[] = []

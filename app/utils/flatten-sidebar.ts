@@ -1,4 +1,4 @@
-import type { SidebarSection } from "~/utils/create-sidebar-tree"
+import type { SidebarSection } from "~/components/sidebar"
 
 export function flattenSidebarItems(sections: SidebarSection[]) {
 	const collectPages = (section: SidebarSection): { title: string; slug: string }[] => [

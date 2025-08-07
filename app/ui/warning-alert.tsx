@@ -7,12 +7,10 @@ interface WarningAlertProps {
 	className?: string
 }
 
-const WarningAlert = ({ children, title, className }: WarningAlertProps) => {
+export const WarningAlert = ({ children, title, className }: WarningAlertProps) => {
 	return (
 		<Alert variant="warning" title={title} className={className}>
 			{children}
 		</Alert>
 	)
 }
-
-export default WarningAlert

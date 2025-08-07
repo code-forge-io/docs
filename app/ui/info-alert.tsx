@@ -7,12 +7,10 @@ interface InfoAlertProps {
 	className?: string
 }
 
-const InfoAlert = ({ children, title, className }: InfoAlertProps) => {
+export const InfoAlert = ({ children, title, className }: InfoAlertProps) => {
 	return (
 		<Alert variant="info" title={title} className={className}>
 			{children}
 		</Alert>
 	)
 }
-
-export default InfoAlert

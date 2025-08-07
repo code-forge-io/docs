@@ -8,8 +8,8 @@ interface CodeBlockProps extends Omit<ComponentPropsWithoutRef<"pre">, "children
 }
 
 export const CodeBlock = ({ children, className = "", ...props }: CodeBlockProps) => {
-	const codeContent = extractCodeContent(children)
-	const lines = processLines(codeContent)
+	const { code } = extractCodeContent(children)
+	const lines = processLines(code)
 
 	return (
 		<div className="group relative">
