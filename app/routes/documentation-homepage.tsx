@@ -14,7 +14,6 @@ export default function DocumentationHomepage({ loaderData }: Route.ComponentPro
 	const { page } = loaderData
 	return (
 		<div className="flex min-h-screen flex-col">
-			{/* TODO use tailwind variables for this because it repeats on 2 places here and layout in main */}
 			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
 				<article className="prose prose-invert w-full min-w-0 max-w-4xl flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)]">
 					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
@@ -23,8 +22,6 @@ export default function DocumentationHomepage({ loaderData }: Route.ComponentPro
 					<MDXWrapper content={page.content} />
 				</article>
 			</div>
-
-			{/* <Footer /> */}
 		</div>
 	)
 }

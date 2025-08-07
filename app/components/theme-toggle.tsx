@@ -1,28 +1,29 @@
-import { useEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import { IconButton } from "~/ui/icon-button"
-import { getEffectiveTheme, toggleTheme } from "~/utils/theme"
+import { applyTheme, getCurrentTheme } from "~/utils/theme"
 
 export function ThemeToggle() {
 	const [theme, setTheme] = useState<"light" | "dark" | null>(null)
 
-	useEffect(() => {
-		const current = getEffectiveTheme()
-		document.documentElement.classList.add(current)
-		setTheme(current)
+	useLayoutEffect(() => {
+		setTheme(getCurrentTheme())
 	}, [])
 
-	const handleClick = () => {
-		toggleTheme()
-		const newTheme = getEffectiveTheme()
-		setTheme(newTheme)
+	const toggle = () => {
+		if (!theme) return
+		const next = theme === "dark" ? "light" : "dark"
+		applyTheme(next)
+		setTheme(next)
 	}
 
-	if (theme === null) return null
+	if (theme === null) {
+		return <IconButton aria-label="Loading theme..." icons={[{ name: "SunMoon", show: true }]} />
+	}
 
 	return (
 		<IconButton
 			aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-			onClick={handleClick}
+			onClick={toggle}
 			icons={[
 				{ name: "Sun", show: theme === "light" },
 				{ name: "Moon", show: theme === "dark" },

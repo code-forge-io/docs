@@ -1,28 +1,17 @@
-type Theme = "light" | "dark"
-const THEME_KEY = "theme"
+import { THEME, setStorageItem } from "./local-storage"
 
-function getStoredTheme(): Theme | null {
-	const stored = localStorage.getItem(THEME_KEY)
-	if (stored === "light" || stored === "dark") return stored
-	return null
-}
-
-function getSystemTheme(): Theme {
+export function getSystemTheme(): "light" | "dark" {
+	if (typeof window === "undefined") return "light"
 	return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 }
 
-export function getEffectiveTheme(): Theme {
-	return getStoredTheme() ?? getSystemTheme()
+export function getCurrentTheme(): "light" | "dark" {
+	if (typeof document === "undefined") return "light"
+	const theme = document.documentElement.getAttribute("data-theme")
+	return theme === "dark" ? "dark" : "light"
 }
 
-function applyTheme(theme: Theme) {
-	const root = document.documentElement
-	root.setAttribute("data-theme", theme)
-	localStorage.setItem(THEME_KEY, theme)
-}
-
-export function toggleTheme() {
-	const current = getEffectiveTheme()
-	const next = current === "light" ? "dark" : "light"
-	applyTheme(next)
+export function applyTheme(theme: "light" | "dark") {
+	document.documentElement.setAttribute("data-theme", theme)
+	setStorageItem(THEME, theme)
 }

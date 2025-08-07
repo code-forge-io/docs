@@ -4,6 +4,7 @@ export const iconNames = [
 	"X",
 	"TriangleAlert",
 	"Sun",
+	"SunMoon",
 	"Moon",
 	"Menu",
 	"Info",

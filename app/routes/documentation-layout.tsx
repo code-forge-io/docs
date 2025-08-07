@@ -12,7 +12,7 @@ export default function DocumentationLayout() {
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
 				<Logo>
-					{/* FIXME replace with your Logo */}
+					{/* Replace with your Logo */}
 					<span>REACT ROUTER DEVTOOLS</span>
 				</Logo>
 				<ThemeToggle />
