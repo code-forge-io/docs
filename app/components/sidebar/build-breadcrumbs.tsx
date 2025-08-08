@@ -2,25 +2,27 @@ import { href } from "react-router"
 import { splitSlug } from "~/utils/split-slug"
 import type { SidebarSection } from "./sidebar"
 
-// TODO maybe refactor this>
-// TODO add tests after refactoring
-export const buildBreadcrumb = (items: SidebarSection[], currentPath: string) => {
-	const breadcrumb: string[] = []
-	const findBreadcrumb = (section: SidebarSection, path: string[]): boolean => {
-		if (
-			section.documentationPages.some((doc) => {
-				const docPath = href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))
-				if (docPath === currentPath) {
-					breadcrumb.push(...path, doc.title)
-					return true
-				}
-				return false
-			})
-		) {
-			return true
+export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
+	let trail: string[] = []
+
+	const walk = (section: SidebarSection, acc: string[]) => {
+		for (const doc of section.documentationPages) {
+			const docPath = href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))
+			if (docPath === pathname) {
+				trail = [...acc, section.title, doc.title]
+				return true
+			}
 		}
-		return section.subsections.some((sub) => findBreadcrumb(sub, [...path, section.title]))
+
+		for (const sub of section.subsections) {
+			if (walk(sub, [...acc, section.title])) return true
+		}
+		return false
 	}
-	items.some((item) => findBreadcrumb(item, [item.title]))
-	return breadcrumb
+
+	for (const root of items) {
+		if (walk(root, [])) break
+	}
+
+	return trail
 }
