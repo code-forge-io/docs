@@ -2,6 +2,7 @@ import { href } from "react-router"
 import { splitSlug } from "~/utils/split-slug"
 import type { SidebarSection } from "./sidebar"
 
+//TODO add tests
 export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
 	let trail: string[] = []
 
