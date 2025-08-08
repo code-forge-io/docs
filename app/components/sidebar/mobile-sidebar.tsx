@@ -1,6 +1,6 @@
 import { BreadcrumbItem, Breadcrumbs } from "~/ui/breadcrumbs"
 import { Icon } from "~/ui/icon/icon"
-import { useMobileSidebar } from "../context/mobile-sidebar-context"
+import { useMobileSidebar } from "./mobile-sidebar-context"
 import type { SidebarSection } from "./sidebar"
 import { SidebarContent } from "./sidebar-content"
 

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
-import { Sidebar } from "~/components/sidebar"
+import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { getSidebarTree } from "~/utils/create-sidebar-tree"
 

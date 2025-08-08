@@ -1,5 +1,5 @@
 import { href, useLocation } from "react-router"
-import type { SidebarSection } from "~/components/sidebar"
+import type { SidebarSection } from "~/components/sidebar/sidebar"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
 import { splitSlug } from "~/utils/split-slug"
 

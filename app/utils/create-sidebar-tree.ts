@@ -1,5 +1,5 @@
 import { allPages, allSections } from "content-collections"
-import type { SidebarSection } from "~/components/sidebar"
+import type { SidebarSection } from "~/components/sidebar/sidebar"
 
 const parentOf = (slug: string) => slug.split("/").slice(0, -1).join("/")
 

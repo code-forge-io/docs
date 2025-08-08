@@ -1,9 +1,9 @@
 import { useLocation } from "react-router"
 import { useMobileView } from "~/hooks/use-mobile-view"
-import { MobileSidebarProvider } from "../context/mobile-sidebar-context"
-import { buildBreadcrumb } from "../utils/build-breadcrumbs"
+import { buildBreadcrumb } from "./build-breadcrumbs"
 import { DesktopSidebarPanel } from "./desktop-sidebar"
 import { MobileSidebarHeader, MobileSidebarOverlay, MobileSidebarPanel } from "./mobile-sidebar"
+import { MobileSidebarProvider } from "./mobile-sidebar-context"
 
 export type SidebarSection = {
 	title: string

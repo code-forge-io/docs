@@ -1,6 +1,6 @@
 import { href } from "react-router"
 import { splitSlug } from "~/utils/split-slug"
-import type { SidebarSection } from "../components/sidebar"
+import type { SidebarSection } from "./sidebar"
 
 // TODO maybe refactor this>
 // TODO add tests after refactoring
