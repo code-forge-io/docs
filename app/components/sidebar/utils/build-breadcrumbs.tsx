@@ -2,6 +2,8 @@ import { href } from "react-router"
 import { splitSlug } from "~/utils/split-slug"
 import type { SidebarSection } from "../components/sidebar"
 
+// TODO maybe refactor this>
+// TODO add tests after refactoring
 export const buildBreadcrumb = (items: SidebarSection[], currentPath: string) => {
 	const breadcrumb: string[] = []
 	const findBreadcrumb = (section: SidebarSection, path: string[]): boolean => {

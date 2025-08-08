@@ -17,17 +17,13 @@ export function ThemeToggle() {
 	}
 
 	if (theme === null) {
-		return <IconButton aria-label="Loading theme..." icons={[{ name: "SunMoon", show: true }]} />
+		return <IconButton aria-label="Loading theme..." name="SunMoon" />
 	}
 
 	return (
-		<IconButton
-			aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-			onClick={toggle}
-			icons={[
-				{ name: "Sun", show: theme === "light" },
-				{ name: "Moon", show: theme === "dark" },
-			]}
-		/>
+		<div className="relative">
+			{theme === "light" && <IconButton aria-label="Switch to dark mode" name="Moon" onClick={toggle} />}
+			{theme === "dark" && <IconButton aria-label="Switch to light mode" name="Sun" onClick={toggle} />}
+		</div>
 	)
 }

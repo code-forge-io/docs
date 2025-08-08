@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react"
-import { createLineData } from "../utils/code-block-parser"
-import { getTokenColor, isTokenType, type tokenize } from "../utils/code-block-syntax-highlighter"
+import { createLineData } from "./code-block-parser"
+import { getTokenColor, isTokenType, type tokenize } from "./code-block-syntax-highlighter"
 
 const TokenElement = ({ token }: { token: ReturnType<typeof tokenize>[0] }) => {
 	const { type, value } = token

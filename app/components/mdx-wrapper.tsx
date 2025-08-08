@@ -6,7 +6,7 @@ import { ListItem } from "~/ui/list-item"
 import { OrderedList } from "~/ui/ordered-list"
 import { Strong } from "~/ui/strong-text"
 import { WarningAlert } from "~/ui/warning-alert"
-import { CodeBlock } from "./code-block/index"
+import { CodeBlock } from "./code-block/code-block"
 
 export const MDXWrapper = ({ content }: { content: string }) => (
 	<MDXContent

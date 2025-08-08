@@ -20,14 +20,8 @@ interface SectionItemLinkProps {
 	onItemClick?: () => void
 }
 
-const SectionTitle = ({ title, depth }: { title: string; depth: number }) => {
-	const indentClass = getIndentClass(depth)
-
-	return (
-		<h3 className={`mb-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide ${indentClass}`}>
-			{title}
-		</h3>
-	)
+const SectionTitle = ({ title }: { title: string }) => {
+	return <h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide">{title}</h3>
 }
 
 const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
@@ -79,7 +73,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 			<AccordionItem
 				title={item.title}
 				titleElement="h6"
-				titleClassName={`text-sm font-semibold  tracking-wide text-[var(--color-text-active)] ${getIndentClass(depth)}`}
+				titleClassName="text-sm font-semibold tracking-wide text-[var(--color-text-active)]"
 				content={content}
 				defaultOpen={true}
 			/>
@@ -88,7 +82,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 
 	return (
 		<div className="mb-6">
-			<SectionTitle title={item.title} depth={depth} />
+			<SectionTitle title={item.title} />
 			{content}
 		</div>
 	)

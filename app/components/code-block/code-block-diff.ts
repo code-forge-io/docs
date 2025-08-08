@@ -28,9 +28,9 @@ const DIFF_PATTERNS = {
 
 type DiffPatternPrefix = keyof typeof DIFF_PATTERNS
 
-export const getDiffType = (line: string): DiffType => {
-	const prefix = line.trimStart().slice(0, 2)
-	return DIFF_PATTERNS[prefix as DiffPatternPrefix] ?? "normal"
+export const getDiffType = (line: string) => {
+	const prefix: string = line.trimStart().slice(0, 2)
+	return prefix in DIFF_PATTERNS ? DIFF_PATTERNS[prefix as DiffPatternPrefix] : "normal"
 }
 
 export const cleanDiffLine = (line: string) => line.replace(/^(\s*)[+-] /, "$1")

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
-import { processCopyContent } from "../utils/code-block-parser"
+import { processCopyContent } from "./code-block-parser"
 
 export const CopyButton = ({ lines }: { lines: string[] }) => {
 	const [copyState, setCopyState] = useState<"copy" | "copied">("copy")

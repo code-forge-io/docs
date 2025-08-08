@@ -68,13 +68,6 @@ const pageSchema = z.object({
 	title: z.string(),
 	summary: z.string(),
 	description: z.string(),
-	lastUpdated: z
-		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}$/, {
-			message: "Date must be in YYYY-MM-DD format",
-		})
-		.optional(),
-	author: z.string().optional(),
 })
 
 /*
@@ -85,8 +78,6 @@ const pageSchema = z.object({
  * - `title`: Displayed as the page header.
  * - `summary`: A short summary of the page.
  * - `description`: A more detailed explanation of the page content.
- * - `lastUpdated`: ISO date in YYYY-MM-DD format.
- * - `author`: Author of the documentation.
  *
  * Each page must have a unique `title` within its section.
  */

@@ -6,8 +6,8 @@ import { ThemeToggle } from "~/components/theme-toggle"
 import { getSidebarTree } from "~/utils/create-sidebar-tree"
 
 export default function DocumentationLayout() {
-	// TODO think about this exporting from  loader or something so I can get these items from that, to avoid calling the getSidebarTree in documentation-page as well
-	const sidebarItems = getSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, or latest/main by default
+	// TODO sidebarItems are used on 2 places, change this to not call getSidebarTree twice
+	const sidebarItems = getSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, after implementing docs generation
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>

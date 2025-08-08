@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react"
-import { extractCodeContent, processLines } from "../utils/code-block-parser"
 import { PreElement } from "./code-block-elements"
+import { extractCodeContent, processLines } from "./code-block-parser"
 import { CopyButton } from "./copy-button"
 
 interface CodeBlockProps extends Omit<ComponentPropsWithoutRef<"pre">, "children"> {

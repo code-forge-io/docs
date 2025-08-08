@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router"
 
-export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]", resetKey?: string) {
+export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]") {
 	const [activeId, setActiveId] = useState<string | null>(null)
 	const isManualRef = useRef(false)
 	const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+	const location = useLocation()
 
 	const setManualActiveId = useCallback((id: string) => {
 		setActiveId(id)
@@ -15,8 +18,7 @@ export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]", resetKey
 		}, 1000)
 	}, [])
 
-	// TODO refactor this
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: locaion.pathname shoud be in the dependency array
 	useEffect(() => {
 		const headings = document.querySelectorAll<HTMLElement>(selector)
 		if (!headings.length) {
@@ -41,11 +43,8 @@ export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]", resetKey
 			{ rootMargin: "0% 0% -70% 0%", threshold: 0.1 }
 		)
 
-		// TODO use for of
-		// biome-ignore lint/complexity/noForEach: TODO use for of
-		headings.forEach((el) => observer.observe(el))
+		for (const el of headings) observer.observe(el)
 
-		// Handle hash changes
 		const handleHashChange = () => {
 			const id = location.hash.slice(1)
 			if (id && Array.from(headings).some((h) => h.id === id)) {
@@ -60,7 +59,7 @@ export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]", resetKey
 			removeEventListener("hashchange", handleHashChange)
 			if (timeoutRef.current) clearTimeout(timeoutRef.current)
 		}
-	}, [selector, resetKey, setManualActiveId])
+	}, [selector, location.pathname, setManualActiveId, location.hash])
 
 	return { activeId, setManualActiveId }
 }

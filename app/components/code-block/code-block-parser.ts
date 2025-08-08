@@ -1,5 +1,5 @@
-import { cleanDiffLine, getDiffStyles, getDiffType } from "../utils/code-block-diff"
-import { tokenize } from "../utils/code-block-syntax-highlighter"
+import { cleanDiffLine, getDiffStyles, getDiffType } from "./code-block-diff"
+import { tokenize } from "./code-block-syntax-highlighter"
 
 interface CodeBlockChild {
 	props?: {
@@ -24,7 +24,7 @@ const filterEmptyLines = (lines: string[]) => {
 		return !(isEmpty && isLastLine)
 	})
 }
-
+// TODO add tests for this one
 export const createLineData = (line: string) => {
 	const diffType = getDiffType(line)
 	const cleanLine = cleanDiffLine(line)

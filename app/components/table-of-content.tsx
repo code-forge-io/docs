@@ -115,7 +115,7 @@ const Navigation = ({
 export const TableOfContents = ({ items, pagePath }: TableOfContentsProps) => {
 	const location = useLocation()
 	const navigate = useNavigate()
-	const { activeId, setManualActiveId } = useActiveHeadingId(undefined, location.pathname)
+	const { activeId, setManualActiveId } = useActiveHeadingId()
 	const { clientEnv } = useRouteLoaderData("root")
 
 	const { GITHUB_OWNER, GITHUB_REPO } = clientEnv
