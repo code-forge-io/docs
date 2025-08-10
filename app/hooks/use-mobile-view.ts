@@ -10,7 +10,7 @@ export function useMobileView(breakpoint = 1280) {
 	)
 
 	useLayoutEffect(() => {
-		const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+		const mql = window.matchMedia(`(max-width: ${breakpoint}px)`)
 		const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
 		setIsMobile(mql.matches)
 		mql.addEventListener("change", onChange)

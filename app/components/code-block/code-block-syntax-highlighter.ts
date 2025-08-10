@@ -1,3 +1,8 @@
+/**
+ * Tokenization utility for syntax highlighting code snippets.
+ * This utils will produce syntax-highlighted JSX output using theme colors.
+ */
+
 type TokenType = "keyword" | "string" | "number" | "comment" | "operator" | "punctuation" | "function" | "text"
 
 const MASTER_REGEX = new RegExp(

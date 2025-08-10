@@ -13,25 +13,16 @@ const sectionSchema = z.object({
 const cleanSlug = (path: string) =>
 	path
 		.split("/")
-		.map((seg) => seg.replace(/^\d{2,}-/, "")) // removes "01-", "02-", etc.
+		.map((seg) => seg.replace(/^\d{2,}-/, ""))
 		.join("/")
 
-/**
- * Extracts the version from a path (assumes version is the first segment).
- */
 const getVersion = (path: string) => path.split("/")[0]
 
-/**
- * Extracts the section ID (usually the parent folder of index.md or the last folder).
- */
 const getSectionId = (path: string) => {
 	const segments = path.split("/")
 	return segments.length > 1 ? segments[segments.length - 2] : segments[0]
 }
 
-/**
- * Extracts the section name (usually the second-to-last segment).
- */
 const getSectionName = (path: string) => {
 	const segments = path.split("/")
 	return segments[segments.length - 2] || ""

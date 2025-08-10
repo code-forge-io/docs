@@ -1,6 +1,9 @@
 import { cleanDiffLine, getDiffStyles, getDiffType } from "./code-block-diff"
 import { tokenize } from "./code-block-syntax-highlighter"
 
+/**
+ * Code block processing utilities.
+ */
 interface CodeBlockChild {
 	props?: {
 		children?: string

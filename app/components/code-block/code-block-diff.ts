@@ -1,3 +1,6 @@
+/**
+ * This module provides utilities for processing and styling lines of a text diff.
+ */
 const DIFF_STYLES = {
 	added: {
 		backgroundColor: "var(--color-diff-added-bg)",
