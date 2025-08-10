@@ -28,8 +28,7 @@
 		"check:unused": "knip --max-issues 1",
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
-		"content-collections:build": "content-collections build",
-		"update:frontmatter": "tsx scripts/update-frontmatter.ts"
+		"content-collections:build": "content-collections build"
 	},
 	"dependencies": {
 		"@content-collections/cli": "0.1.6",
@@ -40,7 +39,6 @@
 		"@forge42/seo-tools": "1.3.0",
 		"@react-router/node": "7.2.0",
 		"clsx": "2.1.1",
-		"gray-matter": "4.0.3",
 		"hono": "4.6.20",
 		"i18next": "24.2.2",
 		"i18next-browser-languagedetector": "8.0.2",

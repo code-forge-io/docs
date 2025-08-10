@@ -1,14 +1,19 @@
-import { cleanDiffLine, getDiffStyles, getDiffType } from "../utils/code-block-diff"
-import { tokenize } from "../utils/code-block-syntax-highlighter"
+import { cleanDiffLine, getDiffStyles, getDiffType } from "./code-block-diff"
+import { tokenize } from "./code-block-syntax-highlighter"
 
-interface ReactElementWithProps {
+/**
+ * Code block processing utilities.
+ */
+interface CodeBlockChild {
 	props?: {
 		children?: string
 	}
 }
 
-export const extractCodeContent = (children: string | ReactElementWithProps) =>
-	typeof children === "string" ? children : (children?.props?.children ?? "")
+export const extractCodeContent = (children: string | CodeBlockChild) => {
+	const code = typeof children === "string" ? children : (children?.props?.children ?? "")
+	return { code }
+}
 
 export const processLines = (content: string) => {
 	const lines = content.split("\n")
@@ -39,10 +44,12 @@ export const createLineData = (line: string) => {
 	}
 }
 
-export const processCopyContent = (content: string) => {
-	return content
+export const processCopyContent = (content: string): { code: string } => {
+	const code = content
 		.split("\n")
 		.filter((line) => !line.trimStart().startsWith("- "))
 		.map((line) => line.replace(/^(\s*)\+ /, "$1"))
 		.join("\n")
+
+	return { code }
 }

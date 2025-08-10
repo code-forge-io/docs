@@ -1,3 +1,4 @@
+import { useEffect, useLayoutEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError } from "react-router"
 import type { LinksFunction } from "react-router"
@@ -6,6 +7,8 @@ import type { Route } from "./+types/root"
 import { ClientHintCheck, getHints } from "./services/client-hints"
 import tailwindcss from "./tailwind.css?url"
 import { fonts } from "./utils/fonts"
+import { THEME, getStorageItem, setStorageItem } from "./utils/local-storage"
+import { getSystemTheme } from "./utils/theme"
 
 export async function loader({ context, request }: Route.LoaderArgs) {
 	const { lang, clientEnv } = context
@@ -48,29 +51,46 @@ export default function App({ loaderData }: Route.ComponentProps) {
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
 	const { i18n } = useTranslation()
+	const [theme, setTheme] = useState(() => {
+		if (typeof window === "undefined" || !window.localStorage) {
+			return "dark"
+		}
+		return getStorageItem(THEME) || getSystemTheme()
+	})
+
+	useLayoutEffect(() => {
+		const storedTheme = getStorageItem(THEME)
+		if (storedTheme) {
+			setTheme(storedTheme)
+		}
+	}, [])
+
+	useEffect(() => {
+		setStorageItem(THEME, theme)
+	}, [theme])
+
 	return (
-		<html className="overflow-y-auto overflow-x-hidden" lang={i18n.language} dir={i18n.dir()}>
+		<html className="overflow-y-auto overflow-x-hidden" lang={i18n.language} dir={i18n.dir()} data-theme={theme}>
 			<head>
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: Sets correct theme on initial load
+					dangerouslySetInnerHTML={{
+						__html: `
+							(function () {
+								try {
+									var theme = localStorage.getItem("theme");
+									if (!theme) {
+										theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+									}
+									document.documentElement.setAttribute("data-theme", theme);
+								} catch (_) {}
+							})();
+						`,
+					}}
+				/>
 				<ClientHintCheck />
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<script
-					// biome-ignore lint/security/noDangerouslySetInnerHtml: TODO change this
-					dangerouslySetInnerHTML={{
-						__html: `
-			(function () {
-				try {
-					var theme = localStorage.getItem("theme");
-					if (!theme) {
-						theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-					}
-					document.documentElement.setAttribute("data-theme", theme);
-				} catch (_) {}
-			})();
-		`,
-					}}
-				/>
-
 				<Meta />
 				<Links />
 			</head>

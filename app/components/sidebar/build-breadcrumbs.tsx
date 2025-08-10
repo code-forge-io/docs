@@ -1,0 +1,28 @@
+import { href } from "react-router"
+import { splitSlug } from "~/utils/split-slug"
+import type { SidebarSection } from "./sidebar"
+
+export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
+	let trail: string[] = []
+
+	const walk = (section: SidebarSection, acc: string[]) => {
+		for (const doc of section.documentationPages) {
+			const docPath = href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))
+			if (docPath === pathname) {
+				trail = [...acc, section.title, doc.title]
+				return true
+			}
+		}
+
+		for (const sub of section.subsections) {
+			if (walk(sub, [...acc, section.title])) return true
+		}
+		return false
+	}
+
+	for (const root of items) {
+		if (walk(root, [])) break
+	}
+
+	return trail
+}

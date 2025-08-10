@@ -4,13 +4,13 @@ import CommandPalette from "~/components/command-palette/components/command-pale
 import { createCompleteSearchIndex } from "~/components/command-palette/search-index-transform"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
-import { Sidebar } from "~/components/sidebar"
+import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
-import { getSidebarTree } from "~/utils/create-sidebar-tree"
+import { createSidebarTree } from "~/utils/create-sidebar-tree"
 
 export default function DocumentationLayout() {
-	// TODO think about this exporting from  loader or something so I can get these items from that, to avoid calling the getSidebarTree in documentation-page as well
-	const sidebarItems = getSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, or latest/main by default
+	// TODO sidebarItems are used on 2 places, change this to not call getSidebarTree twice
+	const sidebarItems = createSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, after implementing docs generation
 	const searchIndex = createCompleteSearchIndex(allPages)
 	const navigate = useNavigate()
 
@@ -18,7 +18,7 @@ export default function DocumentationLayout() {
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
 				<Logo>
-					{/* FIXME replace with your Logo */}
+					{/* Replace with your Logo */}
 					<span>REACT ROUTER DEVTOOLS</span>
 				</Logo>
 				<div className="inline-flex gap-4">

@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react"
-import { extractCodeContent, processLines } from "../utils/code-block-parser"
 import { PreElement } from "./code-block-elements"
+import { extractCodeContent, processLines } from "./code-block-parser"
 import { CopyButton } from "./copy-button"
 
 interface CodeBlockProps extends Omit<ComponentPropsWithoutRef<"pre">, "children"> {
@@ -8,8 +8,8 @@ interface CodeBlockProps extends Omit<ComponentPropsWithoutRef<"pre">, "children
 }
 
 export const CodeBlock = ({ children, className = "", ...props }: CodeBlockProps) => {
-	const codeContent = extractCodeContent(children)
-	const lines = processLines(codeContent)
+	const { code } = extractCodeContent(children)
+	const lines = processLines(code)
 
 	return (
 		<div className="group relative">

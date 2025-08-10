@@ -1,22 +1,20 @@
-import { useEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 
 /**
- * Hook to determine if the current viewport is considered mobile (below 768px).
+ * Hook to determine if the current viewport is considered mobile (below `breakpoint` px).
  * Returns true if mobile, false otherwise.
  */
 export function useMobileView(breakpoint = 1280) {
-	const [isMobile, setIsMobile] = useState(() => {
-		if (typeof window === "undefined") return false
-		return window.innerWidth < breakpoint
-	})
+	const [isMobile, setIsMobile] = useState<boolean | null>(() =>
+		typeof window === "undefined" ? null : window.innerWidth < breakpoint
+	)
 
-	useEffect(() => {
-		function handleResize() {
-			setIsMobile(window.innerWidth < breakpoint)
-		}
-		window.addEventListener("resize", handleResize)
-		handleResize()
-		return () => window.removeEventListener("resize", handleResize)
+	useLayoutEffect(() => {
+		const mql = window.matchMedia(`(max-width: ${breakpoint}px)`)
+		const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+		setIsMobile(mql.matches)
+		mql.addEventListener("change", onChange)
+		return () => mql.removeEventListener("change", onChange)
 	}, [breakpoint])
 
 	return { isMobile }

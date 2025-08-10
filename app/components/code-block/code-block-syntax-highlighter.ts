@@ -1,7 +1,31 @@
+/**
+ * Tokenization utility for syntax highlighting code snippets.
+ * This utils will produce syntax-highlighted JSX output using theme colors.
+ */
+
 type TokenType = "keyword" | "string" | "number" | "comment" | "operator" | "punctuation" | "function" | "text"
 
-const MASTER_REGEX =
-	/(\s+|\/\/.*?(?=\n|$)|\/\*[\s\S]*?\*\/|(['"`])(?:(?!\2)[^\\]|\\.)*\2|\d+\.?\d*|[a-zA-Z_$][a-zA-Z0-9_$]*|===|!==|<=|>=|==|!=|&&|\|\||[+\-*/%=<>!?:(){}[\];,.]|\+\+|--|[+\-*/%]=|=>)/g
+const MASTER_REGEX = new RegExp(
+	[
+		// whitespace
+		"\\s+",
+		// single-line comment
+		"//.*?(?=\\n|$)",
+		// multi-line comment
+		"/\\*[\\s\\S]*?\\*/",
+		// strings
+		"(['\"])(?:(?!\\1)[^\\\\]|\\\\.)*\\1",
+		// numbers
+		"\\d+\\.?\\d*",
+		// identifiers
+		"[a-zA-Z_$][a-zA-Z0-9_$]*",
+		// operators and punctuation
+		"===|!==|<=|>=|==|!=|&&|\\|\\||\\+\\+|--|[+\\-*/%=<>!?:(){}\\[\\];,.]|[+\\-*/%]=",
+		// arrow function
+		"=>",
+	].join("|"),
+	"g"
+)
 
 const KEYWORDS = [
 	"import",
@@ -120,7 +144,7 @@ const TOKEN_COLORS = {
 	punctuation: "var(--color-code-punctuation)",
 	function: "var(--color-code-function)",
 	text: "var(--color-code-block-text)",
-}
+} as const
 
 export const getTokenColor = (type: TokenType) => TOKEN_COLORS[type]
 
