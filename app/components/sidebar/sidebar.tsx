@@ -1,5 +1,5 @@
 import { useLocation } from "react-router"
-import { useMobileView } from "~/hooks/use-mobile-view"
+import { cn } from "~/utils/css"
 import { buildBreadcrumb } from "./build-breadcrumbs"
 import { DesktopSidebarPanel } from "./desktop-sidebar"
 import { MobileSidebarHeader, MobileSidebarOverlay, MobileSidebarPanel } from "./mobile-sidebar"
@@ -21,19 +21,20 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ items, className = "" }: SidebarProps) => {
-	const { isMobile } = useMobileView()
 	const location = useLocation()
 	const breadcrumbs = buildBreadcrumb(items, location.pathname)
 
-	if (!isMobile) {
-		return <DesktopSidebarPanel items={items} className={className} />
-	}
-
 	return (
-		<MobileSidebarProvider>
-			<MobileSidebarHeader breadcrumbs={breadcrumbs} />
-			<MobileSidebarOverlay />
-			<MobileSidebarPanel items={items} className={className} />
-		</MobileSidebarProvider>
+		<>
+			<DesktopSidebarPanel items={items} className={cn("hidden xl:block", className)} />
+
+			<MobileSidebarProvider>
+				<div className="xl:hidden">
+					<MobileSidebarHeader breadcrumbs={breadcrumbs} />
+					<MobileSidebarOverlay />
+					<MobileSidebarPanel items={items} className={className} />
+				</div>
+			</MobileSidebarProvider>
+		</>
 	)
 }

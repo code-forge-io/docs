@@ -3,7 +3,7 @@ import { MDXWrapper } from "~/components/mdx-wrapper"
 import { Pager } from "~/components/pager"
 import { TableOfContents } from "~/components/table-of-content"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
-import { getSidebarTree } from "~/utils/create-sidebar-tree"
+import { createSidebarTree } from "~/utils/create-sidebar-tree"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import type { Route } from "./+types/documentation-page"
 
@@ -20,7 +20,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
-	const sections = getSidebarTree("v1.0.1")
+	const sections = createSidebarTree("v1.0.1")
 	const { previous, next } = usePreviousNextPages(sections)
 
 	return (

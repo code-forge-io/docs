@@ -3,11 +3,11 @@ import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
-import { getSidebarTree } from "~/utils/create-sidebar-tree"
+import { createSidebarTree } from "~/utils/create-sidebar-tree"
 
 export default function DocumentationLayout() {
 	// TODO sidebarItems are used on 2 places, change this to not call getSidebarTree twice
-	const sidebarItems = getSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, after implementing docs generation
+	const sidebarItems = createSidebarTree("v1.0.1") //TODO use the version what is selected from the dropdown, after implementing docs generation
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>

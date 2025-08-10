@@ -24,7 +24,7 @@ const filterEmptyLines = (lines: string[]) => {
 		return !(isEmpty && isLastLine)
 	})
 }
-// TODO add tests for this one
+
 export const createLineData = (line: string) => {
 	const diffType = getDiffType(line)
 	const cleanLine = cleanDiffLine(line)

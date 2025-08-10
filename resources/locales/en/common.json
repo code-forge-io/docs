@@ -34,5 +34,9 @@
 	"buttons": {
 		"copy": "Copy",
 		"copied": "Copied"
+	},
+	"titles": {
+		"good_to_know": "Good to know",
+		"warning": "Warning"
 	}
 }

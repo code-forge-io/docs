@@ -1,4 +1,4 @@
-import { cn } from "./css"
+import { cn } from "../css"
 
 describe("cn", () => {
 	it("should merge classes", () => {

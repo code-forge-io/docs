@@ -34,5 +34,9 @@
 	"buttons": {
 		"copy": "Kopiraj",
 		"copied": "Kopirano"
+	},
+	"titles": {
+		"good_to_know": "Dobro je znati",
+		"warning": "Upozorenje"
 	}
 }
