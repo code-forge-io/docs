@@ -27,12 +27,3 @@ export interface FuzzySearchOptions {
 	includeScore: boolean
 	minMatchCharLength: number
 }
-
-// interface CommandPaletteProps {
-// 	searchIndex: SearchItem[]
-// 	onNavigate: (item: SearchItem) => void
-// 	placeholder?: string
-// 	maxResults?: number
-// 	isOpen?: boolean
-// 	onOpenChange?: (open: boolean) => void
-// }

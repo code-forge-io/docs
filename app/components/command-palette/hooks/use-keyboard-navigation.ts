@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { SearchItem } from "../search-types"
+import type { SearchItem, SearchResult } from "../search-types"
 
 const KEYBOARD_SHORTCUTS = {
 	TOGGLE: "k",
@@ -12,8 +12,7 @@ const KEYBOARD_SHORTCUTS = {
 
 interface UseKeyboardNavigationProps {
 	isOpen: boolean
-	// biome-ignore lint/suspicious/noExplicitAny: TODO fix
-	results: any[]
+	results: SearchResult[]
 	onSelect: (item: SearchItem) => void
 	onClose: () => void
 	onToggle: () => void
@@ -22,14 +21,12 @@ interface UseKeyboardNavigationProps {
 export const useKeyboardNavigation = ({ isOpen, results, onSelect, onClose, onToggle }: UseKeyboardNavigationProps) => {
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
-	// Reset selected index when results change
 	useEffect(() => {
 		setSelectedIndex(0)
 	}, [])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			// Global shortcuts
 			if ((e.metaKey || e.ctrlKey) && e.key === KEYBOARD_SHORTCUTS.TOGGLE) {
 				e.preventDefault()
 				onToggle()
@@ -43,7 +40,6 @@ export const useKeyboardNavigation = ({ isOpen, results, onSelect, onClose, onTo
 
 			if (!isOpen) return
 
-			// Navigation shortcuts
 			switch (e.key) {
 				case KEYBOARD_SHORTCUTS.ARROW_DOWN:
 					e.preventDefault()

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "~/utils/css"
 import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
@@ -25,35 +26,30 @@ interface CommandPaletteProps {
 	onOpenChange?: (open: boolean) => void
 }
 
-const CommandPalette = ({
+export const CommandPalette = ({
 	searchIndex,
 	onNavigate,
-	placeholder = "Search documentation...",
+	placeholder,
 	maxResults = 10,
 	isOpen: controlledIsOpen,
 	onOpenChange,
 }: CommandPaletteProps) => {
-	// Refs for DOM elements
+	const { t } = useTranslation()
 	const inputRef = useRef<HTMLInputElement>(null)
 	const resultsRef = useRef<HTMLDivElement>(null)
 	const modalRef = useRef<HTMLDivElement>(null)
 
-	// State management hooks
 	const { isOpen, openModal, closeModal } = useModalState(controlledIsOpen, onOpenChange)
 	const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory()
-
-	// Search functionality
 	const { query, setQuery, handleSelect, clearQuery } = useSearch(undefined, maxResults, addToHistory)
 
 	const results = useMemo(() => {
 		return fuzzySearch(searchIndex, query, {
-			keys: ["title", "description", "content", "headings", "tags", "category", "section"],
 			threshold: 0.8,
 			minMatchCharLength: 3,
 		})
 	}, [query, searchIndex])
 
-	// Navigation handlers
 	const handleNavigateAndClose = (item: SearchItem) => {
 		onNavigate(item)
 		closeModal()
@@ -73,7 +69,6 @@ const CommandPalette = ({
 		clearQuery()
 	}
 
-	// Keyboard navigation
 	const { selectedIndex } = useKeyboardNavigation({
 		isOpen,
 		results,
@@ -82,40 +77,28 @@ const CommandPalette = ({
 		onToggle: () => (isOpen ? handleClose() : openModal()),
 	})
 
-	// Focus management and body scroll lock
 	useEffect(() => {
 		if (isOpen) {
 			const timeoutId = setTimeout(() => {
 				inputRef.current?.focus()
 			}, MODAL_FOCUS_DELAY_MS)
 
+			const prev = document.body.style.overflow
 			document.body.style.overflow = "hidden"
 
 			return () => {
 				clearTimeout(timeoutId)
-				document.body.style.overflow = "unset"
+				document.body.style.overflow = prev || "unset"
 			}
 		}
 		document.body.style.overflow = "unset"
 		clearQuery()
 	}, [isOpen, clearQuery])
-	// Auto-scroll selected item into view
-	useEffect(() => {
-		if (resultsRef.current && selectedIndex >= 0 && results.length > 0) {
-			const selectedElement = resultsRef.current.children[selectedIndex] as HTMLElement
-			selectedElement?.scrollIntoView({
-				block: "nearest",
-				behavior: "smooth",
-			})
-		}
-	}, [selectedIndex, results.length])
 
-	// Render trigger button when closed
 	if (!isOpen) {
-		return <TriggerButton onOpen={openModal} placeholder={placeholder} />
+		return <TriggerButton onOpen={openModal} placeholder={placeholder ?? `${t("placeholders.search_documentation")}`} />
 	}
 
-	// Render modal content based on state
 	const renderContent = () => {
 		if (query) {
 			return results.length === 0 ? (
@@ -157,9 +140,18 @@ const CommandPalette = ({
 						"shadow-[0_25px_50px_-12px_var(--color-modal-shadow)]"
 					)}
 				>
-					<SearchInput ref={inputRef} value={query} onChange={setQuery} placeholder={placeholder} />
+					<SearchInput
+						ref={inputRef}
+						value={query}
+						onChange={setQuery}
+						placeholder={placeholder ?? `${t("placeholders.search_documentation")}`}
+					/>
 
-					<div ref={resultsRef} className="max-h-96 overflow-y-auto overscroll-contain">
+					<div
+						ref={resultsRef}
+						className="max-h-96 overflow-y-auto overscroll-contain"
+						aria-label={`${t("placeholders.search_documentation")}`}
+					>
 						{renderContent()}
 					</div>
 
@@ -169,5 +161,3 @@ const CommandPalette = ({
 		</div>
 	)
 }
-
-export default CommandPalette

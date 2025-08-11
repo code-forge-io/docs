@@ -33,10 +33,29 @@
 	},
 	"buttons": {
 		"copy": "Kopiraj",
-		"copied": "Kopirano"
+		"copied": "Kopirano",
+		"clear": "Obriši"
 	},
 	"titles": {
 		"good_to_know": "Dobro je znati",
 		"warning": "Upozorenje"
+	},
+	"text": {
+		"result_one": "{{count}} rezultat",
+		"result_other": "{{count}} rezultata",
+		"adjust_search": "Probajte prilagoditi pojmove za pretragu ili provjerite greške u kucanju",
+		"no_results_for": "Nema rezultata za",
+		"start_typing_to_search": "Počnite kucati za pretragu...",
+		"recent_searches": "Nedavne pretrage"
+	},
+	"controls": {
+		"navigate": "Navigiraj",
+		"open": "Otvori",
+		"tab": "Tab",
+		"select": "Odaberi",
+		"cycle": "Kruži"
+	},
+	"placeholders": {
+		"search_documentation": "Pretraži dokumentaciju..."
 	}
 }

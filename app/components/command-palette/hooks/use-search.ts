@@ -1,11 +1,12 @@
 import { startTransition, useEffect, useState } from "react"
+import type { SearchResult } from "../search-types"
 
 const SEARCH_DEBOUNCE_MS = 150
-// biome-ignore lint/suspicious/noExplicitAny: TODO remove any
+
+// biome-ignore lint/suspicious/noExplicitAny: TODO
 export const useSearch = (fuzzySearch: any, maxResults: number, onSearchHistoryAdd: (item: any) => void) => {
 	const [query, setQuery] = useState("")
-	// biome-ignore lint/suspicious/noExplicitAny: TODO remove any
-	const [results, setResults] = useState<any[]>([])
+	const [results, setResults] = useState<SearchResult[]>([])
 
 	useEffect(() => {
 		if (!query.trim()) {
@@ -23,7 +24,7 @@ export const useSearch = (fuzzySearch: any, maxResults: number, onSearchHistoryA
 		return () => clearTimeout(timeoutId)
 	}, [query, fuzzySearch, maxResults])
 
-	// biome-ignore lint/suspicious/noExplicitAny: TODO remove any
+	// biome-ignore lint/suspicious/noExplicitAny: TODO
 	const handleSelect = (item: any) => {
 		onSearchHistoryAdd(item)
 		setQuery("")

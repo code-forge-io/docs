@@ -3,16 +3,24 @@
 export const iconNames = [
 	"X",
 	"TriangleAlert",
+	"Trash2",
 	"Sun",
 	"SunMoon",
+	"Search",
 	"Moon",
 	"Menu",
 	"Info",
+	"Hash",
 	"Ghost",
+	"Folder",
+	"FileText",
+	"ExternalLink",
+	"Clock",
 	"ClipboardCopy",
 	"ClipboardCheck",
 	"ChevronRight",
 	"ChevronDown",
+	"ArrowRight",
 ] as const
 
 export type IconName = (typeof iconNames)[number]

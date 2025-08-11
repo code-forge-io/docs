@@ -18,7 +18,7 @@ function getExactMatchScore(query: string, text: string) {
 	const q = normalize(query)
 	const t = normalize(text)
 
-	if (q.length < 3) return 0 // Avoid noise
+	if (q.length < 3) return 0
 
 	if (t === q) return 1
 	if (t.startsWith(q)) return 0.95
@@ -59,7 +59,6 @@ export function fuzzySearch(
 	const keys = options.keys ?? ["title", "description", "content"]
 	const threshold = options.threshold ?? 0.8
 
-	// const queryNormalized = normalize(query)
 	const results: SearchResult[] = []
 
 	for (let i = 0; i < items.length; i++) {

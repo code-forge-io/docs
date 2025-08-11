@@ -1,7 +1,7 @@
 import { cn } from "~/utils/css"
 
 export const ModalBackdrop = ({ onClose }: { onClose: () => void }) => (
-	// biome-ignore lint/a11y/useKeyWithClickEvents: We dont need keyboard events for backdrop
+	// biome-ignore lint/a11y/useKeyWithClickEvents: We don't need keyboard events for backdrop
 	<div
 		className={cn("fixed inset-0 bg-[var(--color-modal-backdrop)] backdrop-blur-sm transition-opacity duration-200")}
 		onClick={(e) => {

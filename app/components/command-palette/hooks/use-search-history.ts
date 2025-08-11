@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { COMMAND_K_SEARCH_HISTORY, getStorageItem, removeStorageItem, setStorageItem } from "~/utils/local-storage"
 import type { SearchItem } from "../search-types"
 
 interface HistoryItem extends SearchItem {
@@ -6,43 +7,38 @@ interface HistoryItem extends SearchItem {
 	clickCount: number
 }
 
-const STORAGE_KEY = "commandk-search-history"
 const MAX_HISTORY_ITEMS = 10
 
 export const useSearchHistory = () => {
 	const [history, setHistory] = useState<HistoryItem[]>([])
 
-	// Load history from localStorage on mount
 	useEffect(() => {
 		try {
-			const stored = localStorage.getItem(STORAGE_KEY)
+			const stored = getStorageItem(COMMAND_K_SEARCH_HISTORY)
 			if (stored) {
 				const parsed = JSON.parse(stored)
 				setHistory(parsed)
 			}
 		} catch (error) {
-			// biome-ignore lint/suspicious/noConsole: <explanation>
+			// biome-ignore lint/suspicious/noConsole: debugging
 			console.warn("Failed to load search history:", error)
 		}
 	}, [])
 
-	// Save history to localStorage whenever it changes
 	useEffect(() => {
 		try {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(history))
+			setStorageItem(COMMAND_K_SEARCH_HISTORY, JSON.stringify(history))
 		} catch (error) {
-			// biome-ignore lint/suspicious/noConsole: <explanation>
+			// biome-ignore lint/suspicious/noConsole: debugging
 			console.warn("Failed to save search history:", error)
 		}
 	}, [history])
 
 	const addToHistory = useCallback((item: SearchItem) => {
 		setHistory((prev) => {
-			// Check if item already exists in history
 			const existingIndex = prev.findIndex((h) => h.id === item.id)
 
 			if (existingIndex >= 0) {
-				// Update existing item - move to top and increment count
 				const existing = prev[existingIndex]
 				const updated = {
 					...existing,
@@ -52,7 +48,6 @@ export const useSearchHistory = () => {
 
 				return [updated, ...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]
 			}
-			// Add new item to top
 			const newItem: HistoryItem = {
 				...item,
 				clickedAt: Date.now(),
@@ -65,7 +60,7 @@ export const useSearchHistory = () => {
 
 	const clearHistory = useCallback(() => {
 		setHistory([])
-		localStorage.removeItem(STORAGE_KEY)
+		removeStorageItem(COMMAND_K_SEARCH_HISTORY)
 	}, [])
 
 	const removeFromHistory = useCallback((itemId: string) => {

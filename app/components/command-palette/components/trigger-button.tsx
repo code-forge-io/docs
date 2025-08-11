@@ -1,4 +1,4 @@
-import { Search } from "lucide-react"
+import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 
 export const TriggerButton = ({
@@ -18,7 +18,10 @@ export const TriggerButton = ({
 			"focus:border-[var(--color-trigger-focus-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-trigger-focus-ring)]"
 		)}
 	>
-		<Search className={cn("h-4 w-4 transition-colors", "group-hover:text-[var(--color-trigger-hover-text)]")} />
+		<Icon
+			name="Search"
+			className={cn("size-4 transition-colors", "group-hover:text-[var(--color-trigger-hover-text)]")}
+		/>
 		<span className="hidden sm:inline">{placeholder}</span>
 		<div className="ml-auto hidden items-center gap-1 sm:flex">
 			<kbd

@@ -1,6 +1,6 @@
 import { allPages } from "content-collections"
 import { Outlet, useNavigate } from "react-router"
-import CommandPalette from "~/components/command-palette/components/command-palette"
+import { CommandPalette } from "~/components/command-palette/components/command-palette"
 import { createCompleteSearchIndex } from "~/components/command-palette/search-index-transform"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"

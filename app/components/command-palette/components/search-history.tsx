@@ -1,4 +1,5 @@
-import { Clock, Trash2, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
+import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 import type { SearchItem } from "../search-types"
 import { SearchResult } from "./search-result"
@@ -10,56 +11,43 @@ interface SearchHistoryProps {
 	onClear: () => void
 }
 
-// Empty state component for no history
-const EmptyHistoryState = () => (
-	<div className="px-4 py-8 text-center">
+const SearchHistoryHeader = ({ onClear }: { onClear: () => void }) => {
+	const { t } = useTranslation()
+	return (
 		<div
 			className={cn(
-				"mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full",
-				"bg-[var(--color-empty-icon-bg)]"
+				"flex items-center justify-between border-[var(--color-history-header-border)] border-b",
+				"bg-[var(--color-history-header-bg)] px-4 py-3"
 			)}
 		>
-			<Clock className="h-5 w-5 text-[var(--color-empty-icon)]" />
+			<div className="flex items-center gap-2">
+				<Icon name="Clock" className="size-4 text-[var(--color-result-meta)]" />
+				<span className="font-medium text-[var(--color-history-header-text)] text-sm">{t("text.recent_searches")}</span>
+			</div>
+			<ClearHistoryButton onClear={onClear} />
 		</div>
-		<p className="font-medium text-[var(--color-empty-text)]">No search history yet</p>
-		<p className="mt-1 text-[var(--color-empty-text-muted)] text-sm">Your recent searches will appear here</p>
-	</div>
-)
+	)
+}
 
-// Header component with clear button
-const SearchHistoryHeader = ({ onClear }: { onClear: () => void }) => (
-	<div
-		className={cn(
-			"flex items-center justify-between border-[var(--color-history-header-border)] border-b",
-			"bg-[var(--color-history-header-bg)] px-4 py-3"
-		)}
-	>
-		<div className="flex items-center gap-2">
-			<Clock className="h-4 w-4 text-[var(--color-result-meta)]" />
-			<span className="font-medium text-[var(--color-history-header-text)] text-sm">Recent searches</span>
-		</div>
-		<ClearHistoryButton onClear={onClear} />
-	</div>
-)
+const ClearHistoryButton = ({ onClear }: { onClear: () => void }) => {
+	const { t } = useTranslation()
+	return (
+		<button
+			type="button"
+			onClick={onClear}
+			className={cn(
+				"flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors",
+				"text-[var(--color-result-meta)] hover:bg-[var(--color-history-clear-hover-bg)] hover:text-[var(--color-history-clear-hover-text)]"
+			)}
+			title="Clear history"
+			aria-label="Clear search history"
+		>
+			<Icon name="Trash2" className="size-3" />
+			<span className="hidden sm:inline">{t("buttons.clear")}</span>
+		</button>
+	)
+}
 
-// Clear history button component
-const ClearHistoryButton = ({ onClear }: { onClear: () => void }) => (
-	<button
-		type="button"
-		onClick={onClear}
-		className={cn(
-			"flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors",
-			"text-[var(--color-result-meta)] hover:bg-[var(--color-history-clear-hover-bg)] hover:text-[var(--color-history-clear-hover-text)]"
-		)}
-		title="Clear history"
-		aria-label="Clear search history"
-	>
-		<Trash2 className="h-3 w-3" />
-		<span className="hidden sm:inline">Clear</span>
-	</button>
-)
-
-// Remove item button component
 const RemoveItemButton = ({
 	onRemove,
 	itemId,
@@ -81,11 +69,10 @@ const RemoveItemButton = ({
 		title="Remove from history"
 		aria-label={"Remove from history"}
 	>
-		<X className="h-3 w-3" />
+		<Icon name="X" className="size-3" />
 	</button>
 )
 
-// Individual history item component
 const HistoryItem = ({
 	item,
 	index,
@@ -102,8 +89,6 @@ const HistoryItem = ({
 		<RemoveItemButton onRemove={onRemove} itemId={item.id} />
 	</div>
 )
-
-// History items list component
 const HistoryItemsList = ({
 	history,
 	onSelect,
@@ -120,11 +105,9 @@ const HistoryItemsList = ({
 	</div>
 )
 
-// Main SearchHistory component
 const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryProps) => {
-	// Early return for empty state
 	if (history.length === 0) {
-		return <EmptyHistoryState />
+		return
 	}
 
 	return (
