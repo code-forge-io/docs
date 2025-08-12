@@ -62,18 +62,18 @@ function resolveTags(cfg: DocsConfig) {
 }
 
 function buildTag(tag: string, cfg: DocsConfig) {
-	const tmp = mkdtempSync(join(tmpdir(), "docs-wt-"))
-	const WT = join(tmp, "repo")
-	sh(`git worktree add --detach "${WT}" "${tag}"`)
+	const wt = mkdtempSync(join(tmpdir(), "docs-wt"))
+	ensureDir(wt)
+	sh(`git worktree add --detach "${wt}" "${tag}"`)
 	try {
 		const outDir = join(resolve(ROOT, cfg.output.baseDir), tag)
 		resetDir(outDir) // This may be removed in the future, but for now we ensure a clean output directory
 
-		const docsDir = resolve(WT, cfg.content.docsDir)
+		const docsDir = resolve(wt, cfg.content.docsDir)
 		if (!existsSync(docsDir)) return console.error(`Missing docsDir for ${tag}: ${docsDir}`)
 
 		execSync("pnpm -s content-collections:build", {
-			cwd: WT,
+			cwd: wt,
 			stdio: "inherit",
 			// biome-ignore lint/nursery/noProcessEnv: <explanation>
 			env: { ...process.env, DOCS_OUT_DIR: outDir },
@@ -82,10 +82,11 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		console.log(`✔ ${tag} -> ${outDir}`)
 	} finally {
 		try {
-			sh(`git worktree remove --force "${WT}"`)
+			sh(`git worktree remove --force "${wt}"`)
 		} catch {}
 	}
 }
+
 ;(async () => {
 	const cfg = await loadConfig()
 	const tags = resolveTags(cfg)

@@ -42,7 +42,7 @@ const getSectionName = (path: string) => {
  */
 const section = defineCollection({
 	name: "section",
-	directory: "content",
+	directory: "content", //TODO use sent path
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
@@ -74,7 +74,7 @@ const pageSchema = z.object({
  */
 const page = defineCollection({
 	name: "page",
-	directory: "content",
+	directory: "content", //TODO use sent path
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
