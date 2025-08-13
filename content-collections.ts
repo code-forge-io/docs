@@ -5,13 +5,14 @@ import { z } from "zod"
 
 const DEFAULT_VERSION = "latest"
 
+// matches "v1.0.0", "1.0.0", or with suffix like "v1.0.0-alpha", "1.0.0-alpha"
 const isVersionFolder = (s: string) => /^v?\d+\.\d+\.\d+(-[\w.-]+)?$/.test(s)
 
 function splitPath(path: string) {
 	const parts = path.split("/")
 	const hasVersion = isVersionFolder(parts[0])
 	const withoutVersion = hasVersion ? parts.slice(1) : parts
-	const version = hasVersion ? parts[0] : DEFAULT_VERSION // <- default when missing
+	const version = hasVersion ? parts[0] : DEFAULT_VERSION
 	return { hasVersion, parts, withoutVersion, version }
 }
 
@@ -27,18 +28,6 @@ const cleanSlug = (path: string) =>
 		.split("/")
 		.map((seg) => seg.replace(/^\d{2,}-/, ""))
 		.join("/")
-
-// const getVersion = (path: string) => path.split("/")[0]
-
-// const getSectionId = (path: string) => {
-// 	const segments = path.split("/")
-// 	return segments.length > 1 ? segments[segments.length - 2] : segments[0]
-// }
-
-// const getSectionName = (path: string) => {
-// 	const segments = path.split("/")
-// 	return segments[segments.length - 2] || ""
-// }
 
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
