@@ -31,17 +31,8 @@ export const CopyButton = ({ lines }: { lines: string[] }) => {
 				disabled && "cursor-not-allowed hover:bg-[var(--color-code-copy-bg)]"
 			)}
 		>
-			{copyState === "copy" ? (
-				<>
-					<Icon name="ClipboardCopy" className="size-5" />
-					{t("buttons.copy")}
-				</>
-			) : (
-				<>
-					<Icon name="ClipboardCheck" className="size-5" />
-					{t("buttons.copied")}
-				</>
-			)}
+			<Icon name={copyState === "copy" ? "ClipboardCopy" : "ClipboardCheck"} className="size-5" />
+			{t(copyState === "copy" ? "buttons.copy" : "buttons.copied")}
 		</button>
 	)
 }

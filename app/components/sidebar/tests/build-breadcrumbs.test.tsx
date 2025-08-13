@@ -23,7 +23,7 @@ describe("buildBreadcrumb test suite", () => {
 			}),
 		]
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: we can use any in tests
 		const result = buildBreadcrumb(items as any, "/v1/started/unknown")
 		expect(result).toEqual([])
 	})
@@ -37,7 +37,7 @@ describe("buildBreadcrumb test suite", () => {
 			}),
 		]
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: we can use any in tests
 		const result = buildBreadcrumb(items as any, "/v1/started/intro")
 		expect(result).toEqual(["Getting Started", "Intro"])
 	})
@@ -58,7 +58,7 @@ describe("buildBreadcrumb test suite", () => {
 			}),
 		]
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: we can use any in tests
 		const result = buildBreadcrumb(items as any, "/v1/configuration/advanced/tuning")
 		expect(result).toEqual(["Configuration", "Advanced", "Tuning"])
 	})
@@ -83,11 +83,11 @@ describe("buildBreadcrumb test suite", () => {
 			}),
 		]
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: we can use any in tests
 		const result1 = buildBreadcrumb(items as any, "/v1/alpha/readme")
 		expect(result1).toEqual(["Alpha", "Readme"])
 
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: we can use any in tests
 		const result2 = buildBreadcrumb(items as any, "/v1/beta/deep/file")
 		expect(result2).toEqual(["Beta", "Deep", "File"])
 	})
