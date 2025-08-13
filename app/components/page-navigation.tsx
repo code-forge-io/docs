@@ -3,23 +3,23 @@ import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
 import { cn } from "~/utils/css"
 
-interface PagerItem {
+interface PageNavigationItem {
 	title: string
 	to: string
 }
 
-interface PagerProps {
-	previous?: PagerItem
-	next?: PagerItem
+interface PageNavigationProps {
+	previous?: PageNavigationItem
+	next?: PageNavigationItem
 }
 
-interface PagerLinkProps {
-	item: PagerItem
+interface PageNavigationLinkProps {
+	item: PageNavigationItem
 	direction: "previous" | "next"
 	label: string
 }
 
-function PagerLink({ item, direction, label }: PagerLinkProps) {
+function PageNavigationLink({ item, direction, label }: PageNavigationLinkProps) {
 	const isPrevious = direction === "previous"
 	const arrow = isPrevious ? "←" : "→"
 
@@ -64,7 +64,7 @@ function PagerLink({ item, direction, label }: PagerLinkProps) {
  * When present, the component renders navigational links with arrow indicators.
  *
  * Example usage:
- * <Pager
+ * <PageNavigation
  *   previous={{ title: "Getting Started", to: "/getting-started" }}
  *   next={{ title: "Advanced Topics", to: "/advanced-topics" }}
  * />
@@ -72,7 +72,7 @@ function PagerLink({ item, direction, label }: PagerLinkProps) {
  * @param previous - Optional previous page link data with title and path.
  * @param next - Optional next page link data with title and path.
  */
-export function Pager({ previous, next }: PagerProps) {
+export function PageNavigation({ previous, next }: PageNavigationProps) {
 	const { t } = useTranslation()
 
 	return (
@@ -81,9 +81,9 @@ export function Pager({ previous, next }: PagerProps) {
 			style={{ borderColor: "var(--color-border)" }}
 			aria-label="Pagination navigation"
 		>
-			{previous ? <PagerLink item={previous} direction="previous" label={t("links.previous")} /> : <div />}
+			{previous ? <PageNavigationLink item={previous} direction="previous" label={t("links.previous")} /> : <div />}
 
-			{next ? <PagerLink item={next} direction="next" label={t("links.next")} /> : <div />}
+			{next ? <PageNavigationLink item={next} direction="next" label={t("links.next")} /> : <div />}
 		</nav>
 	)
 }

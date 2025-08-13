@@ -1,9 +1,9 @@
 import { allPages } from "content-collections"
 import { MDXWrapper } from "~/components/mdx-wrapper"
-import { Pager } from "~/components/pager"
+import { PageNavigation } from "~/components/page-navigation"
 import { TableOfContents } from "~/components/table-of-content"
+import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
-import { createSidebarTree } from "~/utils/create-sidebar-tree"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import type { Route } from "./+types/documentation-page"
 
@@ -19,9 +19,9 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
+	const { sidebarTree } = useDocumentationLayoutLoaderData()
+	const { previous, next } = usePreviousNextPages(sidebarTree)
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
-	const sections = createSidebarTree()
-	const { previous, next } = usePreviousNextPages(sections)
 
 	return (
 		<div className="flex min-h-screen flex-col">
@@ -33,7 +33,7 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 					</header>
 
 					<MDXWrapper content={page.content} />
-					<Pager previous={previous} next={next} />
+					<PageNavigation previous={previous} next={next} />
 				</article>
 
 				<TableOfContents items={toc} pagePath={page._meta.filePath} />

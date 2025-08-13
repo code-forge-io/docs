@@ -3,8 +3,8 @@ import { z } from "zod"
 const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 	APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
-	GITHUB_OWNER: z.string(),
-	GITHUB_REPO: z.string(),
+	GITHUB_OWNER: z.string()?.optional(),
+	GITHUB_REPO: z.string()?.optional(),
 })
 
 type ServerEnv = z.infer<typeof envSchema>
