@@ -3,6 +3,19 @@ import { compileMDX } from "@content-collections/mdx"
 import rehypeSlug from "rehype-slug"
 import { z } from "zod"
 
+const DEFAULT_VERSION = "latest"
+
+// matches "v1.0.0", "1.0.0", or with suffix like "v1.0.0-alpha", "1.0.0-alpha"
+const isVersionFolder = (s: string) => /^v?\d+\.\d+\.\d+(-[\w.-]+)?$/.test(s)
+
+function splitPath(path: string) {
+	const parts = path.split("/")
+	const hasVersion = isVersionFolder(parts[0])
+	const withoutVersion = hasVersion ? parts.slice(1) : parts
+	const version = hasVersion ? parts[0] : DEFAULT_VERSION
+	return { hasVersion, parts, withoutVersion, version }
+}
+
 const sectionSchema = z.object({
 	title: z.string(),
 })
@@ -15,18 +28,6 @@ const cleanSlug = (path: string) =>
 		.split("/")
 		.map((seg) => seg.replace(/^\d{2,}-/, ""))
 		.join("/")
-
-const getVersion = (path: string) => path.split("/")[0]
-
-const getSectionId = (path: string) => {
-	const segments = path.split("/")
-	return segments.length > 1 ? segments[segments.length - 2] : segments[0]
-}
-
-const getSectionName = (path: string) => {
-	const segments = path.split("/")
-	return segments[segments.length - 2] || ""
-}
 
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
@@ -46,11 +47,16 @@ const section = defineCollection({
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
+		const rawPath = document._meta.path
+		const { withoutVersion, version } = splitPath(rawPath)
+		const pathNoVersion = withoutVersion.join("/")
+		const slugNoVersion = cleanSlug(pathNoVersion)
+		const slug = `${version}/${slugNoVersion}`
 		return {
 			...document,
-			slug: cleanSlug(document._meta.path),
-			sectionId: getSectionId(document._meta.path),
-			version: getVersion(document._meta.path),
+			slug,
+			sectionId: pathNoVersion.split("/")[0] || "root",
+			version,
 		}
 	},
 })
@@ -78,6 +84,11 @@ const page = defineCollection({
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
+		const rawPath = document._meta.path
+		const { withoutVersion, version } = splitPath(rawPath)
+		const pathNoVersion = withoutVersion.join("/")
+		const slugNoVersion = cleanSlug(pathNoVersion)
+		const slug = `${version}/${slugNoVersion}`
 		const content = await compileMDX(context, document, {
 			rehypePlugins: [rehypeSlug],
 		})
@@ -86,9 +97,10 @@ const page = defineCollection({
 		return {
 			...document,
 			content,
-			slug: cleanSlug(document._meta.path),
-			section: getSectionName(document._meta.path),
+			slug,
+			section: withoutVersion[0] ?? "",
 			rawMdx,
+			version,
 		}
 	},
 })

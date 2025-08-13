@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useLocation, useNavigate, useRouteLoaderData } from "react-router"
+import { Link, useLocation, useNavigate, useRouteLoaderData } from "react-router"
 import { useActiveHeadingId } from "~/hooks/use-active-heading-id"
 import { createGitHubContributionLinks } from "~/utils/create-github-contribution-links"
 import type { HeadingItem } from "~/utils/extract-heading-tree-from-mdx"
@@ -57,15 +57,15 @@ const TocItem = ({ item, depth = 0, activeId, onItemClick }: TocItemProps) => {
 
 	return (
 		<div>
-			<a
-				href={`#${item.slug}`}
+			<Link
+				to={`#${item.slug}`}
 				style={{ paddingLeft }}
 				className={className}
 				onClick={handleClick}
 				aria-current={isActive && "location"}
 			>
 				{item.title}
-			</a>
+			</Link>
 			{item.children.length > 0 && (
 				<div className="space-y-0.5">
 					{item.children.map((child) => (
@@ -119,11 +119,10 @@ export const TableOfContents = ({ items, pagePath }: TableOfContentsProps) => {
 	const { clientEnv } = useRouteLoaderData("root")
 
 	const { GITHUB_OWNER, GITHUB_REPO } = clientEnv
-	const githubLinks = createGitHubContributionLinks({
-		pagePath,
-		owner: GITHUB_OWNER,
-		repo: GITHUB_REPO,
-	})
+	const githubLinks =
+		GITHUB_OWNER && GITHUB_REPO
+			? createGitHubContributionLinks({ pagePath, owner: GITHUB_OWNER, repo: GITHUB_REPO })
+			: null
 
 	const handleItemClick = async (slug: string) => {
 		setManualActiveId(slug)
@@ -142,7 +141,7 @@ export const TableOfContents = ({ items, pagePath }: TableOfContentsProps) => {
 	return (
 		<div className="hidden w-56 min-w-min flex-shrink-0 2xl:block">
 			<div className="sticky top-37 pb-10">
-				<GitHubLinks {...githubLinks} />
+				{githubLinks && <GitHubLinks {...githubLinks} />}
 				<TableOfContentsHeader />
 				<Navigation items={items} activeId={activeId} onItemClick={handleItemClick} />
 			</div>

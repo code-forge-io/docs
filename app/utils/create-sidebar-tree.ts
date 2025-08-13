@@ -3,7 +3,7 @@ import type { SidebarSection } from "~/components/sidebar/sidebar"
 
 const parentOf = (slug: string) => slug.split("/").slice(0, -1).join("/")
 
-export function createSidebarTree(version: string): SidebarSection[] {
+export function createSidebarTree(version = "latest") {
 	const map = new Map<string, SidebarSection>()
 
 	for (const s of allSections.filter((s) => s.version === version)) {
@@ -11,17 +11,19 @@ export function createSidebarTree(version: string): SidebarSection[] {
 	}
 
 	for (const node of map.values()) {
-		const parent = node.slug.split("/").slice(0, -1).join("/")
-		if (parent && parent !== version) {
-			map.get(parent)?.subsections.push(node)
+		const parentSlug = parentOf(node.slug)
+		if (parentSlug && parentSlug !== version) {
+			map.get(parentSlug)?.subsections.push(node)
 		}
 	}
 
 	for (const p of allPages) {
 		if (!p.slug.startsWith(`${version}/`)) continue
-		const parent = p.slug.split("/").slice(0, -1).join("/")
-		map.get(parent)?.documentationPages.push({ slug: p.slug, title: p.title })
+		const parentSlug = parentOf(p.slug)
+		map.get(parentSlug)?.documentationPages.push({ slug: p.slug, title: p.title })
 	}
 
-	return [...map.values()].filter((n) => parentOf(n.slug) === version)
+	const rootSections = [...map.values()].filter((section) => parentOf(section.slug) === version)
+
+	return rootSections
 }

@@ -1,4 +1,5 @@
 import { Children, type ReactNode, isValidElement } from "react"
+import { Link } from "react-router"
 import { cn } from "../utils/css"
 import { Icon } from "./icon/icon"
 
@@ -24,9 +25,9 @@ export const BreadcrumbItem = ({ children, href, isActive = false, className }: 
 
 	if (href && !isActive) {
 		return (
-			<a href={href} className={classes}>
+			<Link to={href} className={classes}>
 				{children}
-			</a>
+			</Link>
 		)
 	}
 

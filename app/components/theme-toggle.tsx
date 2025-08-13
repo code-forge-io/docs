@@ -20,10 +20,14 @@ export function ThemeToggle() {
 		return <IconButton aria-label="Loading theme..." name="SunMoon" />
 	}
 
+	const isDarkTheme = theme === "dark"
 	return (
 		<div className="relative">
-			{theme === "light" && <IconButton aria-label="Switch to dark mode" name="Sun" onClick={toggle} />}
-			{theme === "dark" && <IconButton aria-label="Switch to light mode" name="Moon" onClick={toggle} />}
+			<IconButton
+				aria-label={`Switch to ${isDarkTheme ? "light" : "dark"} mode`}
+				name={isDarkTheme ? "Moon" : "Sun"}
+				onClick={toggle}
+			/>
 		</div>
 	)
 }
