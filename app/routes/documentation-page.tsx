@@ -20,7 +20,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
-	const sections = createSidebarTree("v1.0.1")
+	const sections = createSidebarTree()
 	const { previous, next } = usePreviousNextPages(sections)
 
 	return (

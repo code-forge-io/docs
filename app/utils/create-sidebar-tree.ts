@@ -3,7 +3,7 @@ import type { SidebarSection } from "~/components/sidebar/sidebar"
 
 const parentOf = (slug: string) => slug.split("/").slice(0, -1).join("/")
 
-export function createSidebarTree(version: string): SidebarSection[] {
+export function createSidebarTree(version = "latest") {
 	const map = new Map<string, SidebarSection>()
 
 	for (const s of allSections.filter((s) => s.version === version)) {
