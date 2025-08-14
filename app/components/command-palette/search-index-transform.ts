@@ -1,4 +1,5 @@
 import type { Page } from "content-collections"
+import { getPageSlug } from "~/utils/get-page-slug"
 import type { SearchItem } from "./search-types"
 
 function extractHeadings(rawMdx: string): string[] {
@@ -105,7 +106,7 @@ function transformToSearchIndex(pages: Page[]): SearchItem[] {
 		return {
 			id: page.slug || `page-${index}`,
 			title: page.title,
-			slug: page.slug === "_index" ? "/" : `/${page.slug}`,
+			slug: getPageSlug(page),
 			description: page.description || page.summary,
 			content: cleanContent,
 			category,

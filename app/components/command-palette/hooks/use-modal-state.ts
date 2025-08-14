@@ -6,11 +6,7 @@ export const useModalState = (controlledIsOpen?: boolean, onOpenChange?: (open: 
 	const isOpen = controlledIsOpen ?? internalIsOpen
 
 	const setIsOpen = (open: boolean) => {
-		if (onOpenChange) {
-			onOpenChange(open)
-		} else {
-			setInternalIsOpen(open)
-		}
+		onOpenChange ? onOpenChange(open) : setInternalIsOpen(open)
 	}
 
 	const openModal = () => setIsOpen(true)

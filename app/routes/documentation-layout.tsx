@@ -1,5 +1,5 @@
 import { allPages } from "content-collections"
-import { Outlet, useNavigate } from "react-router"
+import { Outlet } from "react-router"
 import { CommandPalette } from "~/components/command-palette/components/command-palette"
 import { createCompleteSearchIndex } from "~/components/command-palette/search-index-transform"
 import { Header } from "~/components/header"
@@ -16,7 +16,6 @@ export async function loader() {
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
 	const { sidebarTree } = loaderData
 	const searchIndex = createCompleteSearchIndex(allPages)
-	const navigate = useNavigate()
 
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
@@ -27,7 +26,7 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 				</Logo>
 				<div className="inline-flex gap-4">
 					<ThemeToggle />
-					<CommandPalette searchIndex={searchIndex} onNavigate={(item) => navigate(item.slug)} />
+					<CommandPalette searchIndex={searchIndex} />
 				</div>
 			</Header>
 
