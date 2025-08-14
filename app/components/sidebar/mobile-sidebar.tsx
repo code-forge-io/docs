@@ -1,5 +1,6 @@
 import { BreadcrumbItem, Breadcrumbs } from "~/ui/breadcrumbs"
 import { Icon } from "~/ui/icon/icon"
+import { cn } from "~/utils/css"
 import { useMobileSidebar } from "./mobile-sidebar-context"
 import type { SidebarSection } from "./sidebar"
 import { SidebarContent } from "./sidebar-content"
@@ -72,9 +73,11 @@ export const MobileSidebarPanel = ({
 	const { close, isOpen } = useMobileSidebar()
 	return (
 		<div
-			className={`fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out ${
-				isOpen ? "translate-x-0" : "-translate-x-full"
-			} ${className}`}
+			className={cn(
+				"fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out",
+				isOpen ? "translate-x-0" : "-translate-x-full",
+				className
+			)}
 			aria-modal="true"
 			aria-label="Navigation menu"
 		>
