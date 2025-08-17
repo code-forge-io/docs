@@ -29,7 +29,7 @@
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
 		"content-collections:build": "content-collections build",
-		"generate:docs": "tsx scripts/docs.build.ts --config ./docs.config.ts"
+		"generate:docs": "npx tsx scripts/docs.build.ts --config ./docs.config.ts"
 	},
 	"dependencies": {
 		"@content-collections/cli": "0.1.6",

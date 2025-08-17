@@ -107,9 +107,4 @@ const page = defineCollection({
 
 export default defineConfig({
 	collections: [section, page],
-	// biome-ignore lint/nursery/noProcessEnv: <explanation>
-	output: process.env.DOCS_OUT_DIR
-		? // biome-ignore lint/nursery/noProcessEnv: <explanation>
-			{ directory: process.env.DOCS_OUT_DIR }
-		: undefined,
 })

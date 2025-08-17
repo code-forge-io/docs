@@ -1,20 +1,21 @@
-name: Build documentation on release
+name: 📚🚀 Build documentation on release
 
 on:
   release:
     types: [published]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: docs-build-${{ github.ref }}
+  group: docs-build-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-docs:
-    if: ${{ github.event.release.target_commitish == 'main' }}
+    #  if: ${{ github.event.release.target_commitish == 'main' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: main
+          # ref: main
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - name: Setup Node
@@ -38,6 +39,7 @@ jobs:
       #   run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Generate docs
+        working-directory: docs
         run: pnpm run generate:docs
 
       # - name: Upload docs artifact

@@ -3,6 +3,7 @@ import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
+import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
 import type { Route } from "./+types/documentation-layout"
 
@@ -15,10 +16,13 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
-				<Logo>
-					{/* Replace with your Logo */}
-					<span>REACT ROUTER DEVTOOLS</span>
-				</Logo>
+				<div className="flex items-center gap-3">
+					<Logo>
+						{/* Replace with your Logo */}
+						<span className="p-0">REACT ROUTER DEVTOOLS</span>
+					</Logo>
+					<VersionDropdown />
+				</div>
 				<ThemeToggle />
 			</Header>
 
