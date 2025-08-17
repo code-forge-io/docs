@@ -1,10 +1,11 @@
-import { allPages, allSections } from "content-collections"
 import type { SidebarSection } from "~/components/sidebar/sidebar"
+import { loadContentCollections } from "./load-content-collections"
 
 const parentOf = (slug: string) => slug.split("/").slice(0, -1).join("/")
 
-export function createSidebarTree(version = "latest") {
+export async function createSidebarTree(version = "latest") {
 	const map = new Map<string, SidebarSection>()
+	const { allPages, allSections } = await loadContentCollections("V6.0.0")
 
 	for (const s of allSections.filter((s) => s.version === version)) {
 		map.set(s.slug, { ...s, subsections: [], documentationPages: [] })

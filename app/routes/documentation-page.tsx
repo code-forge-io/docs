@@ -1,15 +1,16 @@
-import { allPages } from "content-collections"
 import { MDXWrapper } from "~/components/mdx-wrapper"
 import { PageNavigation } from "~/components/page-navigation"
 import { TableOfContents } from "~/components/table-of-content"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
+import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version, section, subsection, filename } = params
 	const slug = subsection ? `${version}/${section}/${subsection}/${filename}` : `${version}/${section}/${filename}`
+	const { allPages } = await loadContentCollections("V6.0.0")
 	const page = allPages.find((post) => post.slug === slug)
 	if (!page) {
 		throw new Response("Not Found", { status: 404 })

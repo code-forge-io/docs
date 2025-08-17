@@ -8,7 +8,7 @@ import { createSidebarTree } from "~/utils/create-sidebar-tree"
 import type { Route } from "./+types/documentation-layout"
 
 export async function loader() {
-	return { sidebarTree: createSidebarTree() }
+	return { sidebarTree: await createSidebarTree() }
 }
 
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {

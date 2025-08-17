@@ -1,8 +1,9 @@
-import { allPages } from "content-collections"
 import { MDXWrapper } from "~/components/mdx-wrapper"
+import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Route } from "./+types/documentation-homepage"
 
 export async function loader() {
+	const { allPages } = await loadContentCollections("V6.0.0")
 	const page = allPages.find((post) => post._meta.path === "_index")
 	if (!page) {
 		throw new Response("Not Found", { status: 404 })
