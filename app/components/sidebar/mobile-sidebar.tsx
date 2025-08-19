@@ -74,7 +74,7 @@ export const MobileSidebarPanel = ({
 	return (
 		<div
 			className={cn(
-				"fixed left-0 z-50 h-[calc(100vh-var(--header-height))] w-80 bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out",
+				"fixed left-0 z-50 flex h-[calc(100vh-var(--header-height))] w-80 flex-col overflow-hidden bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out",
 				isOpen ? "translate-x-0" : "-translate-x-full",
 				className
 			)}

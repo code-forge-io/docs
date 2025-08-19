@@ -7,7 +7,10 @@ export const SidebarContent = ({ items, onClose }: { items: SidebarSection[]; on
 	const { isMobile } = useMobileView()
 
 	return (
-		<nav className="flex-1 overflow-y-auto " aria-label="Documentation navigation">
+		<nav
+			className="max-h-[calc(100vh-var(--header-height))] min-h-0 flex-1 overflow-y-auto"
+			aria-label="Documentation navigation"
+		>
 			<Accordion>
 				{items.map((item) => (
 					<SectionItem key={item.slug} item={item} onItemClick={isMobile ? onClose : undefined} />
