@@ -1,14 +1,21 @@
+import { redirect } from "react-router"
 import { MDXWrapper } from "~/components/mdx-wrapper"
 import { loadContentCollections } from "~/utils/load-content-collections"
+import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
 import type { Route } from "./+types/documentation-homepage"
 
-export async function loader() {
-	const { allPages } = await loadContentCollections("V6.0.0")
-	const page = allPages.find((post) => post._meta.path === "_index")
-	if (!page) {
-		throw new Response("Not Found", { status: 404 })
-	}
-	return { page }
+export async function loader({ params }: Route.LoaderArgs) {
+	const { version: paramsVersion } = params
+	// TODO extract these 3 lines in util function so it can be reused, redirect generate
+	if (paramsVersion && !isKnownVersion(paramsVersion)) throw redirect("/home")
+	if (paramsVersion && paramsVersion === getLatestVersion()) throw redirect("/home")
+	const version = isKnownVersion(paramsVersion) ? paramsVersion : getLatestVersion()
+	const { allPages } = await loadContentCollections(version)
+	// TODO remove this {slug: string} - make load content collections type safe
+	const page = allPages.find((post: { _meta: { path: string } }) => post._meta.path === "_index")
+	if (!page) throw new Response("Not Found", { status: 404 })
+
+	return { page, version }
 }
 
 export default function DocumentationHomepage({ loaderData }: Route.ComponentProps) {

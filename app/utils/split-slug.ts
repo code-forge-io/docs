@@ -1,16 +1,19 @@
+import { useCurrentVersion } from "./versions-utils"
+
 export function splitSlug(slug: string) {
-	const parts = slug.split("/")
-
-	if (parts.length < 3 || parts.length > 4) {
-		throw new Error(`Invalid slug format: expected 3 or 4 segments but got ${parts.length} — slug: ${slug}`)
+	const parts = slug.split("/").filter(Boolean)
+	const version = useCurrentVersion()
+	if (parts.length === 2) {
+		const [section, filename] = parts
+		return { section, filename, version }
 	}
 
-	const [version, section, third, fourth] = parts
-
-	return {
-		version,
-		section,
-		subsection: parts.length === 4 ? third : undefined,
-		filename: parts.length === 4 ? fourth : third,
+	if (parts.length === 3) {
+		const [section, subsection, filename] = parts
+		return { section, subsection, filename, version }
 	}
+
+	throw new Error(
+		`Invalid slug format: expected "section/page" or "section/subsection/page" but got ${parts.length} segments — slug: ${slug}`
+	)
 }

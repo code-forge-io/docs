@@ -148,10 +148,13 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		buildTag(tag, cfg)
 	}
 
-	const versionsFile = resolve("app/utils/versions.json")
-	writeFileSync(versionsFile, JSON.stringify(tags, null, 2))
+	const versionsFile = resolve("app/utils/versions.ts")
+	const content = `// Auto-generated file. Do not edit manually.
+export const versions = ${JSON.stringify(tags, null, 2)} as const
+`
+	writeFileSync(versionsFile, content)
 	// biome-ignore lint/suspicious/noConsole: keep this for debugging
-	console.log(chalk.green(`\n✔ Wrote versions.json with ${tags.length} versions → ${versionsFile}`))
+	console.log(chalk.green(`\n✔ Wrote versions.ts with ${tags.length} versions → ${versionsFile}`))
 
 	// biome-ignore lint/suspicious/noConsole: keep this for debugging
 	console.log(chalk.green("\n✅ Done."))

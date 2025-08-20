@@ -5,12 +5,20 @@ import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
+import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
 import type { Route } from "./+types/documentation-layout"
 
-export async function loader() {
-	return { sidebarTree: await createSidebarTree() }
-}
+export async function loader({ params, request }: Route.LoaderArgs) {
+	let paramsVersion = params.version
 
+	if (!paramsVersion) {
+		const first = new URL(request.url).pathname.split("/").filter(Boolean)[0]
+		if (isKnownVersion(first)) paramsVersion = first
+	}
+
+	const version = isKnownVersion(paramsVersion) ? paramsVersion : getLatestVersion()
+	return { sidebarTree: await createSidebarTree(version), version }
+}
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
 	const { sidebarTree } = loaderData
 	return (

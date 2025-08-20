@@ -1,3 +1,4 @@
+import { redirect } from "react-router"
 import { MDXWrapper } from "~/components/mdx-wrapper"
 import { PageNavigation } from "~/components/page-navigation"
 import { TableOfContents } from "~/components/table-of-content"
@@ -5,17 +6,32 @@ import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layo
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import { loadContentCollections } from "~/utils/load-content-collections"
+import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
-	const { version, section, subsection, filename } = params
-	const slug = subsection ? `${version}/${section}/${subsection}/${filename}` : `${version}/${section}/${filename}`
-	const { allPages } = await loadContentCollections("V6.0.0")
-	const page = allPages.find((post) => post.slug === slug)
-	if (!page) {
-		throw new Response("Not Found", { status: 404 })
+	const { version: v, section, subsection, filename } = params
+	if (!section || !filename) throw new Response("Not Found", { status: 404 })
+
+	if (v && v === getLatestVersion()) {
+		const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
+		throw redirect(path)
 	}
-	return { page }
+
+	if (v && !isKnownVersion(v)) {
+		const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
+		throw redirect(path)
+	}
+
+	const version = isKnownVersion(v) ? v : getLatestVersion()
+	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
+
+	const { allPages } = await loadContentCollections(version)
+	// TODO remove this {slug: string} - make load content collections type safe
+	const page = allPages.find((post: { slug: string }) => post.slug === slug)
+	if (!page) throw new Response("Not Found", { status: 404 })
+
+	return { page, version }
 }
 
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {

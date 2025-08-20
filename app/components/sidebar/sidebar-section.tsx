@@ -30,7 +30,7 @@ const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkPr
 	return (
 		<NavLink
 			prefetch="intent"
-			to={href("/:version/:section/:subsection?/:filename", splitSlug(documentPage.slug))}
+			to={href("/:version?/:section/:subsection?/:filename", splitSlug(documentPage.slug))}
 			onClick={onItemClick}
 			className={({ isActive }) =>
 				`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${

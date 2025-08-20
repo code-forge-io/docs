@@ -15,7 +15,7 @@ export function usePreviousNextPages(sections: SidebarSection[]) {
 
 		return {
 			title: item.title,
-			to: href("/:version/:section/:subsection?/:filename", splitSlug(item.slug)),
+			to: href("/:version?/:section/:subsection?/:filename", splitSlug(item.slug)),
 		}
 	}
 
