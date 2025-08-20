@@ -1,5 +1,6 @@
 import type { SidebarSection } from "~/components/sidebar/sidebar"
 import { loadContentCollections } from "./load-content-collections"
+import type { Version } from "./versions-utils"
 
 const parentOf = (slug: string) => slug.split("/").slice(0, -1).join("/")
 // TODO refactor this
@@ -8,7 +9,7 @@ function unwrap<T>(maybeModule: any): T[] {
 	return Array.isArray(maybeModule?.default) ? maybeModule.default : maybeModule
 }
 
-export async function createSidebarTree(version: string) {
+export async function createSidebarTree(version: Version) {
 	const { allPages, allSections } = await loadContentCollections(version)
 
 	const sections = unwrap<SidebarSection>(allSections)

@@ -11,8 +11,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 	if (paramsVersion && paramsVersion === getLatestVersion()) throw redirect("/home")
 	const version = isKnownVersion(paramsVersion) ? paramsVersion : getLatestVersion()
 	const { allPages } = await loadContentCollections(version)
-	// TODO remove this {slug: string} - make load content collections type safe
-	const page = allPages.find((post: { _meta: { path: string } }) => post._meta.path === "_index")
+	const page = allPages.find((post) => post._meta.path === "_index")
 	if (!page) throw new Response("Not Found", { status: 404 })
 
 	return { page, version }

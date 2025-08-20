@@ -26,8 +26,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
 
 	const { allPages } = await loadContentCollections(version)
-	// TODO remove this {slug: string} - make load content collections type safe
-	const page = allPages.find((post: { slug: string }) => post.slug === slug)
+	const page = allPages.find((post) => post.slug === slug)
 	if (!page) throw new Response("Not Found", { status: 404 })
 
 	return { page, version }

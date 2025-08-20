@@ -1,19 +1,19 @@
-import { getServerEnv } from "~/env.server"
+import type { Version } from "~/utils/versions-utils"
 
-export async function loadContentCollections(version: string) {
-	//TODO this doesn't work the best
-	const { NODE_ENV } = getServerEnv()
-	if (NODE_ENV === "development") {
-		const cs = await import("content-collections")
-		return { allPages: cs.allPages, allSections: cs.allSections }
-	}
+type CCModule = typeof import("content-collections")
 
-	// TODO make this typesafe
-	const basePath = `../../generated-docs/${version}/.content-collections/generated`
-	const [pages, sections] = await Promise.all([import(`${basePath}/allPages.js`), import(`${basePath}/allSections.js`)])
+export async function loadContentCollections(version: Version) {
+	//   const { NODE_ENV } = getServerEnv()
 
-	return {
-		allPages: pages.default,
-		allSections: sections.default,
-	}
+	//   if (NODE_ENV === "development") {
+	//     const cc = await import("content-collections")
+	//     return { allPages: cc.allPages, allSections: cc.allSections }
+	//   }
+
+	// TODO fix this
+	const base = `../../generated-docs/${version}/.content-collections/generated` as const
+
+	const cc = (await import(/* @vite-ignore */ `${base}/index.js`)) as CCModule
+
+	return { allPages: cc.allPages, allSections: cc.allSections }
 }

@@ -1,7 +1,7 @@
 import { href, useParams } from "react-router"
 import { versions } from "./versions"
 
-type Version = (typeof versions)[number]
+export type Version = (typeof versions)[number]
 
 export const getLatestVersion = () => versions[0]
 
