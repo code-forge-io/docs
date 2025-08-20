@@ -1,15 +1,20 @@
+import { useState } from "react"
 import { useNavigate } from "react-router"
 import { Icon } from "~/ui/icon/icon"
 import { versions } from "~/utils/versions"
-import { hrefForHomepage, useCurrentVersion } from "~/utils/versions-utils"
+import { hrefForHomepage, isKnownVersion, useCurrentVersion } from "~/utils/versions-utils"
 
 export function VersionDropdown() {
 	const navigate = useNavigate()
 	const current = useCurrentVersion()
+	const [selectedVersion, setSelectedVersion] = useState(current)
 
 	function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
 		const next = e.target.value
 		if (next === current) return
+
+		setSelectedVersion(isKnownVersion(next) ? next : current)
+
 		const to = hrefForHomepage(next)
 		const nav = () => navigate(to, { preventScrollReset: true })
 		if (document.startViewTransition) document.startViewTransition(nav)
@@ -22,7 +27,7 @@ export function VersionDropdown() {
 				id="version"
 				name="version"
 				className="cursor-pointer appearance-none rounded-lg bg-[var(--color-background)] py-2.5 pr-10 pl-4 font-medium text-sm shadow-sm transition-all duration-200 focus:outline-none"
-				value={current}
+				value={selectedVersion}
 				onChange={onChange}
 			>
 				{versions.map((v) => (
