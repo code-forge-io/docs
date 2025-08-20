@@ -1,4 +1,3 @@
-import { redirect } from "react-router"
 import { MDXWrapper } from "~/components/mdx-wrapper"
 import { PageNavigation } from "~/components/page-navigation"
 import { TableOfContents } from "~/components/table-of-content"
@@ -13,15 +12,15 @@ export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
 
-	if (v && v === getLatestVersion()) {
-		const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
-		throw redirect(path)
-	}
+	// if (v && v === getLatestVersion()) {
+	// 	const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
+	// 	throw redirect(path)
+	// }
 
-	if (v && !isKnownVersion(v)) {
-		const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
-		throw redirect(path)
-	}
+	// if (v && !isKnownVersion(v)) {
+	// 	const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
+	// 	throw redirect(path)
+	// }
 
 	const version = isKnownVersion(v) ? v : getLatestVersion()
 	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
