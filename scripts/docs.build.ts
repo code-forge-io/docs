@@ -148,9 +148,10 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		buildTag(tag, cfg)
 	}
 
+	const sorted = [...tags].sort((a, b) => b.localeCompare(a, undefined, { numeric: true, sensitivity: "base" }))
 	const versionsFile = resolve("app/utils/versions.ts")
 	const content = `// Auto-generated file. Do not edit manually.
-export const versions = ${JSON.stringify(tags, null, 2)} as const
+export const versions = ${JSON.stringify(sorted, null, 2)} as const
 `
 	writeFileSync(versionsFile, content)
 	// biome-ignore lint/suspicious/noConsole: keep this for debugging
