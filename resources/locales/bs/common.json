@@ -24,7 +24,9 @@
 	},
 	"links": {
 		"previous": "Prethodni",
-		"next": "Sljedeći"
+		"next": "Sljedeći",
+		"report_an_issue_on_this_page": "Prijavi problem na ovoj stranici",
+		"edit_this_page": "Uredi ovu stranicu"
 	},
 	"p": {
 		"last_update": "Posljednja izmjena:",
@@ -33,7 +35,9 @@
 	},
 	"buttons": {
 		"copy": "Kopiraj",
-		"copied": "Kopirano"
+		"copied": "Kopirano",
+		"home": "Nazad na početnu",
+		"back": "Idi nazad"
 	},
 	"titles": {
 		"good_to_know": "Dobro je znati",

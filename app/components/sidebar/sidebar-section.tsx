@@ -21,7 +21,11 @@ interface SectionItemLinkProps {
 }
 
 const SectionTitle = ({ title }: { title: string }) => {
-	return <h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide">{title}</h3>
+	return (
+		<h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide sm:text-base md:text-lg">
+			{title}
+		</h3>
+	)
 }
 
 const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
@@ -32,12 +36,15 @@ const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkPr
 			prefetch="intent"
 			to={href("/:version/:section/:subsection?/:filename", splitSlug(documentPage.slug))}
 			onClick={onItemClick}
-			className={({ isActive }) =>
-				`block rounded-md px-3 py-2 text-sm transition-all duration-200 ${indentClass} ${
-					isActive
-						? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
-						: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:text-bold"
-				}`
+			className={({ isActive, isPending }) =>
+				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}
+			${isPending ? "text-[var(--color-text-hover)]" : ""}
+			${
+				isActive
+					? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
+					: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)]"
+			}
+				`
 			}
 		>
 			{documentPage.title}
@@ -73,7 +80,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 			<AccordionItem
 				title={item.title}
 				titleElement="h6"
-				titleClassName="text-sm font-semibold tracking-wide text-[var(--color-text-active)]"
+				titleClassName="text-sm sm:text-base md:text-lg font-semibold tracking-wide text-[var(--color-text-active)]"
 				content={content}
 				defaultOpen={true}
 			/>

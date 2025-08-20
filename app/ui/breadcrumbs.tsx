@@ -17,7 +17,7 @@ interface BreadcrumbItemProps {
 
 export const BreadcrumbItem = ({ children, href, isActive = false, className }: BreadcrumbItemProps) => {
 	const classes = cn(
-		"inline-flex items-center font-medium text-sm transition-all duration-200 ease-in-out",
+		"inline-flex items-center font-medium text-sm transition-all duration-200 ease-in-out sm:text-base md:text-lg",
 		"text-[var(--color-text-normal)]",
 		isActive && "pointer-events-none font-semibold text-[var(--color-text-active)]",
 		className

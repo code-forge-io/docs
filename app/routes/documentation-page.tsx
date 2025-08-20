@@ -1,5 +1,6 @@
 import { allPages } from "content-collections"
-import { MDXWrapper } from "~/components/mdx-wrapper"
+import GithubContributeLinks from "~/components/github-contribute-links"
+import PageMdxArticle from "~/components/page-mdx-article"
 import { PageNavigation } from "~/components/page-navigation"
 import { TableOfContents } from "~/components/table-of-content"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
@@ -17,6 +18,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 	return { page }
 }
 
+export type Page = Awaited<ReturnType<typeof loader>>["page"]
+
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
 	const { sidebarTree } = useDocumentationLayoutLoaderData()
@@ -24,19 +27,16 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
 
 	return (
-		<div className="flex min-h-screen flex-col">
-			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
-				<article className="prose prose-invert w-full min-w-0 max-w-4xl flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)]">
-					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
-						<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
-						{page.description && <p className="mt-2 text-[var(--color-text-muted)] text-lg">{page.description}</p>}
-					</header>
-
-					<MDXWrapper content={page.content} />
-					<PageNavigation previous={previous} next={next} />
-				</article>
-
-				<TableOfContents items={toc} pagePath={page._meta.filePath} />
+		<div className="flex min-h-screen flex-row">
+			<div className="mx-auto flex w-full max-w-screen-4xl flex-col gap-4 pt-4 lg:gap-8 xl:pt-0">
+				<PageMdxArticle page={page} />
+				<PageNavigation previous={previous} next={next} />
+			</div>
+			<div className="hidden w-56 min-w-min flex-shrink-0 2xl:block">
+				<div className="sticky top-37 pb-10">
+					<GithubContributeLinks pagePath={page._meta.filePath} />
+					<TableOfContents items={toc} />
+				</div>
 			</div>
 		</div>
 	)

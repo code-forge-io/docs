@@ -1,12 +1,12 @@
 import { cn } from "../utils/css"
 
 export const ValidTitleElements = {
-	h1: "text-2xl sm:text-3xl md:text-4xl leading-tight tracking-tight font-bold",
-	h2: "text-xl sm:text-2xl md:text-3xl leading-snug tracking-tight font-semibold",
-	h3: "text-lg sm:text-xl md:text-2xl leading-snug tracking-normal font-semibold",
-	h4: "text-base sm:text-lg md:text-xl leading-snug tracking-normal font-medium",
-	h5: "text-sm sm:text-base md:text-lg leading-normal tracking-normal font-medium",
-	h6: "text-xs sm:text-sm md:text-base leading-normal tracking-normal font-medium",
+	h1: "text-2xl sm:text-3xl md:text-4xl",
+	h2: "text-xl sm:text-2xl md:text-3xl",
+	h3: "text-lg sm:text-xl md:text-2xl",
+	h4: "text-base sm:text-lg md:text-xl",
+	h5: "text-sm sm:text-base md:text-lg",
+	h6: "text-xs sm:text-sm md:text-base",
 } as const
 
 interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {

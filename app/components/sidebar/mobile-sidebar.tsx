@@ -24,7 +24,7 @@ export const MobileSidebarHeader = ({ breadcrumbs }: { breadcrumbs: string[] }) 
 	return (
 		<div className="fixed z-40 flex h-fit w-full items-center gap-3 border-[var(--color-border)] border-b-2 bg-[var(--color-background)] px-4 py-3 ">
 			<MobileSidebarMenuButton />
-			<Breadcrumbs className="text-sm">
+			<Breadcrumbs className="text-xs sm:text-sm md:text-base">
 				{breadcrumbs.map((item) => (
 					<BreadcrumbItem key={item}>{item}</BreadcrumbItem>
 				))}

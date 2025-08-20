@@ -36,7 +36,7 @@ function PageNavigationLink({ item, direction, label }: PageNavigationLinkProps)
 				prefetch="intent"
 				{...(direction === "next" && { viewTransition: true })}
 				className={cn(
-					"inline-flex items-center gap-1 rounded-md px-2 py-1 text-[var(--color-text-active)] text-sm no-underline transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)] md:text-lg",
+					"inline-flex items-center gap-1 rounded-md px-2 py-1 text-[var(--color-text-active)] text-sm no-underline transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)] sm:text-base md:text-lg",
 					isPrevious ? "-ml-2 hover:-translate-x-1" : "-mr-2 hover:translate-x-1"
 				)}
 			>
@@ -77,7 +77,7 @@ export function PageNavigation({ previous, next }: PageNavigationProps) {
 
 	return (
 		<nav
-			className="mt-12 flex items-start justify-between border-[var(--color-border) border-t pt-6 text-[var(--color-text-active)] text-sm"
+			className="mt-12 flex items-start justify-between border-[var(--color-border) border-t pt-6 text-[var(--color-text-active)] text-xs sm:text-sm md:text-base"
 			aria-label="Pagination navigation"
 		>
 			{previous ? <PageNavigationLink item={previous} direction="previous" label={t("links.previous")} /> : <div />}

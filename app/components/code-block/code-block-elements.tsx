@@ -55,7 +55,7 @@ interface PreElementProps extends Omit<ComponentPropsWithoutRef<"pre">, "childre
 export const PreElement = ({ lines, className = "", ...props }: PreElementProps) => (
 	<pre
 		{...props}
-		className={`relative overflow-x-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-code-block-bg)] py-4 font-mono text-[var(--color-code-block-text)] text-sm leading-relaxed ${className}`}
+		className={`relative overflow-x-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-code-block-bg)] py-4 font-mono text-[var(--color-code-block-text)] text-xs leading-relaxed sm:text-sm md:text-base ${className}`}
 	>
 		<CodeElement lines={lines} />
 	</pre>

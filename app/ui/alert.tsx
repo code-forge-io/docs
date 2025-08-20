@@ -62,7 +62,7 @@ export const Alert = ({ children, title, variant, className = "" }: AlertProps) 
 				</Title>
 			</div>
 
-			<div className={`prose prose-sm max-w-none ${styles.content}`}>{children}</div>
+			<div className={`prose prose-xs sm:prose-sm md:prose-base max-w-none ${styles.content}`}>{children}</div>
 		</div>
 	)
 }
