@@ -23,7 +23,7 @@ export default function Index() {
 					<h1 className="font-bold text-5xl text-[var(--color-text-active)] leading-snug">
 						Professional Development
 						<br />
-						<span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+						<span className="bg-gradient-to-r from-[#48ddf3] to-[#fb4bb5] bg-clip-text text-transparent">
 							Made Simple
 						</span>
 					</h1>
@@ -58,7 +58,7 @@ export default function Index() {
 						<button
 							type="button"
 							onClick={() => navigate(href("/:version?/home"))}
-							className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
+							className="flex items-center gap-2 rounded-lg bg-[#2c8794] px-6 py-3 font-medium text-white transition-colors hover:bg-[#329baa]"
 						>
 							<Icon name="Rocket" className="size-5" />
 							Get Started

@@ -1,6 +1,6 @@
 import { useCurrentVersion } from "./versions-utils"
 
-export function splitSlug(slug: string) {
+export function splitSlugAndAppendVersion(slug: string) {
 	const parts = slug.split("/").filter(Boolean)
 	const version = useCurrentVersion()
 	if (parts.length === 2) {
