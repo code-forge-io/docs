@@ -80,3 +80,7 @@ blob-report
 *.sqlite
 *.sqlite3
 *.db-journal
+
+
+# Content collections output files
+.content-collections

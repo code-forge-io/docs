@@ -1,65 +1,89 @@
+# Welcome to Forge 42 Documentation Template
+
+This template is designed to support a flexible content structure using `.md` and `.mdx` files organized into folders. It enables deeply nested sections and subsections, making it easy to manage complex documentation with a clear and scalable hierarchy.
+
+The project is built using the [@forge-42/base-stack](https://github.com/forge-42/base-stack) and leverages the [content-collections](https://github.com/sdorra/content-collections).
 
 
-<p align="middle">
-<img  width="900px" height="500px" src="./public/base-stack.png" />
-</p>
+## Documentation Template Structure Overview
 
-# Welcome to Forge 42 base-stack
+`app/`
 
-This is a base-stack for Forge 42 projects. This stack is a starting point for all Forge 42 stacks with more
-advanced features. This is an ESM Vite stack with Remix.run / React Router v7.
+This folder contains React Router v7 web application folders and files, including components and UI primitives for the documentation site’s interface, internal hooks and utilities, and the tailwind.css file for styling.
 
-It includes a basic setup for a project with react-router v7 framework mode and:
-- React 19 & react-compiler
-- TypeScript
-- TailwindCSS
-- Vite
-- Vitest (unit tests)
-- Scripting
-- Biome (linter & formatter)
-- i18n support (client and server)
-- Icons spritesheet generator
-- lefthook hooks
-- CI checks for quality control
-- react-router-devtools
-- Hono server
-- .env var handling for server and client
-- SEO robots.txt, sitemap-index and sitemap built in.
 
-## Internationalization
+`resources/`
 
-This stack uses i18next for internationalization. It supports both client and server side translations.
-Features included out of the box:
-- Support for multiple languages
-- Typesafe resources
-- client side translations are fetched only when needed
-- language switcher
-- language detector (uses the request to detect the language, falls back to your fallback language)
+This folder contains all the resources used by the documentation site, such as SVG icons, fonts, and other assets.
 
-## Hono server
+`content/`
 
-This stack uses Hono for the server. More information about Hono can be found [here](https://honojs.dev/).
-Another important thing to note is that we use a dependency called `react-router-hono-server` which is a wrapper for Hono that allows us to use Hono in our React Router application.
+This folder contains sections and subsections with .mdx files that hold your documentation content. Below is the recommended structure to follow.
 
-The server comes preconfigured with:
-- i18next middleware
-- caching middleware for assets
-- easily extendable global application context
-- .env injection into context
 
-In order to add your own middleware, extend the context, or anything along those lines, all you have to do is edit the server
-inside the `entry.server.tsx` file.
+An example of a valid content/ folder structure for organizing your package documentation:
 
-## .env handling
-
-This stack parses your `.env` file and injects it into the server context. For the client side, in the `root.tsx` file, we use the `useLoaderData` hook to get the `clientEnv` from the server and set it as a global variable on the `window` called `env`.
-If you need to access the env variables in both environments, you can create a polyEnv helper like this:
-```ts
-// app/utils/env.ts
-// This will return the process.env on the server and window.env on the client
-export const polyEnv = typeof process !== "undefined" ? process.env : window.env;
 ```
-The server will fail at runtime if you don't set your `.env` file properly.
+content/
+├── _index.mdx
+├── 01-changelog.mdx
+├── 02-introduction.mdx
+├── 03-overview.mdx
+├── 04-getting-started/
+│   ├── index.md
+│   ├── 01-installation.mdx
+│   ├── 02-quick-start.mdx
+│   └── 03-project-setup.mdx
+└── 05-core-features/
+    ├── index.md
+    ├── 01-authentication.mdx
+    ├── 02-authorization.mdx
+    ├── 03-data-management/
+    │   ├── index.md
+    │   ├── 01-fetching-data.mdx
+    │   └── 02-caching-strategies.mdx
+    └── 04-ui-components/
+        ├── index.md
+        ├── 01-buttons.mdx
+        └── 02-modals.mdx
+```
+- Top-level .mdx files (like 01-changelog.mdx) are allowed.
+- Sections (like 04-getting-started, 05-core-features) are subfolders inside the content/ folder.
+- Subsections (like 03-data-management, 04-ui-components) are nested folders within sections.
+- Each section or subsection should have an index.md file for its sidebar title.
+
+### Example of the valid `02-introduction.mdx` file:
+```
+---
+title: "Introduction to Forge42 Base Stack"
+summary: "Overview of the Stack"
+description: "Get started with the Forge42 Base Stack — a modern web app starter template designed for speed, scalability, and developer experience."
+---
+
+## What is Forge42 Base Stack?
+
+The Forge42 Base Stack is a full-featured web application starter template. It combines modern tools and technologies like **Remix**, **Tailwind CSS**, **TypeScript**, **Vitest**, and **React Aria Components** to help you build accessible and scalable web apps quickly.
+
+This documentation will guide you through setting up the project, understanding its structure, and customizing it for your needs.
+
+## Installation
+
+To get started with the base stack, simply clone the repository and install dependencies:
+
+```bash
+npx degit forge42/base-stack my-app
+cd my-app
+npm install
+```
+
+### Example of the valid `04-getting-started/index.md` file:
+```
+---
+title: Getting Started
+---
+
+```
+
 
 ## Getting started
 
@@ -71,17 +95,10 @@ pnpm install
 ```
 3. Read through the README.md files in the project to understand our decisions.
 
-4. Run the cleanup script:
-```bash
-pnpm cleanup
-```
-
-This will remove everything in the project related to the base-stack like README.md etc.
-This is the first thing you should run after initializing the project.
-After it is run it will remove itself from the package.json.
+4. Add `content` folder
 
 5. Start the development server:
 ```bash
 pnpm run dev
 ```
-6. Happy coding!
+5. Happy coding!

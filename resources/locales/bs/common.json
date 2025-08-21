@@ -21,5 +21,26 @@
 			"title": "Nešto je krenulo po zlu!",
 			"description": "Izgleda da se nešto desilo na serveru."
 		}
+	},
+	"links": {
+		"previous": "Prethodni",
+		"next": "Sljedeći",
+		"report_an_issue_on_this_page": "Prijavi problem na ovoj stranici",
+		"edit_this_page": "Uredi ovu stranicu"
+	},
+	"p": {
+		"last_update": "Posljednja izmjena:",
+		"version": "Verzija",
+		"all_rights_reserved": "Sva prava zadržana."
+	},
+	"buttons": {
+		"copy": "Kopiraj",
+		"copied": "Kopirano",
+		"home": "Nazad na početnu",
+		"back": "Idi nazad"
+	},
+	"titles": {
+		"good_to_know": "Dobro je znati",
+		"warning": "Upozorenje"
 	}
 }

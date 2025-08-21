@@ -21,5 +21,26 @@
 			"title": "Something went wrong!",
 			"description": "Looks like something unexpected happened on the server."
 		}
+	},
+	"links": {
+		"previous": "Previous",
+		"next": "Next",
+		"report_an_issue_on_this_page": "Report an issue on this page",
+		"edit_this_page": "Edit this page"
+	},
+	"p": {
+		"last_update": "Last updated: ",
+		"version": "Version",
+		"all_rights_reserved": "All rights reserved."
+	},
+	"buttons": {
+		"copy": "Copy",
+		"copied": "Copied",
+		"home": "Back to home",
+		"back": "Go back"
+	},
+	"titles": {
+		"good_to_know": "Good to know",
+		"warning": "Warning"
 	}
 }

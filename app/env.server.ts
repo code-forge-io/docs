@@ -3,6 +3,8 @@ import { z } from "zod"
 const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 	APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
+	GITHUB_OWNER: z.string()?.optional(), // optional - for edit/report an issue for the documentation page
+	GITHUB_REPO: z.string()?.optional(), // optional - for edit/report an issue for the documentation page
 })
 
 type ServerEnv = z.infer<typeof envSchema>
@@ -49,6 +51,8 @@ export function getClientEnv() {
 	const serverEnv = getServerEnv()
 	return {
 		NODE_ENV: serverEnv.NODE_ENV,
+		GITHUB_OWNER: serverEnv.GITHUB_OWNER,
+		GITHUB_REPO: serverEnv.GITHUB_REPO,
 	}
 }
 

@@ -1,3 +1,4 @@
+import contentCollections from "@content-collections/remix-vite"
 import { reactRouter } from "@react-router/dev/vite"
 import tailwindcss from "@tailwindcss/vite"
 import { reactRouterDevTools } from "react-router-devtools"
@@ -25,17 +26,18 @@ export default defineConfig({
 		reactRouter(),
 		reactRouterHonoServer({
 			dev: {
-				exclude: [/^\/(resources)\/.+/],
+				exclude: [/^\/(resources)\/.+/, /^\/(.content-collections)\/.+/],
 			},
 		}),
 		tsconfigPaths(),
 		iconsSpritesheet({
 			inputDir: "./resources/icons",
-			outputDir: "./app/library/icon/icons",
+			outputDir: "./app/ui/icon/icons",
 			fileName: "icon.svg",
 			withTypes: true,
 			formatter: "biome",
 		}),
+		contentCollections(),
 	],
 	server: {
 		open: true,
