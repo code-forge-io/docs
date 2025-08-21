@@ -16,14 +16,14 @@
 
 	:root {
 		--header-height: 5rem;
-		--color-background: #ffffff;
+		--color-background: #fafafa;
 		--color-border: #e5e7eb;
 		--color-text-normal: #2d3748;
 		--color-text-muted: #718096;
 		--color-text-hover: #1a202c;
 		--color-text-active: #000000;
 		--color-background-active: #f3f4f6;
-		--color-text-accent: #1a202c;
+		--color-text-accent: #646464;
 
 		--color-code-inline-bg: #f5f5f5;
 		--color-code-inline-text: #1f2937;
@@ -67,7 +67,7 @@
 		--color-text-hover: #cfcfcf;
 		--color-text-active: #ffffff;
 		--color-background-active: #1a1a1a;
-		--color-text-accent: #e2e8f0;
+		--color-text-accent: #878787;
 
 		--color-code-inline-bg: #1a1a1a;
 		--color-code-inline-text: #f5f5f5;

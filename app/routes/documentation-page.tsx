@@ -32,7 +32,7 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 				<PageMdxArticle page={page} />
 				<PageNavigation previous={previous} next={next} />
 			</div>
-			<div className="hidden w-56 min-w-min flex-shrink-0 2xl:block">
+			<div className="hidden w-56 min-w-min flex-shrink-0 xl:block">
 				<div className="sticky top-37 pb-10">
 					<GithubContributeLinks pagePath={page._meta.filePath} />
 					<TableOfContents items={toc} />

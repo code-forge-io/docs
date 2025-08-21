@@ -1,9 +1,6 @@
 import { cleanDiffLine, getDiffStyles, getDiffType } from "./code-block-diff"
 import { tokenize } from "./code-block-syntax-highlighter"
 
-/**
- * Code block processing utilities.
- */
 interface CodeBlockChild {
 	props?: {
 		children?: string
@@ -45,6 +42,7 @@ export const createLineData = (line: string) => {
 }
 
 export const processCopyContent = (content: string): { code: string } => {
+	// removes diff markers from content
 	const code = content
 		.split("\n")
 		.filter((line) => !line.trimStart().startsWith("- "))

@@ -22,7 +22,7 @@ const MobileSidebarMenuButton = () => {
 
 export const MobileSidebarHeader = ({ breadcrumbs }: { breadcrumbs: string[] }) => {
 	return (
-		<div className="fixed z-40 flex h-fit w-full items-center gap-3 border-[var(--color-border)] border-b-2 bg-[var(--color-background)] px-4 py-3 ">
+		<div className="fixed z-40 flex h-fit w-full items-center gap-3 border-[var(--color-border)] border-b-2 bg-[var(--color-background)] px-4 py-2">
 			<MobileSidebarMenuButton />
 			<Breadcrumbs className="text-xs sm:text-sm md:text-base">
 				{breadcrumbs.map((item) => (
@@ -55,7 +55,7 @@ const MobileSidebarCloseButton = () => {
 		<button
 			type="button"
 			onClick={close}
-			className="absolute top-1 right-1 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
+			className="absolute top-2 right-4 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
 			aria-label="Close navigation menu"
 		>
 			<Icon name="X" className="size-5" />

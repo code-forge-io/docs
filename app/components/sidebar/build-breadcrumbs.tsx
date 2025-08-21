@@ -2,6 +2,7 @@ import { href } from "react-router"
 import { splitSlug } from "~/utils/split-slug"
 import type { SidebarSection } from "./sidebar"
 
+// builds a breadcrumb trail from sidebar sections based on the current pathname
 export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
 	let trail: string[] = []
 

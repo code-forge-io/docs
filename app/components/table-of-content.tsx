@@ -23,11 +23,9 @@ const calculatePadding = (depth: number) => BASE_PADDING + depth * DEPTH_MULTIPL
 
 const getItemClassName = (depth: number, isActive: boolean) => {
 	return [
-		"block py-1.5 text-xs sm:text-sm md:text-base transition-all duration-200 hover:text-[var(--color-text-hover)] border-transparent",
+		"block py-1.5 text-xs sm:text-sm md:text-base hover:text-[var(--color-text-hover)]",
 		depth === 0 && "font-medium",
-		isActive
-			? "border-[var(--color-text-accent)] font-bold text-[var(--color-text-accent)]"
-			: "text-[var(--color-text-normal)]",
+		isActive ? "text-[var(--color-text-accent)]" : "text-[var(--color-text-active)]",
 	]
 		.filter(Boolean)
 		.join(" ")
@@ -84,7 +82,7 @@ const Navigation = ({
 	onItemClick: (slug: string) => Promise<void>
 }) => (
 	<nav aria-label="Table of contents" className="-mr-4 max-h-[calc(100vh-var(--header-height))] overflow-y-auto pr-4">
-		<div className="space-y-1 pb-8">
+		<div className="space-y-1 pb-2">
 			{items.map((item) => (
 				<TocItem key={item.slug} item={item} activeId={activeId} onItemClick={onItemClick} />
 			))}

@@ -13,6 +13,8 @@ export const iconNames = [
 	"ClipboardCheck",
 	"ChevronRight",
 	"ChevronDown",
+	"ArrowRight",
+	"ArrowLeft",
 ] as const
 
 export type IconName = (typeof iconNames)[number]

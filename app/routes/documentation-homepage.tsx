@@ -18,7 +18,7 @@ export default function DocumentationHomepage({ loaderData }: Route.ComponentPro
 			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
 				<PageMdxArticle page={page} />
 			</div>
-			<div className="hidden w-56 min-w-min flex-shrink-0 2xl:block">
+			<div className="hidden w-56 min-w-min flex-shrink-0 xl:block">
 				<div className="sticky top-37 pb-10">
 					<GithubContributeLinks pagePath={page._meta.filePath} />
 				</div>
