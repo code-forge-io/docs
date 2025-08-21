@@ -17,8 +17,7 @@ interface BreadcrumbItemProps {
 
 export const BreadcrumbItem = ({ children, href, isActive = false, className }: BreadcrumbItemProps) => {
 	const classes = cn(
-		"inline-flex items-center font-medium text-sm transition-all duration-200 ease-in-out",
-		"text-[var(--color-text-normal)]",
+		"block text-ellipsis text-start font-medium text-[var(--color-text-normal)] text-sm sm:text-base md:text-lg",
 		isActive && "pointer-events-none font-semibold text-[var(--color-text-active)]",
 		className
 	)
@@ -31,7 +30,7 @@ export const BreadcrumbItem = ({ children, href, isActive = false, className }: 
 		)
 	}
 
-	return <span className={classes}>{children}</span>
+	return <span className="block text-ellipsis text-start text-[var(--color-text-normal)]">{children}</span>
 }
 
 export const Breadcrumbs = ({ children, className }: BreadcrumbsProps) => {

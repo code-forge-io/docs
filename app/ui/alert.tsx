@@ -54,7 +54,7 @@ export const Alert = ({ children, title, variant, className = "" }: AlertProps) 
 	const defaultTitle = variant === "info" ? t("titles.good_to_know") : t("titles.warning")
 
 	return (
-		<div className={`my-6 flex flex-col gap-2 rounded-xl border p-6 ${styles.container} ${className}`}>
+		<div className={cn("my-6 flex flex-col gap-2 rounded-xl border p-6", styles.container, className)}>
 			<div className="flex items-center gap-2">
 				<div className={cn("inline-flex", styles.icon)}>{getIcon()}</div>
 				<Title className={` font-semibold ${styles.title}`} as={"h6"}>
@@ -62,7 +62,7 @@ export const Alert = ({ children, title, variant, className = "" }: AlertProps) 
 				</Title>
 			</div>
 
-			<div className={`prose prose-sm max-w-none ${styles.content}`}>{children}</div>
+			<div className={cn("prose prose-xs sm:prose-sm md:prose-base max-w-none", styles.content)}>{children}</div>
 		</div>
 	)
 }

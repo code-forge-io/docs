@@ -1,37 +1,41 @@
 import { useTranslation } from "react-i18next"
-import { href, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 import { Link } from "~/library/link"
-import { Icon } from "~/ui/icon/icon"
+import type { Route } from "./+types/$"
 
+export const loader = async ({ params }: Route.LoaderArgs) => {
+	const slug = params["*"]
+	return new Response(`Page with slug \"${slug}\" not found!`, { status: 404 })
+}
 export default function Route404() {
 	const navigate = useNavigate()
 	const { t } = useTranslation()
-	const to = href("/")
 	return (
-		<div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4 dark:from-blue-950 dark:to-blue-900 dark:text-white">
-			<div className="w-full max-w-2xl text-center">
-				<div className="mb-8 flex justify-center">
-					<Icon name="Ghost" className="h-24 w-24 animate-float text-indigo-600" />
-				</div>
+		<div className="relative flex h-full min-h-screen w-screen items-center justify-center bg-[var(--color-background)] sm:pt-8 sm:pb-16">
+			<div className="relative mx-auto max-w-[90rem] sm:px-6 lg:px-8">
+				<div className="relative flex min-h-72 flex-col items-center justify-center p-8 sm:overflow-hidden sm:rounded-2xl md:p-12 lg:p-16">
+					<h1 className="mb-4 text-center font-bold text-4xl text-[var(--color-text-active)] sm:text-5xl">
+						{t("error.404.title")}
+					</h1>
+					<p className="mb-8 max-w-2xl text-center text-[var(--color-text-muted)] text-lg">
+						{t("error.404.description")}
+					</p>
 
-				<h1 className="mb-4 font-bold text-6xl text-gray-900 dark:text-white">404</h1>
-				<h2 className="mb-4 font-semibold text-3xl text-gray-800 dark:text-white">{t("error.404.title")}</h2>
-				<p className="mb-8 text-gray-600 text-lg dark:text-white">{t("error.404.description")}</p>
-
-				<div className="flex flex-col justify-center gap-4 sm:flex-row">
-					<button
-						type="button"
-						onClick={() => navigate(-1)}
-						className="inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-100 px-6 py-3 font-medium text-base text-indigo-700 transition-colors duration-300 hover:bg-indigo-200"
-					>
-						{t("navigation.back")}
-					</button>
-					<Link
-						to={to}
-						className="inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 font-medium text-base text-white transition-colors duration-300 hover:bg-indigo-700"
-					>
-						{t("navigation.home")}
-					</Link>
+					<div className="flex gap-4">
+						<button
+							type="button"
+							onClick={() => navigate(-1)}
+							className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] px-5 py-2 font-medium text-[var(--color-text-normal)] text-sm transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-text-hover)]"
+						>
+							{t("buttons.back")}
+						</button>
+						<Link
+							to="/"
+							className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background-active)] px-5 py-2 font-medium text-[var(--color-text-normal)] text-sm transition-colors hover:bg-[var(--color-background)] hover:text-[var(--color-text-hover)]"
+						>
+							{t("buttons.home")}
+						</Link>
+					</div>
 				</div>
 			</div>
 		</div>

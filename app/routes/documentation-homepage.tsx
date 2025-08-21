@@ -1,5 +1,6 @@
 import { redirect } from "react-router"
-import { MDXWrapper } from "~/components/mdx-wrapper"
+import GithubContributeLinks from "~/components/github-contribute-links"
+import PageMdxArticle from "~/components/page-mdx-article"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
 import type { Route } from "./+types/documentation-homepage"
@@ -20,14 +21,14 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function DocumentationHomepage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
 	return (
-		<div className="flex min-h-screen flex-col">
+		<div className="flex min-h-screen flex-row">
 			<div className="mx-auto flex w-full max-w-screen-4xl gap-4 pt-4 lg:gap-8 xl:pt-0">
-				<article className="prose prose-invert w-full min-w-0 max-w-4xl flex-grow px-6 pt-6 pb-16 prose-headings:text-[var(--color-text-active)] prose-p:text-[var(--color-text-active)]">
-					<header className="mb-10 border-[var(--color-border)] border-b pb-6">
-						<h1 className="font-bold text-3xl text-[var(--color-text-heading)]">{page.title}</h1>
-					</header>
-					<MDXWrapper content={page.content} />
-				</article>
+				<PageMdxArticle page={page} />
+			</div>
+			<div className="hidden w-56 min-w-min flex-shrink-0 xl:block">
+				<div className="sticky top-37 pb-10">
+					<GithubContributeLinks pagePath={page._meta.filePath} />
+				</div>
 			</div>
 		</div>
 	)

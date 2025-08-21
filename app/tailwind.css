@@ -8,10 +8,6 @@
 }
 
 @layer base {
-	html {
-		font-family: var(--font-inter);
-	}
-
 	h1,
 	h2,
 	h3 {
@@ -20,14 +16,14 @@
 
 	:root {
 		--header-height: 5rem;
-		--color-background: #ffffff;
+		--color-background: #fafafa;
 		--color-border: #e5e7eb;
-		--color-text-normal: #806b6e;
-		--color-text-muted: #9ca3af;
-		--color-text-hover: #1f2937;
+		--color-text-normal: #2d3748;
+		--color-text-muted: #718096;
+		--color-text-hover: #1a202c;
 		--color-text-active: #000000;
 		--color-background-active: #f3f4f6;
-		--color-text-accent: #1a202c;
+		--color-text-accent: #646464;
 
 		--color-code-inline-bg: #f5f5f5;
 		--color-code-inline-text: #1f2937;
@@ -66,12 +62,12 @@
 	[data-theme="dark"] {
 		--color-background: #0f0f0f;
 		--color-border: #1b1f2e;
-		--color-text-normal: #9ca3af;
-		--color-text-muted: #6b7280;
-		--color-text-hover: #f3f4f6;
+		--color-text-normal: #e6edf3;
+		--color-text-muted: #7d8590;
+		--color-text-hover: #cfcfcf;
 		--color-text-active: #ffffff;
 		--color-background-active: #1a1a1a;
-		--color-text-accent: #e2e8f0;
+		--color-text-accent: #878787;
 
 		--color-code-inline-bg: #1a1a1a;
 		--color-code-inline-text: #f5f5f5;

@@ -1,65 +1,77 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router"
 
+// tracks the currently active heading on the page using IntersectionObserver and URL hash
 export function useActiveHeadingId(selector = "h2[id], h3[id], h4[id]") {
 	const [activeId, setActiveId] = useState<string | null>(null)
+	const activeIdRef = useRef<string | null>(null)
 	const isManualRef = useRef(false)
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+	const timeoutRef = useRef<number | undefined>(undefined)
 
 	const location = useLocation()
+
+	useEffect(() => {
+		activeIdRef.current = activeId
+	}, [activeId])
 
 	const setManualActiveId = useCallback((id: string) => {
 		setActiveId(id)
 		isManualRef.current = true
-
-		if (timeoutRef.current) clearTimeout(timeoutRef.current)
-		timeoutRef.current = setTimeout(() => {
+		if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+		timeoutRef.current = window.setTimeout(() => {
 			isManualRef.current = false
 		}, 1000)
 	}, [])
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: locaion.pathname shoud be in the dependency array
+	// biome-ignore lint/correctness/useExhaustiveDependencies: location.pathname shoud be in the dependency array
 	useEffect(() => {
-		const headings = document.querySelectorAll<HTMLElement>(selector)
+		const headings = Array.from(document.querySelectorAll<HTMLElement>(selector))
 		if (!headings.length) {
 			setActiveId(null)
 			return
 		}
 
-		const hash = location.hash.slice(1)
-		const hasValidHash = hash && Array.from(headings).some((h) => h.id === hash)
-		setActiveId(hasValidHash ? hash : null)
+		const initialHash = window.location.hash.slice(1)
+		if (initialHash && document.getElementById(initialHash)) {
+			setActiveId(initialHash)
+		}
 
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (isManualRef.current) return
 
-				const topEntry = entries
-					.filter((e) => e.isIntersecting)
-					.sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top)[0]
+				const visible = new Set(entries.filter((e) => e.isIntersecting).map((e) => e.target))
 
-				setActiveId(topEntry?.target.id ?? null)
+				const firstVisible = headings.find((h) => visible.has(h))
+
+				if (firstVisible && firstVisible.id !== activeIdRef.current) {
+					setActiveId(firstVisible.id)
+				}
 			},
-			{ rootMargin: "0% 0% -70% 0%", threshold: 0.1 }
+			{
+				rootMargin: "0% 0% -60% 0%",
+				threshold: 0,
+			}
 		)
-
-		for (const el of headings) observer.observe(el)
+		for (const heading of headings) {
+			observer.observe(heading)
+		}
 
 		const handleHashChange = () => {
-			const id = location.hash.slice(1)
-			if (id && Array.from(headings).some((h) => h.id === id)) {
+			const id = window.location.hash.slice(1)
+			if (id && document.getElementById(id)) {
 				setManualActiveId(id)
 			}
 		}
 
-		addEventListener("hashchange", handleHashChange)
+		window.addEventListener("hashchange", handleHashChange)
 
 		return () => {
 			observer.disconnect()
-			removeEventListener("hashchange", handleHashChange)
-			if (timeoutRef.current) clearTimeout(timeoutRef.current)
+			window.removeEventListener("hashchange", handleHashChange)
+			if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
 		}
-	}, [selector, location.pathname, setManualActiveId, location.hash])
+	}, [selector, location.pathname, setManualActiveId])
 
 	return { activeId, setManualActiveId }
 }

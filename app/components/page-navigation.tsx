@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router"
+import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 
 interface PageNavigationItem {
@@ -21,12 +22,6 @@ interface PageNavigationLinkProps {
 
 function PageNavigationLink({ item, direction, label }: PageNavigationLinkProps) {
 	const isPrevious = direction === "previous"
-	const arrow = isPrevious ? "←" : "→"
-
-	const arrowClasses = cn(
-		"transition-transform duration-200 ease-in-out",
-		isPrevious ? "group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"
-	)
 
 	return (
 		<div className={clsx({ "text-right": !isPrevious })}>
@@ -36,21 +31,13 @@ function PageNavigationLink({ item, direction, label }: PageNavigationLinkProps)
 				prefetch="intent"
 				{...(direction === "next" && { viewTransition: true })}
 				className={cn(
-					"inline-flex items-center gap-1 rounded-md px-2 py-1 text-[var(--color-text-active)] text-sm no-underline transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)] md:text-lg",
-					isPrevious ? "-ml-2 hover:-translate-x-1" : "-mr-2 hover:translate-x-1"
+					"inline-flex items-center gap-1 rounded-md px-2 py-1 text-[var(--color-text-active)] text-sm no-underline transition-transform duration-200 ease-in-out hover:transform hover:text-[color:var(--color-text-hover)] sm:text-base md:gap-1.5 md:text-lg",
+					isPrevious ? "-ml-2" : "-mr-2"
 				)}
 			>
-				{isPrevious && (
-					<span aria-hidden="true" className={arrowClasses}>
-						{arrow}
-					</span>
-				)}
+				{isPrevious && <Icon name="ArrowLeft" aria-hidden="true" className="size-3 md:size-4" />}
 				{item.title}
-				{!isPrevious && (
-					<span aria-hidden="true" className={arrowClasses}>
-						{arrow}
-					</span>
-				)}
+				{!isPrevious && <Icon name="ArrowRight" aria-hidden="true" className="size-3 md:size-4" />}
 			</Link>
 		</div>
 	)
@@ -77,7 +64,7 @@ export function PageNavigation({ previous, next }: PageNavigationProps) {
 
 	return (
 		<nav
-			className="mt-12 flex items-start justify-between border-[var(--color-border) border-t pt-6 text-[var(--color-text-active)] text-sm"
+			className="mt-12 flex items-start justify-between border-[var(--color-border)] border-t pt-6 text-[var(--color-text-active)] text-xs sm:text-sm md:text-base"
 			aria-label="Pagination navigation"
 		>
 			{previous ? <PageNavigationLink item={previous} direction="previous" label={t("links.previous")} /> : <div />}

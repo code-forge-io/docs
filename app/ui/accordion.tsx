@@ -106,5 +106,5 @@ export const AccordionItem = ({
  * ```
  */
 export const Accordion = ({ children, className }: AccordionProps) => {
-	return <div className={cn(className)}>{children}</div>
+	return <div className={className}>{children}</div>
 }
