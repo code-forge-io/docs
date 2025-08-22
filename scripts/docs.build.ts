@@ -2,23 +2,11 @@ import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
 import os from "node:os"
 import { isAbsolute, join, resolve } from "node:path"
-import { pathToFileURL } from "node:url"
-import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
-import { ZodError } from "zod"
-import { type DocsConfig, DocsConfigSchema } from "../docs-config/docs.schema"
-
-const { values } = parseArgs({
-	args: process.argv.slice(2),
-	options: { config: { type: "string" } },
-})
-if (!values.config) {
-	// biome-ignore lint/suspicious/noConsole: keep this for debugging
-	console.error(chalk.red("❌ You must provide --config <path> (or --config=<path>)"))
-	process.exit(1)
-}
-const CONFIG_PATH = values.config
+import type { DocsConfig } from "../docs-config/docs.schema"
+import { loadDocsConfig, requireConfigPathFromCLI } from "./load-docs-config"
+import { ensureGitignoreHasOutputBase } from "./update-docs-gitignore"
 
 type RunOpts = { cwd?: string; inherit?: boolean }
 function run(cmd: string, opts: RunOpts = {}): string {
@@ -44,32 +32,9 @@ const resetDir = (p: string) => {
 	ensureDir(p)
 }
 
-// biome-ignore lint/nursery/noProcessEnv: GITHUB_WORKSPACE is set by GitHub Actions
+// use checkout path in Actions if present; otherwise detect repo root
+// biome-ignore lint/nursery/noProcessEnv: this is provided by GitHub Actions
 const REPO_TOP = process.env.GITHUB_WORKSPACE || run("git rev-parse --show-toplevel")
-
-async function loadConfig() {
-	const abs = resolve(CONFIG_PATH)
-	if (!existsSync(abs)) {
-		// biome-ignore lint/suspicious/noConsole: keep this for debugging
-		console.error(chalk.red(`❌ Config not found: ${abs}`))
-		process.exit(1)
-	}
-	try {
-		const mod = await import(pathToFileURL(abs).href)
-		return DocsConfigSchema.parse(mod.default ?? mod.config ?? mod)
-	} catch (e) {
-		if (e instanceof ZodError) {
-			// biome-ignore lint/suspicious/noConsole: keep this for debugging
-			console.error(chalk.red("❌ Invalid docs config:"))
-			// biome-ignore lint/suspicious/noConsole: keep this for debugging
-			console.error(chalk.yellow(JSON.stringify(e.format(), null, 2)))
-		} else {
-			// biome-ignore lint/suspicious/noConsole: keep this for debugging
-			console.error(chalk.red("❌ Failed to load config module:"), e)
-		}
-		process.exit(1)
-	}
-}
 
 const allTags = () => run("git tag --list", { cwd: REPO_TOP }).split("\n").filter(Boolean)
 
@@ -84,24 +49,10 @@ function resolveTags(cfg: DocsConfig) {
 		.sort(semver.rcompare)
 }
 
-let BASE_TMP = ""
-let BASE_WT = ""
-function prepareBaseInstall(baseTag: string) {
-	BASE_TMP = mkdtempSync(resolve(os.tmpdir(), "docs-base-"))
-	BASE_WT = resolve(BASE_TMP, baseTag)
-	run(`git worktree add --detach "${BASE_WT}" "refs/tags/${baseTag}"`, { cwd: REPO_TOP, inherit: true })
-	run("pnpm install --frozen-lockfile", { cwd: BASE_WT, inherit: true })
-
-	const baseDocs = resolve(BASE_WT, "docs")
-	if (existsSync(resolve(baseDocs, "package.json"))) {
-		run("pnpm install --frozen-lockfile", { cwd: baseDocs, inherit: true })
-	}
-}
-
 function linkNodeModules(fromDir: string, toDir: string) {
 	if (!existsSync(fromDir)) return
 	if (existsSync(toDir)) rmSync(toDir, { recursive: true, force: true })
-	symlinkSync(fromDir, toDir)
+	symlinkSync(fromDir, toDir, process.platform === "win32" ? "junction" : "dir")
 }
 
 function buildTag(tag: string, cfg: DocsConfig) {
@@ -141,7 +92,7 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		resetDir(ccDest)
 		cpSync(ccSrc, ccDest, { recursive: true })
 
-		// biome-ignore lint/suspicious/noConsole: keep this for debugging
+		// biome-ignore lint/suspicious/noConsole: keep log for debugging
 		console.log(chalk.green(`✔ ${tag}`), chalk.gray(`→ ${ccDest}`))
 	} finally {
 		run(`git worktree remove "${worktreePath}" --force`, { cwd: REPO_TOP, inherit: true })
@@ -149,21 +100,19 @@ function buildTag(tag: string, cfg: DocsConfig) {
 	}
 }
 ;(async () => {
-	const cfg = await loadConfig()
+	const configPath = requireConfigPathFromCLI()
+	const cfg = await loadDocsConfig(configPath)
 	const tags = resolveTags(cfg)
 
 	if (!tags.length) {
-		// biome-ignore lint/suspicious/noConsole: keep this for debugging
+		// biome-ignore lint/suspicious/noConsole: keep log for debugging
 		console.error(chalk.red("❌ No matching tags."))
 		process.exit(1)
 	}
-
-	prepareBaseInstall(tags[0])
-
-	// biome-ignore lint/suspicious/noConsole: keep this for debugging
+	// biome-ignore lint/suspicious/noConsole: keep log for debugging
 	console.log(chalk.cyan(`Building docs for: ${tags.join(", ")}`))
 	for (const tag of tags) {
-		// biome-ignore lint/suspicious/noConsole: keep this for debugging
+		// biome-ignore lint/suspicious/noConsole: keep log for debugging
 		console.log(chalk.blue(`\n➡️  Building ${tag}`))
 		buildTag(tag, cfg)
 	}
@@ -174,13 +123,15 @@ function buildTag(tag: string, cfg: DocsConfig) {
 export const versions = ${JSON.stringify(sorted, null, 2)} as const
 `
 	writeFileSync(versionsFile, content)
-	// biome-ignore lint/suspicious/noConsole: keep this for debugging
+	// biome-ignore lint/suspicious/noConsole: keep log for debugging
 	console.log(chalk.green(`\n✔ Wrote versions.ts with ${tags.length} versions → ${versionsFile}`))
 
-	// biome-ignore lint/suspicious/noConsole: keep this for debugging
+	// keep .gitignore up to date )
+	ensureGitignoreHasOutputBase(cfg.output.baseDir)
+	// biome-ignore lint/suspicious/noConsole: keep log for debugging
 	console.log(chalk.green("\n✅ Done."))
 })().catch((e) => {
-	// biome-ignore lint/suspicious/noConsole: keep this for debugging
+	// biome-ignore lint/suspicious/noConsole: keep log for debugging
 	console.error(chalk.red("❌ Build failed:"), e)
 	process.exit(1)
 })
