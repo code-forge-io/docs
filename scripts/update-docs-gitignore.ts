@@ -1,7 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { isAbsolute, relative, resolve } from "node:path"
 import chalk from "chalk"
-import { loadDocsConfig, requireConfigPathFromCLI } from "./load-docs-config"
 
 export function ensureGitignoreHasOutputBase(baseDir: string) {
 	const cwd = process.cwd()
@@ -26,13 +25,4 @@ export function ensureGitignoreHasOutputBase(baseDir: string) {
 		// biome-ignore lint/suspicious/noConsole: keep log for debugging
 		console.log(chalk.gray(`ℹ ${gi} already up to date.`))
 	}
-}
-
-// CLI usage: `tsx scripts/docs.gitignore.ts --config ./docs/docs.config.ts`
-if (process.argv[1]?.endsWith("docs.gitignore.ts")) {
-	;(async () => {
-		const configPath = requireConfigPathFromCLI()
-		const cfg = await loadDocsConfig(configPath)
-		ensureGitignoreHasOutputBase(cfg.output.baseDir)
-	})()
 }
