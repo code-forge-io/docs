@@ -1,5 +1,5 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
-import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
+import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
 import os from "node:os"
 import { isAbsolute, join, resolve } from "node:path"
 import { pathToFileURL } from "node:url"
@@ -44,7 +44,7 @@ const resetDir = (p: string) => {
 	ensureDir(p)
 }
 
-// biome-ignore lint/nursery/noProcessEnv: TODO
+// biome-ignore lint/nursery/noProcessEnv: GITHUB_WORKSPACE is set by GitHub Actions
 const REPO_TOP = process.env.GITHUB_WORKSPACE || run("git rev-parse --show-toplevel")
 
 async function loadConfig() {
@@ -84,18 +84,37 @@ function resolveTags(cfg: DocsConfig) {
 		.sort(semver.rcompare)
 }
 
+let BASE_TMP = ""
+let BASE_WT = ""
+function prepareBaseInstall(baseTag: string) {
+	BASE_TMP = mkdtempSync(resolve(os.tmpdir(), "docs-base-"))
+	BASE_WT = resolve(BASE_TMP, baseTag)
+	run(`git worktree add --detach "${BASE_WT}" "refs/tags/${baseTag}"`, { cwd: REPO_TOP, inherit: true })
+	run("pnpm install --frozen-lockfile", { cwd: BASE_WT, inherit: true })
+
+	const baseDocs = resolve(BASE_WT, "docs")
+	if (existsSync(resolve(baseDocs, "package.json"))) {
+		run("pnpm install --frozen-lockfile", { cwd: baseDocs, inherit: true })
+	}
+}
+
+function linkNodeModules(fromDir: string, toDir: string) {
+	if (!existsSync(fromDir)) return
+	if (existsSync(toDir)) rmSync(toDir, { recursive: true, force: true })
+	symlinkSync(fromDir, toDir)
+}
+
 function buildTag(tag: string, cfg: DocsConfig) {
 	const tmpBase = mkdtempSync(resolve(os.tmpdir(), "docs-wt-"))
 	const worktreePath = resolve(tmpBase, tag)
 
-	run(`git worktree add --detach "${worktreePath}" "refs/tags/${tag}"`, {
-		cwd: REPO_TOP,
-		inherit: true,
-	})
+	run(`git worktree add --detach "${worktreePath}" "refs/tags/${tag}"`, { cwd: REPO_TOP, inherit: true })
 
 	try {
-		const docsWorkspace = resolve(worktreePath, "docs")
+		linkNodeModules(resolve(REPO_TOP, "node_modules"), resolve(worktreePath, "node_modules"))
+		linkNodeModules(resolve(REPO_TOP, "docs", "node_modules"), resolve(worktreePath, "docs", "node_modules"))
 
+		const docsWorkspace = resolve(worktreePath, "docs")
 		const docsContentDir = isAbsolute(cfg.content.docsDir)
 			? cfg.content.docsDir
 			: resolve(docsWorkspace, cfg.content.docsDir)
@@ -112,7 +131,6 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		const outDir = join(resolve(cfg.output.baseDir), tag)
 		resetDir(outDir)
 
-		run("pnpm install --frozen-lockfile", { cwd: worktreePath, inherit: true })
 		run("pnpm run content-collections:build", { cwd: docsWorkspace, inherit: true })
 
 		const ccSrc = resolve(docsWorkspace, ".content-collections")
@@ -139,6 +157,8 @@ function buildTag(tag: string, cfg: DocsConfig) {
 		console.error(chalk.red("❌ No matching tags."))
 		process.exit(1)
 	}
+
+	prepareBaseInstall(tags[0])
 
 	// biome-ignore lint/suspicious/noConsole: keep this for debugging
 	console.log(chalk.cyan(`Building docs for: ${tags.join(", ")}`))
