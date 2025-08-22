@@ -26,7 +26,7 @@ export function VersionDropdown() {
 			<select
 				id="version"
 				name="version"
-				className="cursor-pointer appearance-none rounded-lg bg-[var(--color-background)] py-2.5 pr-10 pl-4 font-medium text-sm shadow-sm transition-all duration-200 focus:outline-none"
+				className="cursor-pointer appearance-none rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] py-2.5 pr-10 pl-4 font-medium text-sm transition-all duration-200 focus:outline-none"
 				value={selectedVersion}
 				onChange={onChange}
 			>
