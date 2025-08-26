@@ -6,28 +6,18 @@ import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layo
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import { loadContentCollections } from "~/utils/load-content-collections"
-import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
+import { resolveDocVersionOrRedirect } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
 
-	// if (v && v === getLatestVersion()) {
-	// 	const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
-	// 	throw redirect(path)
-	// }
+	const { version } = resolveDocVersionOrRedirect({ versionParam: v, section, subsection, filename })
 
-	// if (v && !isKnownVersion(v)) {
-	// 	const path = subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
-	// 	throw redirect(path)
-	// }
-
-	const version = isKnownVersion(v) ? v : getLatestVersion()
 	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
-
 	const { allPages } = await loadContentCollections(version)
-	const page = allPages.find((post) => post.slug === slug)
+	const page = allPages.find((p) => p.slug === slug)
 	if (!page) throw new Response("Not Found", { status: 404 })
 
 	return { page, version }

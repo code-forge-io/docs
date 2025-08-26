@@ -5,18 +5,13 @@ on:
     types: [published]
   workflow_dispatch: {}
 
-permissions:
-  contents: read
-  actions: read
-
 concurrency:
-  group: docs-build-${{ github.event_name }}-${{ github.ref }}
+  group: docs-build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-docs:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -12,7 +12,7 @@
 		"script": "tsx scripts/setup.ts",
 		"prebuild": "pnpm run content-collections:build",
 		"build": "react-router build",
-		"predev": "pnpm run typegen",
+		"predev": "pnpm run typegen && tsx scripts/check-generated-docs.ts",
 		"dev": "react-router dev",
 		"start": "NODE_ENV=production node ./build/server/index.js",
 		"pretest": "pnpm run content-collections:build && pnpm run typegen",
@@ -29,7 +29,7 @@
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
 		"content-collections:build": "content-collections build",
-		"generate:docs": "npx tsx scripts/docs.build.ts --config ./docs.config.ts"
+		"generate:docs": "npx tsx scripts/docs.build.ts"
 	},
 	"dependencies": {
 		"@content-collections/cli": "0.1.6",

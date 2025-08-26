@@ -6,7 +6,7 @@ export type Version = (typeof versions)[number]
 export const getLatestVersion = () => versions[0]
 
 export function isKnownVersion(v: string | undefined): v is Version {
-	return !!v && (versions as readonly string[]).includes(v)
+	return typeof v === "string" && versions.some((ver) => ver === v)
 }
 
 export function useCurrentVersion() {

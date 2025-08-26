@@ -1,18 +1,14 @@
-import { redirect } from "react-router"
 import GithubContributeLinks from "~/components/github-contribute-links"
 import PageMdxArticle from "~/components/page-mdx-article"
 import { loadContentCollections } from "~/utils/load-content-collections"
-import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
+import { resolveHomeVersionOrRedirect } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-homepage"
 
 export async function loader({ params }: Route.LoaderArgs) {
-	const { version: paramsVersion } = params
-	// TODO extract these 3 lines in util function so it can be reused, redirect generate
-	if (paramsVersion && !isKnownVersion(paramsVersion)) throw redirect("/home")
-	if (paramsVersion && paramsVersion === getLatestVersion()) throw redirect("/home")
-	const version = isKnownVersion(paramsVersion) ? paramsVersion : getLatestVersion()
+	const { version } = resolveHomeVersionOrRedirect(params.version)
+
 	const { allPages } = await loadContentCollections(version)
-	const page = allPages.find((post) => post._meta.path === "_index")
+	const page = allPages.find((p) => p._meta.path === "_index")
 	if (!page) throw new Response("Not Found", { status: 404 })
 
 	return { page, version }

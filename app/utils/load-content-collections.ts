@@ -1,20 +1,26 @@
-import { getServerEnv } from "~/env.server"
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 import type { Version } from "~/utils/versions-utils"
 
-type CCModule = typeof import("content-collections")
-
+/**
+ * Load content-collections outputs
+ * Always read from generated-docs.
+ * If no tags/releases exist → fall back to main branch
+ * If generated-docs missing → tell user to run generate:docs
+ */
 export async function loadContentCollections(version: Version) {
-	const { NODE_ENV } = getServerEnv()
+	const here = dirname(fileURLToPath(import.meta.url))
+	const base = resolve(here, "../../generated-docs", version, ".content-collections", "generated")
 
-	if (NODE_ENV === "development") {
-		const cc = await import("content-collections")
-		return { allPages: cc.allPages, allSections: cc.allSections }
+	const pagesMod = await import(/* @vite-ignore */ `${base}/allPages.js`)
+	const sectionsMod = await import(/* @vite-ignore */ `${base}/allSections.js`)
+
+	const allPages = pagesMod.default
+	const allSections = sectionsMod.default
+
+	if (!Array.isArray(allPages) || !Array.isArray(allSections)) {
+		throw new Error(`Generated modules must default-export arrays (allPages/allSections) for version ${version}.`)
 	}
 
-	// TODO fix this
-	const base = `../../generated-docs/${version}/.content-collections/generated` as const
-
-	const cc = (await import(/* @vite-ignore */ `${base}/index.js`)) as CCModule
-
-	return { allPages: cc.allPages, allSections: cc.allSections }
+	return { allPages, allSections }
 }

@@ -5,26 +5,21 @@ import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
-import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
+import { resolveLayoutVersion } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-layout"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-	let paramsVersion = params.version
-
-	if (!paramsVersion) {
-		const first = new URL(request.url).pathname.split("/").filter(Boolean)[0]
-		if (isKnownVersion(first)) paramsVersion = first
-	}
-
-	const version = isKnownVersion(paramsVersion) ? paramsVersion : getLatestVersion()
-	return { sidebarTree: await createSidebarTree(version), version }
+	const { version } = resolveLayoutVersion(params.version, request)
+	const sidebarTree = await createSidebarTree(version)
+	return { sidebarTree, version }
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
 	const { sidebarTree } = loaderData
+
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
-				<div className="flex items-center gap-3">
+				<div className="flex items-start gap-3">
 					<Logo>
 						{/* Replace with your Logo */}
 						<span className="p-0">REACT ROUTER DEVTOOLS</span>

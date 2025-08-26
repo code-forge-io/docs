@@ -35,7 +35,6 @@ const section = defineCollection({
 		return {
 			...document,
 			slug: slugNoVersion,
-			sectionId: slugNoVersion.split("/")[0] || "root",
 		}
 	},
 })

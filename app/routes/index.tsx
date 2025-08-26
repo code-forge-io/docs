@@ -5,7 +5,7 @@ import { Icon } from "~/ui/icon/icon"
 import { getLatestVersion } from "~/utils/versions-utils"
 export default function Index() {
 	const navigate = useNavigate()
-	// TODO Use i18next
+	// Customize index page
 	return (
 		<div className="flex min-h-screen flex-col bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
@@ -47,10 +47,6 @@ export default function Index() {
 
 						<div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-6 transition-colors hover:shadow-lg">
 							<h3 className="mb-2 font-semibold text-[var(--color-text-active)] text-lg">Comprehensive Docs</h3>
-
-							<p className="text-[var(--color-text-normal)]">
-								Complete documentation with examples, guides, and best practices.
-							</p>
 						</div>
 					</div>
 
