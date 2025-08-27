@@ -26,8 +26,6 @@ const cleanMarkdown = (text: string) =>
 		//tTrim trailing whitespace
 		.trim()
 
-//TODO this needs to handle more cases, for now it works but it shoud be more generic
-//TODO after refactoring from the comment above, write tests
 export function extractHeadingTreeFromMarkdown(content: string) {
 	const root: HeadingItem[] = []
 	const stack: HeadingItem[] = []

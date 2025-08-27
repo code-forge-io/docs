@@ -24,7 +24,9 @@
 	},
 	"links": {
 		"previous": "Previous",
-		"next": "Next"
+		"next": "Next",
+		"report_an_issue_on_this_page": "Report an issue on this page",
+		"edit_this_page": "Edit this page"
 	},
 	"p": {
 		"last_update": "Last updated: ",
@@ -34,6 +36,8 @@
 	"buttons": {
 		"copy": "Copy",
 		"copied": "Copied",
+		"home": "Back to home",
+		"back": "Go back",
 		"clear": "Clear"
 	},
 	"titles": {
