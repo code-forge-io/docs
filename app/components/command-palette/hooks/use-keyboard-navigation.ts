@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { SearchItem, SearchResult } from "../search-types"
+import type { SearchResult } from "../search-types"
 
 const KEYBOARD_SHORTCUTS = {
 	TOGGLE: "k",
@@ -13,7 +13,7 @@ const KEYBOARD_SHORTCUTS = {
 interface UseKeyboardNavigationProps {
 	isOpen: boolean
 	results: SearchResult[]
-	onSelect: (item: SearchItem) => void
+	onSelect: (result: SearchResult) => void
 	onClose: () => void
 	onToggle: () => void
 }
@@ -54,7 +54,7 @@ export const useKeyboardNavigation = ({ isOpen, results, onSelect, onClose, onTo
 				case KEYBOARD_SHORTCUTS.ENTER:
 					e.preventDefault()
 					if (results[selectedIndex]) {
-						onSelect(results[selectedIndex].item)
+						onSelect(results[selectedIndex])
 					}
 					break
 

@@ -2,10 +2,10 @@ import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 import type { SearchItem } from "../search-types"
-import { SearchResult } from "./search-result"
+import { SearchResultRow } from "./search-result"
 
 interface SearchHistoryProps {
-	history: SearchItem[]
+	history: (SearchItem & { highlightedText?: string })[]
 	onSelect: (item: SearchItem) => void
 	onRemove: (itemId: string) => void
 	onClear: () => void
@@ -79,13 +79,18 @@ const HistoryItem = ({
 	onSelect,
 	onRemove,
 }: {
-	item: SearchItem
+	item: SearchItem & { highlightedText?: string }
 	index: number
 	onSelect: (item: SearchItem) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div key={`${item.id}-${index}`} className="group relative">
-		<SearchResult item={item} highlightedText={item.title} isSelected={false} onClick={() => onSelect(item)} />
+		<SearchResultRow
+			item={item}
+			highlightedText={item.highlightedText ?? item.title}
+			isSelected={false}
+			onClick={() => onSelect(item)}
+		/>
 		<RemoveItemButton onRemove={onRemove} itemId={item.id} />
 	</div>
 )
@@ -94,7 +99,7 @@ const HistoryItemsList = ({
 	onSelect,
 	onRemove,
 }: {
-	history: SearchItem[]
+	history: (SearchItem & { highlightedText?: string })[]
 	onSelect: (item: SearchItem) => void
 	onRemove: (itemId: string) => void
 }) => (
@@ -105,7 +110,7 @@ const HistoryItemsList = ({
 	</div>
 )
 
-const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryProps) => {
+export const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryProps) => {
 	if (history.length === 0) {
 		return
 	}
@@ -117,5 +122,3 @@ const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryPr
 		</div>
 	)
 }
-
-export default SearchHistory

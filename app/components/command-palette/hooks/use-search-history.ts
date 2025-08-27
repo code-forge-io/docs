@@ -5,6 +5,7 @@ import type { SearchItem } from "../search-types"
 interface HistoryItem extends SearchItem {
 	clickedAt: number
 	clickCount: number
+	highlightedText?: string
 }
 
 const MAX_HISTORY_ITEMS = 10
@@ -34,7 +35,7 @@ export const useSearchHistory = () => {
 		}
 	}, [history])
 
-	const addToHistory = useCallback((item: SearchItem) => {
+	const addToHistory = useCallback((item: SearchItem & { highlightedText?: string }) => {
 		setHistory((prev) => {
 			const existingIndex = prev.findIndex((h) => h.id === item.id)
 
@@ -44,6 +45,7 @@ export const useSearchHistory = () => {
 					...existing,
 					clickedAt: Date.now(),
 					clickCount: existing.clickCount + 1,
+					highlightedText: item.highlightedText ?? existing.highlightedText,
 				}
 
 				return [updated, ...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)]

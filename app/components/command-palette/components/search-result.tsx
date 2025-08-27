@@ -137,7 +137,7 @@ const useButtonStyles = (isSelected: boolean) => {
 	)
 }
 
-export const SearchResult = ({ item, highlightedText, isSelected, onClick }: SearchResultProps) => {
+export const SearchResultRow = ({ item, highlightedText, isSelected, onClick }: SearchResultProps) => {
 	const buttonStyles = useButtonStyles(isSelected)
 
 	return (

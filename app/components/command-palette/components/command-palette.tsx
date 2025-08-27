@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router"
 import { Modal } from "~/components/modal"
@@ -6,12 +6,12 @@ import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
 import { useSearchHistory } from "../hooks/use-search-history"
-import type { SearchItem } from "../search-types"
+import type { SearchItem, SearchResult } from "../search-types"
 import { EmptyState } from "./empty-state"
 import { ResultsFooter } from "./results-footer"
-import SearchHistory from "./search-history"
+import { SearchHistory } from "./search-history"
 import { SearchInput } from "./search-input"
-import { SearchResult } from "./search-result"
+import { SearchResultRow } from "./search-result"
 import { TriggerButton } from "./trigger-button"
 
 interface CommandPaletteProps {
@@ -30,26 +30,77 @@ export const CommandPalette = ({ searchIndex, placeholder }: CommandPaletteProps
 	const { isOpen, openModal, closeModal } = useModalState()
 	const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory()
 
-	const results = useMemo(() => {
-		return fuzzySearch(searchIndex, query, {
-			threshold: 0.8,
-			minMatchCharLength: 3,
-		})
-	}, [query, searchIndex])
+	const results = fuzzySearch(searchIndex, query, {
+		threshold: 0.8,
+		minMatchCharLength: 3,
+	})
 
 	const handleClose = () => {
 		closeModal()
 		setQuery("")
 	}
 
+	function slugifyHeading(text: string) {
+		return text
+			.toLowerCase()
+			.replace(/[^a-z0-9\s-]/g, "")
+			.replace(/\s+/g, "-")
+			.trim()
+	}
+
+	function findBestMatchingHeading(headings: string[] | undefined, q: string) {
+		if (!headings || headings.length === 0 || !q) return undefined
+		const terms = q.toLowerCase().split(/\s+/).filter(Boolean)
+		let best: { heading: string; score: number } | undefined
+		for (const h of headings) {
+			const lower = h.toLowerCase()
+			let score = 0
+			for (const t of terms) {
+				if (lower.includes(t)) score += 1
+			}
+			if (!best || score > best.score) best = { heading: h, score }
+		}
+		return best && best.score > 0 ? best.heading : undefined
+	}
+
 	const handleNavigateAndClose = (item: SearchItem) => {
-		if (item.slug) navigate(item.slug)
+		let target = item.slug
+		if (item.type === "page") {
+			const best = findBestMatchingHeading(item.headings, query)
+			if (best) {
+				const hash = slugifyHeading(best)
+				target = `${item.slug}#${hash}`
+			}
+		}
+		if (target) navigate(target)
 		handleClose()
 	}
 
-	const handleResultSelect = (item: SearchItem) => {
-		addToHistory(item)
-		handleNavigateAndClose(item)
+	const handleResultSelect = (result: SearchResult) => {
+		if (!isOpen) return
+		const item = result.item
+		let selectedItem: SearchItem & { highlightedText?: string } = item
+		if (item.type === "page") {
+			const best = findBestMatchingHeading(item.headings, query)
+			if (best) {
+				const hash = slugifyHeading(best)
+				selectedItem = {
+					...item,
+					id: `${item.id}#${hash}`,
+					title: best,
+					slug: `${item.slug}#${hash}`,
+					type: "heading",
+					breadcrumb: [...(item.breadcrumb || []), item.title],
+					highlightedText: result.highlightedText,
+				}
+			} else {
+				selectedItem = { ...item, highlightedText: result.highlightedText }
+			}
+		} else {
+			selectedItem = { ...item, highlightedText: result.highlightedText }
+		}
+		addToHistory(selectedItem)
+		handleNavigateAndClose(selectedItem)
 	}
 
 	const handleHistorySelect = (item: SearchItem) => {
@@ -68,17 +119,18 @@ export const CommandPalette = ({ searchIndex, placeholder }: CommandPaletteProps
 		return <TriggerButton onOpen={openModal} placeholder={placeholder ?? t("placeholders.search_documentation")} />
 	}
 
+	// TODO refactor ? : ? :
 	const content = query ? (
 		results.length === 0 ? (
 			<EmptyState query={query} />
 		) : (
 			results.map((result, index) => (
-				<SearchResult
+				<SearchResultRow
 					key={`${result.item.slug || result.item.id}-${index}`}
 					item={result.item}
 					highlightedText={result.highlightedText}
 					isSelected={index === selectedIndex}
-					onClick={() => handleResultSelect(result.item)}
+					onClick={() => handleResultSelect(result)}
 				/>
 			))
 		)
@@ -103,7 +155,7 @@ export const CommandPalette = ({ searchIndex, placeholder }: CommandPaletteProps
 			<SearchInput
 				ref={inputRef}
 				value={query}
-				onChange={setQuery} // Ensure SearchInput calls with the string
+				onChange={setQuery}
 				placeholder={placeholder ?? t("placeholders.search_documentation")}
 			/>
 
