@@ -18,7 +18,6 @@ type Doc = { slug: string; title: string }
 const sec = (over: Partial<SidebarSection>) => ({
 	title: "",
 	slug: "",
-	sectionId: "",
 	documentationPages: [],
 	subsections: [],
 	...over,

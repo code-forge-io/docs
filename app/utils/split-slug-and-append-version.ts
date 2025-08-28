@@ -5,12 +5,12 @@ export function splitSlugAndAppendVersion(slug: string) {
 	const version = useCurrentVersion()
 	if (parts.length === 2) {
 		const [section, filename] = parts
-		return { section, filename, version }
+		return { version, section, filename }
 	}
 
 	if (parts.length === 3) {
 		const [section, subsection, filename] = parts
-		return { section, subsection, filename, version }
+		return { version, section, subsection, filename }
 	}
 
 	throw new Error(

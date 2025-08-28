@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import type { Version } from "~/utils/versions-utils"
@@ -10,7 +11,12 @@ import type { Version } from "~/utils/versions-utils"
  */
 export async function loadContentCollections(version: Version) {
 	const here = dirname(fileURLToPath(import.meta.url))
-	const base = resolve(here, "../../generated-docs", version, ".content-collections", "generated")
+	const genBase = resolve(here, "../../generated-docs", version, ".content-collections", "generated")
+
+	// Fallback for local dev: if generated output is missing, use local .content-collections
+	const localBase = resolve(here, "../../.content-collections", "generated")
+	const base =
+		existsSync(resolve(genBase, "allPages.js")) && existsSync(resolve(genBase, "allSections.js")) ? genBase : localBase
 
 	const pagesMod = await import(/* @vite-ignore */ `${base}/allPages.js`)
 	const sectionsMod = await import(/* @vite-ignore */ `${base}/allSections.js`)

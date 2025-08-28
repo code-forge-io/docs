@@ -1,7 +1,7 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
-import { isAbsolute, join, resolve } from "node:path"
+import { join, relative, resolve } from "node:path"
 import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
@@ -30,8 +30,16 @@ const resetDir = (p: string) => {
 	ensureDir(p)
 }
 
-// biome-ignore lint/nursery/noProcessEnv: we use checkout path in actions if present, otherwise detect repo root
+const CONTENT_DIR_NAME = "content"
+const OUT_BASE = "generated-docs"
+
+// biome-ignore lint/nursery/noProcessEnv: we use checkout path in Actions if present, otherwise detect repo root
 const REPO_TOP = process.env.GITHUB_WORKSPACE || run("git rev-parse --show-toplevel")
+
+// current docs workspace - where the script is run from
+const CWD = process.cwd()
+// Path to docs workspace relative to repo root
+const DOCS_REL = relative(REPO_TOP, CWD)
 
 const allTags = () => run("git tag --list", { cwd: REPO_TOP }).split("\n").filter(Boolean)
 
@@ -42,53 +50,21 @@ function resolveTagsFromSpec(spec: string) {
 		.map((t) => t.trim())
 		.filter(Boolean)
 
-	const matched = new Set<string>()
-	for (const token of tokens) {
-		for (const tag of tags) {
-			if (semver.satisfies(tag, token, { includePrerelease: true })) {
-				matched.add(tag)
-			}
-		}
-	}
+	const matched = tags.filter((tag) =>
+		tokens.some((token) => semver.satisfies(tag, token, { includePrerelease: true }))
+	)
 
-	return [...matched].sort(semver.rcompare)
-}
-
-function buildTag(tag: string, docsDir: string, outBase: string) {
-	const tmpBase = mkdtempSync(resolve(os.tmpdir(), "docs-wt-"))
-	const worktreePath = resolve(tmpBase, tag)
-
-	run(`git worktree add --detach "${worktreePath}" "refs/tags/${tag}"`, { cwd: REPO_TOP, inherit: true })
-
-	if (existsSync(resolve(worktreePath, "package.json"))) {
-		run("pnpm install --frozen-lockfile", { cwd: worktreePath, inherit: true })
-	}
-
-	try {
-		const docsWorkspace = resolve(worktreePath, "docs")
-		const docsContentDir = isAbsolute(docsDir) ? docsDir : resolve(docsWorkspace, docsDir)
-
-		if (existsSync(resolve(docsWorkspace, "package.json"))) {
-			run("pnpm install --frozen-lockfile", { cwd: docsWorkspace, inherit: true })
-		}
-
-		if (!existsSync(docsWorkspace)) {
-			throw new Error(`Docs workspace not found in worktree: ${docsWorkspace}`)
-		}
-		if (!existsSync(docsContentDir)) {
-			throw new Error(`Docs content directory "${docsDir}" not found in tag ${tag} (looked at ${docsContentDir}).`)
-		}
-
-		const outDir = join(resolve(outBase), tag)
-		buildDocs(docsWorkspace, outDir)
-	} finally {
-		run(`git worktree remove "${worktreePath}" --force`, { cwd: REPO_TOP, inherit: true })
-		rmSync(tmpBase, { recursive: true, force: true })
-	}
+	return matched.sort(semver.rcompare)
 }
 
 function buildDocs(sourceDir: string, outDir: string) {
-	if (!existsSync(sourceDir)) throw new Error(`Docs source not found: ${sourceDir}`)
+	if (!existsSync(sourceDir)) throw new Error(`Docs workspace not found: ${sourceDir}`)
+
+	const docsContentDir = resolve(sourceDir, CONTENT_DIR_NAME)
+	if (!existsSync(docsContentDir)) {
+		throw new Error(`Docs content directory "${CONTENT_DIR_NAME}" not found at ${docsContentDir}`)
+	}
+
 	resetDir(outDir)
 
 	run("pnpm run content-collections:build", { cwd: sourceDir, inherit: true })
@@ -102,33 +78,64 @@ function buildDocs(sourceDir: string, outDir: string) {
 	// biome-ignore lint/suspicious/noConsole: keep console log for debugging
 	console.log(chalk.green(`✔ Built docs → ${ccDest}`))
 }
+
+function buildTag(tag: string) {
+	const tmpBase = mkdtempSync(resolve(os.tmpdir(), "docs-wt-"))
+	const worktreePath = resolve(tmpBase, tag)
+
+	run(`git worktree add --detach "${worktreePath}" "refs/tags/${tag}"`, {
+		cwd: REPO_TOP,
+		inherit: true,
+	})
+
+	try {
+		const docsWorkspace = resolve(worktreePath, DOCS_REL)
+
+		if (existsSync(resolve(docsWorkspace, "package.json"))) {
+			run("pnpm install --frozen-lockfile", { cwd: docsWorkspace, inherit: true })
+		}
+
+		if (existsSync(resolve(worktreePath, "package.json"))) {
+			run("pnpm install --frozen-lockfile", { cwd: worktreePath, inherit: true })
+		}
+
+		const outDir = join(resolve(OUT_BASE), tag)
+		buildDocs(docsWorkspace, outDir)
+	} finally {
+		run(`git worktree remove "${worktreePath}" --force`, {
+			cwd: REPO_TOP,
+			inherit: true,
+		})
+		rmSync(tmpBase, { recursive: true, force: true })
+	}
+}
 ;(async () => {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
-		options: { versions: { type: "string", default: "main" } },
+		options: {
+			versions: { type: "string", default: "main" },
+		},
 	})
-
-	const outBase = "generated-docs"
-	const docsDir = "content"
 
 	if (values.versions === "main") {
 		// biome-ignore lint/suspicious/noConsole: keep console log for debugging
-		console.log(chalk.cyan("Building docs from main branch"))
-		buildDocs(resolve(REPO_TOP, "docs"), join(outBase, "main"))
+		console.log(chalk.cyan(`Building docs from current workspace: ${CWD}`))
+		buildDocs(CWD, join(OUT_BASE, "main"))
 	} else {
-		const tags = resolveTagsFromSpec(values.versions)
+		const tags = resolveTagsFromSpec(values.versions as string)
 		if (!tags.length) {
 			// biome-ignore lint/suspicious/noConsole: keep console log for debugging
-			console.log(chalk.yellow("No tags matched → building main instead"))
-			buildDocs(resolve(REPO_TOP, "docs"), join(outBase, "main"))
+			console.log(chalk.yellow("No tags matched → building current workspace as 'main' instead"))
+			buildDocs(CWD, join(OUT_BASE, "main"))
 		} else {
 			// biome-ignore lint/suspicious/noConsole: keep console log for debugging
 			console.log(chalk.cyan(`Building docs for: ${tags.join(", ")}`))
-			for (const tag of tags) buildTag(tag, docsDir, outBase)
+			for (const tag of tags) buildTag(tag)
 		}
 	}
 
-	const versions = values.versions === "main" ? ["main"] : resolveTagsFromSpec(values.versions)
+	const versions = values.versions === "main" ? ["main"] : resolveTagsFromSpec(values.versions as string)
+
 	const versionsFile = resolve("app/utils/versions.ts")
 	writeFileSync(
 		versionsFile,
@@ -136,6 +143,7 @@ function buildDocs(sourceDir: string, outDir: string) {
 export const versions = ${JSON.stringify(versions, null, 2)} as const
 `
 	)
+
 	// biome-ignore lint/suspicious/noConsole: keep console log for debugging
 	console.log(chalk.green(`✔ Wrote versions.ts → ${versionsFile}`))
 	// biome-ignore lint/suspicious/noConsole: keep console log for debugging

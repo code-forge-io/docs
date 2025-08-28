@@ -1,5 +1,5 @@
 import { redirect } from "react-router"
-import { type Version, getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
+import { getLatestVersion, isKnownVersion } from "~/utils/versions-utils"
 
 export function docPath(section: string, filename: string, subsection?: string) {
 	return subsection ? `/${section}/${subsection}/${filename}` : `/${section}/${filename}`
@@ -36,7 +36,7 @@ export function resolveDocVersionOrRedirect(args: {
 	section: string
 	filename: string
 	subsection?: string
-}): { version: Version } {
+}) {
 	const { versionParam: v, section, subsection, filename } = args
 
 	if (isUnknownVersion(v) || isLatestVersion(v)) {
@@ -52,7 +52,7 @@ export function resolveDocVersionOrRedirect(args: {
  * - If a version is present but unknown -> redirect to (versionless) `/home`
  * - Otherwise, use the provided version if known, or fall back to latest
  */
-export function resolveHomeVersionOrRedirect(versionParam?: string): { version: Version } {
+export function resolveHomeVersionOrRedirect(versionParam?: string) {
 	if (isUnknownVersion(versionParam) || isLatestVersion(versionParam)) {
 		throw redirect("/home")
 	}
@@ -65,7 +65,7 @@ export function resolveHomeVersionOrRedirect(versionParam?: string): { version: 
  * - Else, peek the first path segment, if it's a known version -> use it
  * - Else fall back to latest
  */
-export function resolveLayoutVersion(paramsVersion: string | undefined, request: Request): { version: Version } {
+export function resolveLayoutVersion(paramsVersion: string | undefined, request: Request) {
 	if (isKnownVersion(paramsVersion)) return { version: paramsVersion }
 	const first = firstPathSegment(request)
 	return { version: ensureVersion(isKnownVersion(first) ? first : undefined) }

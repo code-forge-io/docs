@@ -31,18 +31,10 @@ export default function Index() {
 					<div className="mb-6 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 						<div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-6 transition-colors hover:shadow-lg">
 							<h3 className="mb-2 font-semibold text-[var(--color-text-active)] text-lg">Smart Debugging</h3>
-
-							<p className="text-[var(--color-text-normal)]">
-								Advanced debugging tools with real-time error tracking and performance insights.
-							</p>
 						</div>
 
 						<div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-6 transition-colors hover:shadow-lg">
 							<h3 className="mb-2 font-semibold text-[var(--color-text-active)] text-lg">Lightning Fast</h3>
-
-							<p className="text-[var(--color-text-normal)]">
-								Optimized performance with hot reload and instant feedback during development.
-							</p>
 						</div>
 
 						<div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-6 transition-colors hover:shadow-lg">

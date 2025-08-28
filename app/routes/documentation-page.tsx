@@ -12,7 +12,7 @@ import type { Route } from "./+types/documentation-page"
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
-
+	//TODO fix - when latest rbanch, it fails for documentationPage under subsection
 	const { version } = resolveDocVersionOrRedirect({ versionParam: v, section, subsection, filename })
 
 	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`

@@ -30,7 +30,6 @@ const SectionTitle = ({ title }: { title: string }) => {
 
 const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
 	const indentClass = getIndentClass(depth)
-
 	return (
 		<NavLink
 			prefetch="intent"
