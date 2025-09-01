@@ -1,7 +1,6 @@
-import { type RouteConfig, index, layout, route } from "@react-router/dev/routes"
+import { type RouteConfig, layout, route } from "@react-router/dev/routes"
 
 export default [
-	index("routes/index.tsx"),
 	layout("routes/documentation-layout.tsx", [
 		route(":version?/home", "routes/documentation-homepage.tsx"),
 		route(":version/:section/:subsection?/:filename", "routes/documentation-page.tsx"),
@@ -11,4 +10,5 @@ export default [
 	route("resource/*", "routes/resource.locales.ts"),
 	route("$", "routes/$.tsx"),
 	route("sitemap/:lang.xml", "routes/sitemap.$lang[.]xml.ts"),
+	route("llms.txt", "routes/llms[.]txt.ts"),
 ] satisfies RouteConfig

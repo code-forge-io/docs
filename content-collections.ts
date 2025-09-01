@@ -78,3 +78,24 @@ const page = defineCollection({
 export default defineConfig({
 	collections: [section, page],
 })
+
+export const sectionOutputSchema = sectionSchema.extend({
+	slug: z.string(),
+	version: z.string(),
+	_meta: z.object({ path: z.string() }).partial().optional(),
+})
+
+export const pageOutputSchema = pageSchema.extend({
+	slug: z.string(),
+	section: z.string().optional(),
+	version: z.string(),
+	rawMdx: z.string(),
+	content: z.unknown(),
+	_meta: z.object({ path: z.string() }).partial().optional(),
+})
+
+export type SectionRec = z.infer<typeof sectionOutputSchema>
+export type PageRec = z.infer<typeof pageOutputSchema>
+
+export const SectionsArray = z.array(sectionOutputSchema)
+export const PagesArray = z.array(pageOutputSchema)
