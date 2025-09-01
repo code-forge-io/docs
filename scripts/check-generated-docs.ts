@@ -7,7 +7,9 @@ const base = resolve("generated-docs")
 if (!existsSync(base)) {
 	// biome-ignore lint/suspicious/noConsole: keep console error for debugging
 	console.error(
-		chalk.red("❌ No generated-docs found. Please run `pnpm run generate:docs` at least once before starting the app.")
+		chalk.red(
+			"❌ No generated-docs found. Please run `pnpm run generate:docs` at least once before starting the app.\n"
+		)
 	)
 	process.exit(1)
 }

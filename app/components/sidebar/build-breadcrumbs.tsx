@@ -8,7 +8,7 @@ export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
 
 	const walk = (section: SidebarSection, acc: string[]) => {
 		for (const doc of section.documentationPages) {
-			const docPath = href("/:version?/:section/:subsection?/:filename", splitSlugAndAppendVersion(doc.slug))
+			const docPath = href("/:version/:section/:subsection?/:filename", splitSlugAndAppendVersion(doc.slug))
 			if (docPath === pathname) {
 				trail = [...acc, section.title, doc.title]
 				return true

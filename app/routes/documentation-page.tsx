@@ -6,14 +6,13 @@ import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layo
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import { loadContentCollections } from "~/utils/load-content-collections"
-import { resolveDocVersionOrRedirect } from "~/utils/version-links"
+import { ensureVersion } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
-	//TODO fix - when latest rbanch, it fails for documentationPage under subsection
-	const { version } = resolveDocVersionOrRedirect({ versionParam: v, section, subsection, filename })
+	const { version } = ensureVersion(v)
 
 	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
 	const { allPages } = await loadContentCollections(version)

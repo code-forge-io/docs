@@ -28,13 +28,12 @@ const section = defineCollection({
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
-		const rawPath = document._meta.path
-		const pathNoVersion = rawPath.split("/").filter(Boolean).join("/")
-		const slugNoVersion = cleanSlug(pathNoVersion)
+		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
+		const slug = cleanSlug(relativePath)
 
 		return {
 			...document,
-			slug: slugNoVersion,
+			slug,
 		}
 	},
 })
@@ -56,9 +55,8 @@ const page = defineCollection({
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
-		const rawPath = document._meta.path
-		const pathNoVersion = rawPath.split("/").filter(Boolean).join("/")
-		const slugNoVersion = cleanSlug(pathNoVersion)
+		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
+		const slug = cleanSlug(relativePath)
 
 		const content = await compileMDX(context, document, {
 			rehypePlugins: [rehypeSlug],
@@ -70,8 +68,8 @@ const page = defineCollection({
 		return {
 			...document,
 			content,
-			slug: slugNoVersion,
-			section: slugNoVersion.split("/")[0] ?? "",
+			slug,
+			section: slug.split("/")[0] ?? "",
 			rawMdx,
 		}
 	},
