@@ -30,7 +30,7 @@ export function resolveLayoutVersion(paramsVersion: string | undefined, request:
 	return ensureVersion(isKnownVersion(first) ? first : undefined)
 }
 
-export function homepageUrl(base: string, version: string) {
+function homepageUrl(base: string, version: string) {
 	return `${base}/${version}/home`
 }
 
