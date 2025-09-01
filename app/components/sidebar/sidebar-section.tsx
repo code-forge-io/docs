@@ -1,6 +1,6 @@
 import { NavLink, href } from "react-router"
 import { AccordionItem } from "~/ui/accordion"
-import { splitSlug } from "~/utils/split-slug"
+import { splitSlugAndAppendVersion } from "~/utils/split-slug-and-append-version"
 import type { SidebarSection } from "./sidebar"
 
 const getIndentClass = (depth: number) => {
@@ -30,11 +30,10 @@ const SectionTitle = ({ title }: { title: string }) => {
 
 const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
 	const indentClass = getIndentClass(depth)
-
 	return (
 		<NavLink
 			prefetch="intent"
-			to={href("/:version/:section/:subsection?/:filename", splitSlug(documentPage.slug))}
+			to={href("/:version/:section/:subsection?/:filename", splitSlugAndAppendVersion(documentPage.slug))}
 			onClick={onItemClick}
 			className={({ isActive, isPending }) =>
 				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}

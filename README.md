@@ -11,7 +11,6 @@ The project is built using the [@forge-42/base-stack](https://github.com/forge-4
 
 This folder contains React Router v7 web application folders and files, including components and UI primitives for the documentation site’s interface, internal hooks and utilities, and the tailwind.css file for styling.
 
-
 `resources/`
 
 This folder contains all the resources used by the documentation site, such as SVG icons, fonts, and other assets.
@@ -97,8 +96,10 @@ pnpm install
 
 4. Add `content` folder
 
-5. Start the development server:
+5. Run `pnpm run generate:docs` script
+
+6. Start the development server:
 ```bash
 pnpm run dev
 ```
-5. Happy coding!
+7. Happy coding!

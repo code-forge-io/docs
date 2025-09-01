@@ -1,7 +1,7 @@
 import { href, useLocation } from "react-router"
 import type { SidebarSection } from "~/components/sidebar/sidebar"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
-import { splitSlug } from "~/utils/split-slug"
+import { splitSlugAndAppendVersion } from "~/utils/split-slug-and-append-version"
 
 export function usePreviousNextPages(sections: SidebarSection[]) {
 	const { pathname } = useLocation()
@@ -15,7 +15,7 @@ export function usePreviousNextPages(sections: SidebarSection[]) {
 
 		return {
 			title: item.title,
-			to: href("/:version/:section/:subsection?/:filename", splitSlug(item.slug)),
+			to: href("/:version/:section/:subsection?/:filename", splitSlugAndAppendVersion(item.slug)),
 		}
 	}
 

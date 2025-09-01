@@ -1,14 +1,17 @@
-import { allPages } from "content-collections"
 import GithubContributeLinks from "~/components/github-contribute-links"
 import PageMdxArticle from "~/components/page-mdx-article"
+import { loadContentCollections } from "~/utils/load-content-collections"
+import { resolveHomeVersionOrRedirect } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-homepage"
 
-export async function loader() {
-	const page = allPages.find((post) => post._meta.path === "_index")
-	if (!page) {
-		throw new Response("Not Found", { status: 404 })
-	}
-	return { page }
+export async function loader({ params }: Route.LoaderArgs) {
+	const { version } = resolveHomeVersionOrRedirect(params.version)
+
+	const { allPages } = await loadContentCollections(version)
+	const page = allPages.find((p) => p._meta.path === "_index")
+	if (!page) throw new Response("Not Found", { status: 404 })
+
+	return { page, version }
 }
 
 export default function DocumentationHomepage({ loaderData }: Route.ComponentProps) {

@@ -2,6 +2,7 @@ import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router"
 import { Modal } from "~/components/modal"
+import type { Version } from "~/utils/versions-utils"
 import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
@@ -17,9 +18,10 @@ import { TriggerButton } from "./trigger-button"
 interface CommandPaletteProps {
 	searchIndex: SearchItem[]
 	placeholder?: string
+	version: Version
 }
 
-export const CommandPalette = ({ searchIndex, placeholder }: CommandPaletteProps) => {
+export const CommandPalette = ({ searchIndex, placeholder, version }: CommandPaletteProps) => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 
@@ -72,7 +74,8 @@ export const CommandPalette = ({ searchIndex, placeholder }: CommandPaletteProps
 				target = `${item.slug}#${hash}`
 			}
 		}
-		if (target) navigate(target)
+
+		if (target) navigate(`/${version}/${target}`)
 		handleClose()
 	}
 

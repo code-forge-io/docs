@@ -1,4 +1,3 @@
-import { allPages } from "content-collections"
 import GithubContributeLinks from "~/components/github-contribute-links"
 import PageMdxArticle from "~/components/page-mdx-article"
 import { PageNavigation } from "~/components/page-navigation"
@@ -6,16 +5,21 @@ import { TableOfContents } from "~/components/table-of-content"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
+import { loadContentCollections } from "~/utils/load-content-collections"
+import { ensureVersion } from "~/utils/version-links"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
-	const { version, section, subsection, filename } = params
-	const slug = subsection ? `${version}/${section}/${subsection}/${filename}` : `${version}/${section}/${filename}`
-	const page = allPages.find((post) => post.slug === slug)
-	if (!page) {
-		throw new Response("Not Found", { status: 404 })
-	}
-	return { page }
+	const { version: v, section, subsection, filename } = params
+	if (!section || !filename) throw new Response("Not Found", { status: 404 })
+	const { version } = ensureVersion(v)
+
+	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
+	const { allPages } = await loadContentCollections(version)
+	const page = allPages.find((p) => p.slug === slug)
+	if (!page) throw new Response("Not Found", { status: 404 })
+
+	return { page, version }
 }
 
 export type Page = Awaited<ReturnType<typeof loader>>["page"]
