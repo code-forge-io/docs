@@ -12,9 +12,11 @@ import type { Route } from "./+types/documentation-page"
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
+
 	const { version } = ensureVersion(v)
 
-	const slug = subsection ? `${section}/${subsection}/${filename}` : `${section}/${filename}`
+	const slug = [section, subsection, filename].filter(Boolean).join("/")
+
 	const { allPages } = await loadContentCollections(version)
 	const page = allPages.find((p) => p.slug === slug)
 	if (!page) throw new Response("Not Found", { status: 404 })
