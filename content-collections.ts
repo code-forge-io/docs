@@ -27,10 +27,8 @@ const pageOutputSchema = pageSchema.extend({
 	content: z.unknown(),
 })
 
-export type SectionRecord = z.infer<typeof sectionOutputSchema>
-export type PageRecord = z.infer<typeof pageOutputSchema>
-export const SectionsArray = z.array(sectionOutputSchema)
-export const PagesArray = z.array(pageOutputSchema)
+export type Section = z.infer<typeof sectionOutputSchema>
+export type Page = z.infer<typeof pageOutputSchema>
 
 /**
  * Removes leading number prefixes like "01-", "02-" from each path segment.

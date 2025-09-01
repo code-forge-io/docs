@@ -1,6 +1,6 @@
 import { createDomain } from "~/utils/http"
 import { loadContentCollections } from "~/utils/load-content-collections"
-import type { PageRecord, SectionRecord } from "../../content-collections"
+import type { Page, Section } from "../../content-collections"
 import { pageUrl } from "./version-links"
 import { versions } from "./versions"
 import type { Version } from "./versions-utils"
@@ -10,12 +10,12 @@ async function loadVersionData(version: Version) {
 	return { version, pages: allPages, sections: allSections }
 }
 
-function buildSectionTitles(sections: SectionRecord[]) {
+function buildSectionTitles(sections: Section[]) {
 	return new Map(sections.map((s) => [s.slug.split("/").pop() || "", s.title]))
 }
 
-function groupPagesByFolder(pages: PageRecord[]) {
-	const groups = new Map<string, PageRecord[]>()
+function groupPagesByFolder(pages: Page[]) {
+	const groups = new Map<string, Page[]>()
 
 	for (const p of pages) {
 		const id = p.section ?? p._meta?.path?.split("/")[0]
@@ -32,19 +32,19 @@ function groupPagesByFolder(pages: PageRecord[]) {
 	return groups
 }
 
-function renderVersionBlock(domain: string, version: string, pages: PageRecord[], sections: SectionRecord[]) {
+function renderVersionBlock(domain: string, version: string, pages: Page[], sections: Section[]) {
 	if (!pages.length) return `## ${version}\n\n_No pages found._`
 
 	const sectionTitles = buildSectionTitles(sections)
 	const groups = groupPagesByFolder(pages)
 
-	const renderPageLink = (p: PageRecord) => {
+	const renderPageLink = (p: Page) => {
 		const url = pageUrl(domain, version, p.slug)
-		const note = p.summary || p.description || ""
-		return `- [${p.title}](${url})${note ? `: ${note}` : ""}`
+		const note = p.description
+		return `- [${p.title}](${url}): ${note}`
 	}
 
-	const renderSection = ([id, list]: [string, PageRecord[]]) => {
+	const renderSection = ([id, list]: [string, Page[]]) => {
 		const label = sectionTitles.get(id) ?? id
 		return `### ${label}\n\n${list.map(renderPageLink).join("\n")}`
 	}
