@@ -5,13 +5,17 @@ export type Version = (typeof versions)[number]
 
 export const getLatestVersion = () => versions[0]
 
-export function isKnownVersion(v: string | undefined): v is Version {
-	return typeof v === "string" && versions.some((ver) => ver === v)
+export const isKnownVersion = (v: string | undefined): v is Version =>
+	typeof v === "string" && versions.includes(v as Version)
+
+export const resolveVersion = (param?: string) => {
+	if (!param) return getLatestVersion()
+	return isKnownVersion(param) ? param : getLatestVersion()
 }
 
 export function useCurrentVersion() {
 	const { version } = useParams<"version">()
-	return isKnownVersion(version) ? version : getLatestVersion()
+	return resolveVersion(version) ?? getLatestVersion()
 }
 
 export const hrefForHomepage = (v: string) =>

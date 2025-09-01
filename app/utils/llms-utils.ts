@@ -2,7 +2,6 @@ import { createDomain } from "~/utils/http"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Page, Section } from "../../content-collections"
 import { pageUrl } from "./version-links"
-import { versions } from "./versions"
 import type { Version } from "./versions-utils"
 
 async function loadVersionData(version: Version) {
@@ -15,21 +14,14 @@ function buildSectionTitles(sections: Section[]) {
 }
 
 function groupPagesByFolder(pages: Page[]) {
-	const groups = new Map<string, Page[]>()
-
-	for (const p of pages) {
+	return pages.reduce((groups, p) => {
 		const id = p.section ?? p._meta?.path?.split("/")[0]
-		if (!id) continue
-
-		let list = groups.get(id)
-		if (!list) {
-			list = []
-			groups.set(id, list)
-		}
+		if (!id) return groups
+		const list = groups.get(id) ?? []
+		if (!groups.has(id)) groups.set(id, list)
 		list.push(p)
-	}
-
-	return groups
+		return groups
+	}, new Map<string, Page[]>())
 }
 
 function renderVersionBlock(domain: string, version: string, pages: Page[], sections: Section[]) {
@@ -41,7 +33,7 @@ function renderVersionBlock(domain: string, version: string, pages: Page[], sect
 	const renderPageLink = (p: Page) => {
 		const url = pageUrl(domain, version, p.slug)
 		const note = p.description
-		return `- [${p.title}](${url}): ${note}`
+		return `- [${p.title}](${url})${note ? `: ${note}` : ""}`
 	}
 
 	const renderSection = ([id, list]: [string, Page[]]) => {
@@ -52,14 +44,17 @@ function renderVersionBlock(domain: string, version: string, pages: Page[], sect
 	return `\n## ${version}\n\n${Array.from(groups.entries()).map(renderSection).join("\n\n")}`
 }
 
-export async function renderLlmsTxt(request: Request, additionalData: { title: string; tagline: string }) {
+export async function renderLlmsTxt(opts: {
+	request: Request
+	version: Version
+	title: string
+	tagline: string
+}) {
+	const { request, version, title, tagline } = opts
 	const domain = createDomain(request)
 
-	const versionsData = await Promise.all(versions.map(loadVersionData))
+	const { pages, sections } = await loadVersionData(version)
+	const content = renderVersionBlock(domain, version, pages, sections)
 
-	const content = versionsData
-		.map(({ version, pages, sections }) => renderVersionBlock(domain, version, pages, sections))
-		.join("\n")
-
-	return [`# ${additionalData.title}`, `> ${additionalData.tagline}`, content, ""].join("\n")
+	return [`# ${title}`, `> ${tagline}`, content, ""].join("\n")
 }

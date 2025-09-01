@@ -11,5 +11,5 @@ export default [
 	route("resource/*", "routes/resource.locales.ts"),
 	route("$", "routes/$.tsx"),
 	route("sitemap/:lang.xml", "routes/sitemap.$lang[.]xml.ts"),
-	route("llms.txt", "routes/llms[.]txt.ts"),
+	route(":version?/llms.txt", "routes/llms[.]txt.ts"),
 ] satisfies RouteConfig
