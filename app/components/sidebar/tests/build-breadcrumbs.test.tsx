@@ -24,7 +24,7 @@ type Doc = { slug: string; title: string }
 const makeDoc = (slug: string, title: string): Doc => ({ slug, title })
 
 type MinimalSection = Pick<SidebarSection, "title" | "slug" | "documentationPages" | "subsections">
-const makeSection = (overrides: Partial<MinimalSection> = {}): SidebarSection => ({
+const makeSection = (overrides: Partial<MinimalSection> = {}) => ({
 	title: "",
 	slug: "",
 	documentationPages: [],
