@@ -4,9 +4,9 @@ import type { Version } from "~/utils/versions-utils"
 
 /**
  * Load content-collections outputs
- * Always read from generated-docs.
- * If no tags/releases exist → fall back to main branch
- * If generated-docs missing → tell user to run generate:docs
+ * Always read from generated-docs
+ * If no tags/releases exist → fallback to main branch (production) or current (development)
+ * During development, if generated-docs missing → tell user to run generate:docs
  */
 export async function loadContentCollections(version: Version) {
 	const here = dirname(fileURLToPath(import.meta.url))

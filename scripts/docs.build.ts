@@ -151,7 +151,7 @@ function buildSpecifiedTags(spec: string, envLabel: "dev" | "prod"): string[] {
 		buildDocs(CWD, join(OUT_BASE, "current"))
 		builtVersions = ["current"]
 	} else if (!hasVersions && APP_ENV === "production") {
-		// PROD + no --versions => build default branch only
+		// PROD + no --versions => build content from default branch only
 		// biome-ignore lint/suspicious/noConsole: keep console log for debugging
 		console.log(chalk.cyan(`(prod) Building docs from '${DEFAULT_BRANCH}' branch only → ${DEFAULT_BRANCH}`))
 		buildRef(`refs/heads/${DEFAULT_BRANCH}`, DEFAULT_BRANCH)
