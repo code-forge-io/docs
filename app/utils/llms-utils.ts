@@ -6,21 +6,8 @@ import { versions } from "./versions"
 import type { Version } from "./versions-utils"
 
 async function loadVersionData(version: Version) {
-	try {
-		const { allPages, allSections } = await loadContentCollections(version)
-		return { pages: allPages, sections: allSections }
-	} catch {
-		return null
-	}
-}
-
-async function loadAllVersions() {
-	const acc: Record<string, { pages: PageRecord[]; sections: SectionRecord[] }> = {}
-	for (const v of versions) {
-		const loaded = await loadVersionData(v)
-		if (loaded) acc[v] = loaded
-	}
-	return acc
+	const { allPages, allSections } = await loadContentCollections(version)
+	return { version, pages: allPages, sections: allSections }
 }
 
 function buildSectionTitles(sections: SectionRecord[]) {
@@ -59,27 +46,20 @@ function renderVersionBlock(domain: string, version: string, pages: PageRecord[]
 
 	const renderSection = ([id, list]: [string, PageRecord[]]) => {
 		const label = sectionTitles.get(id) ?? id
-		const lines = list.map(renderPageLink).join("\n")
-		return `### ${label}\n\n${lines}`
+		return `### ${label}\n\n${list.map(renderPageLink).join("\n")}`
 	}
 
-	const blocks = Array.from(groups.entries()).map(renderSection).join("\n\n")
-
-	return `\n## ${version}\n\n${blocks}`
+	return `\n## ${version}\n\n${Array.from(groups.entries()).map(renderSection).join("\n\n")}`
 }
 
 export async function renderLlmsTxt(request: Request, additionalData: { title: string; tagline: string }) {
 	const domain = createDomain(request)
-	const versionsData = await loadAllVersions()
-	const project = additionalData.title
-	const tagline = additionalData.tagline
 
-	const content = Object.keys(versionsData)
-		.map((version) => {
-			const { pages, sections } = versionsData[version]
-			return renderVersionBlock(domain, version, pages, sections)
-		})
+	const versionsData = await Promise.all(versions.map(loadVersionData))
+
+	const content = versionsData
+		.map(({ version, pages, sections }) => renderVersionBlock(domain, version, pages, sections))
 		.join("\n")
 
-	return [`# ${project}`, `> ${tagline}`, content, ""].join("\n")
+	return [`# ${additionalData.title}`, `> ${additionalData.tagline}`, content, ""].join("\n")
 }
