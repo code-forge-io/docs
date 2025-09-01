@@ -31,17 +31,12 @@ const resetDir = (p: string) => {
 	ensureDir(p)
 }
 
-const CONTENT_DIR_NAME = "content"
-const OUT_BASE = "generated-docs"
-const APP_ENV = getServerEnv().APP_ENV
+const CONTENT_DIR = "content"
+const OUTPUT_DIR = "generated-docs"
+const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
 
 // biome-ignore lint/nursery/noProcessEnv: we use checkout path in Actions if present, otherwise detect repo root
 const REPO_TOP = process.env.GITHUB_WORKSPACE || run("git rev-parse --show-toplevel")
-const DEFAULT_BRANCH =
-	// biome-ignore lint/nursery/noProcessEnv: we can get default branch from env in Actions
-	process.env.DEFAULT_BRANCH ||
-	run("git rev-parse --abbrev-ref origin/HEAD", { cwd: REPO_TOP }).split("/").pop() ||
-	"main"
 // current docs workspace - where the script is run from
 const CWD = process.cwd()
 // Path to docs workspace relative to repo root
@@ -66,9 +61,9 @@ function resolveTagsFromSpec(spec: string) {
 function buildDocs(sourceDir: string, outDir: string) {
 	if (!existsSync(sourceDir)) throw new Error(`Docs workspace not found: ${sourceDir}`)
 
-	const docsContentDir = resolve(sourceDir, CONTENT_DIR_NAME)
+	const docsContentDir = resolve(sourceDir, CONTENT_DIR)
 	if (!existsSync(docsContentDir)) {
-		throw new Error(`Docs content directory "${CONTENT_DIR_NAME}" not found at ${docsContentDir}`)
+		throw new Error(`Docs content directory "${CONTENT_DIR}" not found at ${docsContentDir}`)
 	}
 
 	resetDir(outDir)
@@ -106,7 +101,7 @@ function buildRef(ref: string, labelForOutDir: string) {
 			run("pnpm install --frozen-lockfile", { cwd: worktreePath, inherit: true })
 		}
 
-		const outDir = join(resolve(OUT_BASE), labelForOutDir)
+		const outDir = join(resolve(OUTPUT_DIR), labelForOutDir)
 		buildDocs(docsWorkspace, outDir)
 	} finally {
 		run(`git worktree remove "${worktreePath}" --force`, {
@@ -137,9 +132,18 @@ function buildSpecifiedTags(spec: string, envLabel: "dev" | "prod"): string[] {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
-			versions: { type: "string" },
+			versions: { type: "string" }, // optional
+			defaultBranch: { type: "string" }, // required
 		},
 	})
+
+	const DEFAULT_BRANCH = (values.defaultBranch as string | undefined)?.trim()
+	if (!DEFAULT_BRANCH) {
+		throw new Error(
+			"Missing required argument: --defaultBranch <name>\n" +
+				'Example: tsx scripts/generate-docs.ts --defaultBranch main --versions "v3.3.3, v3.4.4"'
+		)
+	}
 
 	const hasVersions = typeof values.versions === "string" && values.versions.trim().length > 0
 	let builtVersions: string[] = []
@@ -148,7 +152,7 @@ function buildSpecifiedTags(spec: string, envLabel: "dev" | "prod"): string[] {
 		// DEV + no --versions => build current workspace → generated-docs/current
 		// biome-ignore lint/suspicious/noConsole: keep console log for debugging
 		console.log(chalk.cyan(`(dev) Building docs from current workspace: ${CWD} → current`))
-		buildDocs(CWD, join(OUT_BASE, "current"))
+		buildDocs(CWD, join(OUTPUT_DIR, "current"))
 		builtVersions = ["current"]
 	} else if (!hasVersions && APP_ENV === "production") {
 		// PROD + no --versions => build content from default branch only
