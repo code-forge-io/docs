@@ -29,7 +29,7 @@
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
 		"content-collections:build": "content-collections build",
-		"generate:docs": "npx tsx scripts/docs.build.ts",
+		"generate:docs": "npx tsx scripts/generate-docs.ts --defaultBranch main",
 		"verify:docs": "tsx scripts/verify-docs.ts"
 	},
 	"dependencies": {
