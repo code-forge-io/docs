@@ -1,6 +1,7 @@
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router"
+import slug from "slug"
 import { Modal } from "~/components/modal"
 import type { Version } from "~/utils/versions-utils"
 import { fuzzySearch } from "../hooks/use-fuzzy-search"
@@ -42,14 +43,6 @@ export const CommandPalette = ({ searchIndex, placeholder, version }: CommandPal
 		setQuery("")
 	}
 
-	function slugifyHeading(text: string) {
-		return text
-			.toLowerCase()
-			.replace(/[^a-z0-9\s-]/g, "")
-			.replace(/\s+/g, "-")
-			.trim()
-	}
-
 	function findBestMatchingHeading(headings: string[] | undefined, q: string) {
 		if (!headings || headings.length === 0 || !q) return undefined
 		const terms = q.toLowerCase().split(/\s+/).filter(Boolean)
@@ -70,7 +63,7 @@ export const CommandPalette = ({ searchIndex, placeholder, version }: CommandPal
 		if (item.type === "page") {
 			const best = findBestMatchingHeading(item.headings, query)
 			if (best) {
-				const hash = slugifyHeading(best)
+				const hash = slug(best)
 				target = `${item.slug}#${hash}`
 			}
 		}
@@ -86,7 +79,7 @@ export const CommandPalette = ({ searchIndex, placeholder, version }: CommandPal
 		if (item.type === "page") {
 			const best = findBestMatchingHeading(item.headings, query)
 			if (best) {
-				const hash = slugifyHeading(best)
+				const hash = slug(best)
 				selectedItem = {
 					...item,
 					id: `${item.id}#${hash}`,
