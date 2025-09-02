@@ -37,7 +37,7 @@ const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
 const currentDocsWorkspace = process.cwd()
 const docsRelative = run("git rev-parse --show-prefix", { cwd: currentDocsWorkspace }).replace(/\/?$/, "")
 
-const allTags = () => run("git tag --list", { cwd: currentDocsWorkspace }).split("\n").filter(Boolean)
+const allTags = () => run("git tag --list").split("\n").filter(Boolean)
 
 function resolveTagsFromSpec(spec: string) {
 	const tags = allTags().filter((t) => semver.valid(t))
