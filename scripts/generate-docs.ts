@@ -1,7 +1,7 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
-import { join, relative, resolve } from "node:path"
+import { join, resolve } from "node:path"
 import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
@@ -31,18 +31,13 @@ const resetDir = (p: string) => {
 	ensureDir(p)
 }
 
-const CONTENT_DIR = "content"
-const OUTPUT_DIR = "generated-docs"
+const contentDir = "content"
+const outputDir = "generated-docs"
 const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
+const currentDocsWorkspace = process.cwd()
+const docsRelative = run("git rev-parse --show-prefix", { cwd: currentDocsWorkspace }).replace(/\/?$/, "")
 
-// biome-ignore lint/nursery/noProcessEnv: we use checkout path in Actions if present, otherwise detect repo root
-const REPO_TOP = process.env.GITHUB_WORKSPACE || run("git rev-parse --show-toplevel")
-// current docs workspace - where the script is run from
-const CWD = process.cwd()
-// Path to docs workspace relative to repo root
-const DOCS_REL = relative(REPO_TOP, CWD)
-
-const allTags = () => run("git tag --list", { cwd: REPO_TOP }).split("\n").filter(Boolean)
+const allTags = () => run("git tag --list", { cwd: currentDocsWorkspace }).split("\n").filter(Boolean)
 
 function resolveTagsFromSpec(spec: string) {
 	const tags = allTags().filter((t) => semver.valid(t))
@@ -50,20 +45,18 @@ function resolveTagsFromSpec(spec: string) {
 		.split(",")
 		.map((t) => t.trim())
 		.filter(Boolean)
-
 	const matched = tags.filter((tag) =>
 		tokens.some((token) => semver.satisfies(tag, token, { includePrerelease: true }))
 	)
-
 	return matched.sort(semver.rcompare)
 }
 
 function buildDocs(sourceDir: string, outDir: string) {
 	if (!existsSync(sourceDir)) throw new Error(`Docs workspace not found: ${sourceDir}`)
 
-	const docsContentDir = resolve(sourceDir, CONTENT_DIR)
+	const docsContentDir = resolve(sourceDir, contentDir)
 	if (!existsSync(docsContentDir)) {
-		throw new Error(`Docs content directory "${CONTENT_DIR}" not found at ${docsContentDir}`)
+		throw new Error(`Docs content directory "${contentDir}" not found at ${docsContentDir}`)
 	}
 
 	resetDir(outDir)
@@ -86,12 +79,12 @@ function buildRef(ref: string, labelForOutDir: string) {
 	const worktreePath = resolve(tmpBase, safeLabel)
 
 	run(`git worktree add --detach "${worktreePath}" "${ref}"`, {
-		cwd: REPO_TOP,
+		cwd: currentDocsWorkspace,
 		inherit: true,
 	})
 
 	try {
-		const docsWorkspace = resolve(worktreePath, DOCS_REL)
+		const docsWorkspace = docsRelative ? resolve(worktreePath, docsRelative) : worktreePath
 
 		if (existsSync(resolve(docsWorkspace, "package.json"))) {
 			run("pnpm install --frozen-lockfile", { cwd: docsWorkspace, inherit: true })
@@ -101,11 +94,11 @@ function buildRef(ref: string, labelForOutDir: string) {
 			run("pnpm install --frozen-lockfile", { cwd: worktreePath, inherit: true })
 		}
 
-		const outDir = join(resolve(OUTPUT_DIR), labelForOutDir)
+		const outDir = resolve(outputDir, labelForOutDir)
 		buildDocs(docsWorkspace, outDir)
 	} finally {
 		run(`git worktree remove "${worktreePath}" --force`, {
-			cwd: REPO_TOP,
+			cwd: currentDocsWorkspace,
 			inherit: true,
 		})
 		rmSync(tmpBase, { recursive: true, force: true })
@@ -133,15 +126,15 @@ function buildSpecifiedTags(spec: string, envLabel: "dev" | "prod"): string[] {
 		args: process.argv.slice(2),
 		options: {
 			versions: { type: "string" }, // optional
-			defaultBranch: { type: "string" }, // required
+			branch: { type: "string" }, // required
 		},
 	})
 
-	const DEFAULT_BRANCH = (values.defaultBranch as string | undefined)?.trim()
-	if (!DEFAULT_BRANCH) {
+	const branch = (values.branch as string | undefined)?.trim()
+	if (!branch) {
 		throw new Error(
-			"Missing required argument: --defaultBranch <name>\n" +
-				'Example: tsx scripts/generate-docs.ts --defaultBranch main --versions "v3.3.3, v3.4.4"'
+			"Missing required argument: --branch <name>\n" +
+				'Example: tsx scripts/generate-docs.ts --branch main --versions "v3.3.3, v3.4.4"'
 		)
 	}
 
@@ -151,15 +144,15 @@ function buildSpecifiedTags(spec: string, envLabel: "dev" | "prod"): string[] {
 	if (!hasVersions && APP_ENV === "development") {
 		// DEV + no --versions => build current workspace → generated-docs/current
 		// biome-ignore lint/suspicious/noConsole: keep console log for debugging
-		console.log(chalk.cyan(`(dev) Building docs from current workspace: ${CWD} → current`))
-		buildDocs(CWD, join(OUTPUT_DIR, "current"))
+		console.log(chalk.cyan(`(dev) Building docs from current workspace: ${currentDocsWorkspace} → current`))
+		buildDocs(currentDocsWorkspace, join(outputDir, "current"))
 		builtVersions = ["current"]
 	} else if (!hasVersions && APP_ENV === "production") {
 		// PROD + no --versions => build content from default branch only
 		// biome-ignore lint/suspicious/noConsole: keep console log for debugging
-		console.log(chalk.cyan(`(prod) Building docs from '${DEFAULT_BRANCH}' branch only → ${DEFAULT_BRANCH}`))
-		buildRef(`refs/heads/${DEFAULT_BRANCH}`, DEFAULT_BRANCH)
-		builtVersions = [DEFAULT_BRANCH]
+		console.log(chalk.cyan(`(prod) Building docs from '${branch}' branch only → ${branch}`))
+		buildRef(`refs/heads/${branch}`, branch)
+		builtVersions = [branch]
 	} else {
 		builtVersions = buildSpecifiedTags(values.versions as string, APP_ENV === "development" ? "dev" : "prod")
 	}
