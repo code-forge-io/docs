@@ -2,7 +2,8 @@ import { href, useNavigate } from "react-router"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Icon } from "~/ui/icon/icon"
-import { getLatestVersion } from "~/utils/versions-utils"
+import { getLatestVersion } from "~/utils/version-resolvers"
+
 export default function Index() {
 	const navigate = useNavigate()
 	// Customize index page

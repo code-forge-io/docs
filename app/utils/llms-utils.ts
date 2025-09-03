@@ -1,8 +1,7 @@
 import { createDomain } from "~/utils/http"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Page, Section } from "../../content-collections"
-import { pageUrl } from "./version-links"
-import type { Version } from "./versions-utils"
+import { type Version, pageUrlWithVersion } from "./version-resolvers"
 
 async function loadVersionData(version: Version) {
 	const { allPages, allSections } = await loadContentCollections(version)
@@ -31,7 +30,7 @@ function renderVersionBlock(domain: string, version: string, pages: Page[], sect
 	const groups = groupPagesByFolder(pages)
 
 	const renderPageLink = (p: Page) => {
-		const url = pageUrl(domain, version, p.slug)
+		const url = pageUrlWithVersion(domain, version, p.slug)
 		const note = p.description
 		return `- [${p.title}](${url})${note ? `: ${note}` : ""}`
 	}

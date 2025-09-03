@@ -1,6 +1,6 @@
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import type { Version } from "~/utils/versions-utils"
+import type { Version } from "./version-resolvers"
 
 /**
  * Load content-collections outputs

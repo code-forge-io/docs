@@ -1,6 +1,6 @@
 import { href, redirect } from "react-router"
 import { renderLlmsTxt } from "~/utils/llms-utils"
-import { getLatestVersion, resolveVersion } from "~/utils/versions-utils"
+import { getLatestVersion, normalizeVersion } from "~/utils/version-resolvers"
 import type { Route } from "./+types/llms[.]txt"
 
 export async function loader({ request, params }: Route.LoaderArgs) {
@@ -11,7 +11,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 		return redirect(href("/:version?/llms.txt", { version: latest }))
 	}
 
-	const version = resolveVersion(paramVersion)
+	const { version } = normalizeVersion(paramVersion)
 	const body = await renderLlmsTxt({
 		request,
 		version,

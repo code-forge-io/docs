@@ -6,14 +6,14 @@ import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layo
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
 import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import { loadContentCollections } from "~/utils/load-content-collections"
-import { ensureVersion } from "~/utils/version-links"
+import { normalizeVersion } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-page"
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const { version: v, section, subsection, filename } = params
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
 
-	const { version } = ensureVersion(v)
+	const { version } = normalizeVersion(v)
 
 	const slug = [section, subsection, filename].filter(Boolean).join("/")
 
