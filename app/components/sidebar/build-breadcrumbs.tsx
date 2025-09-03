@@ -1,5 +1,5 @@
 import { href } from "react-router"
-import { splitSlug } from "~/utils/split-slug"
+import { splitSlugAndAppendVersion } from "~/utils/split-slug-and-append-version"
 import type { SidebarSection } from "./sidebar"
 
 // builds a breadcrumb trail from sidebar sections based on the current pathname
@@ -8,7 +8,7 @@ export const buildBreadcrumb = (items: SidebarSection[], pathname: string) => {
 
 	const walk = (section: SidebarSection, acc: string[]) => {
 		for (const doc of section.documentationPages) {
-			const docPath = href("/:version/:section/:subsection?/:filename", splitSlug(doc.slug))
+			const docPath = href("/:version/:section/:subsection?/:filename", splitSlugAndAppendVersion(doc.slug))
 			if (docPath === pathname) {
 				trail = [...acc, section.title, doc.title]
 				return true

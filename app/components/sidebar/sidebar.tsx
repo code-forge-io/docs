@@ -8,7 +8,6 @@ import { MobileSidebarProvider } from "./mobile-sidebar-context"
 export type SidebarSection = {
 	title: string
 	slug: string
-	sectionId: string
 	subsections: SidebarSection[]
 	documentationPages: {
 		title: string

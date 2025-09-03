@@ -1,6 +1,6 @@
 import { cacheHeader } from "pretty-cache-header"
 import { z } from "zod"
-import { resources } from "~/localization/resource"
+import { type Language, type Namespace, resources } from "~/localization/resource"
 import type { Route } from "./+types/resource.locales"
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -9,15 +9,15 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
 	const lng = z
 		.string()
-		.refine((lng): lng is keyof typeof resources => Object.keys(resources).includes(lng))
+		.refine((lng): lng is Language => Object.keys(resources).includes(lng))
 		.parse(url.searchParams.get("lng"))
 
-	const namespaces = resources[lng]
+	const namespaces = resources[lng as Language]
 
 	const ns = z
 		.string()
-		.refine((ns): ns is keyof typeof namespaces => {
-			return Object.keys(resources[lng]).includes(ns)
+		.refine((ns): ns is Namespace => {
+			return Object.keys(resources[lng as Language]).includes(ns)
 		})
 		.parse(url.searchParams.get("ns"))
 
@@ -36,5 +36,5 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 		)
 	}
 
-	return Response.json(namespaces[ns], { headers })
+	return Response.json(namespaces[ns as Namespace], { headers })
 }
