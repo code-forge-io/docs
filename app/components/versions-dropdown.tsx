@@ -1,21 +1,21 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
 import { Icon } from "~/ui/icon/icon"
+import { getCurrentVersion, homepageUrlWithVersion, isKnownVersion } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
-import { hrefForHomepage, isKnownVersion, useCurrentVersion } from "~/utils/versions-utils"
 
 export function VersionDropdown() {
 	const navigate = useNavigate()
-	const current = useCurrentVersion()
-	const [selectedVersion, setSelectedVersion] = useState(current)
+	const { version: currentVersion } = getCurrentVersion()
+	const [selectedVersion, setSelectedVersion] = useState(currentVersion)
 
 	function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
 		const next = e.target.value
-		if (next === current) return
+		if (next === currentVersion) return
 
-		setSelectedVersion(isKnownVersion(next) ? next : current)
+		setSelectedVersion(isKnownVersion(next) ? next : currentVersion)
 
-		const to = hrefForHomepage(next)
+		const to = homepageUrlWithVersion(next)
 		const nav = () => {
 			navigate(to)
 			e.target.blur()

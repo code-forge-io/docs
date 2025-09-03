@@ -1,6 +1,6 @@
 import type { SidebarSection } from "~/components/sidebar/sidebar"
 import { loadContentCollections } from "./load-content-collections"
-import type { Version } from "./versions-utils"
+import type { Version } from "./version-resolvers"
 
 const parentOf = (slug: string) => {
 	const i = slug.lastIndexOf("/")

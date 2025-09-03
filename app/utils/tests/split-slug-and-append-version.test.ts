@@ -1,22 +1,20 @@
-const versionsMock = ["v1.0.0"] as const
+import { describe, expect, it, vi } from "vitest"
 
-vi.mock("~/utils/versions", () => ({
-	versions: versionsMock,
+vi.mock("../version-resolvers", () => ({
+	getLatestVersion: () => "v1.0.0",
+	isKnownVersion: (v?: string) => v === "v1.0.0",
+	getCurrentVersion: () => ({ version: "v1.0.0" }),
 }))
 
-vi.mock("../versions-utils", () => {
-	return {
-		getLatestVersion: vi.fn(() => versionsMock[0]),
-		isKnownVersion: vi.fn(() => versionsMock[0]),
-		useCurrentVersion: vi.fn(() => versionsMock[0]),
-	}
-})
+vi.mock("../versions", () => ({
+	versions: ["v1.0.0"] as const,
+}))
+
 import { splitSlugAndAppendVersion } from "../split-slug-and-append-version"
 
 describe("splitSlug test suite", () => {
 	it("splits a slug with 2 parts (no subsection)", () => {
-		const result = splitSlugAndAppendVersion("getting-started/intro")
-		expect(result).toEqual({
+		expect(splitSlugAndAppendVersion("getting-started/intro")).toEqual({
 			version: "v1.0.0",
 			section: "getting-started",
 			filename: "intro",
@@ -24,8 +22,7 @@ describe("splitSlug test suite", () => {
 	})
 
 	it("splits a slug with 3 parts (with subsection)", () => {
-		const result = splitSlugAndAppendVersion("getting-started/basics/intro")
-		expect(result).toEqual({
+		expect(splitSlugAndAppendVersion("getting-started/basics/intro")).toEqual({
 			version: "v1.0.0",
 			section: "getting-started",
 			subsection: "basics",
@@ -34,20 +31,19 @@ describe("splitSlug test suite", () => {
 	})
 
 	it("throws if slug has less than 2 parts", () => {
-		expect(() => splitSlugAndAppendVersion("getting-started")).toThrowError(
+		expect(() => splitSlugAndAppendVersion("getting-started")).toThrow(
 			/expected "section\/page" or "section\/subsection\/page"/i
 		)
 	})
 
 	it("throws if slug has more than 3 parts", () => {
-		expect(() => splitSlugAndAppendVersion("section/subsection/file/extra")).toThrowError(
+		expect(() => splitSlugAndAppendVersion("section/subsection/file/extra")).toThrow(
 			/expected "section\/page" or "section\/subsection\/page"/i
 		)
 	})
 
 	it("handles numeric or dashed parts", () => {
-		const result = splitSlugAndAppendVersion("01-intro/02-basics/file-name")
-		expect(result).toEqual({
+		expect(splitSlugAndAppendVersion("01-intro/02-basics/file-name")).toEqual({
 			version: "v1.0.0",
 			section: "01-intro",
 			subsection: "02-basics",
@@ -56,8 +52,7 @@ describe("splitSlug test suite", () => {
 	})
 
 	it("handles special characters in parts", () => {
-		const result = splitSlugAndAppendVersion("@special$/#weird$/file-name")
-		expect(result).toEqual({
+		expect(splitSlugAndAppendVersion("@special$/#weird$/file-name")).toEqual({
 			version: "v1.0.0",
 			section: "@special$",
 			subsection: "#weird$",
@@ -66,8 +61,7 @@ describe("splitSlug test suite", () => {
 	})
 
 	it("handles uppercase letters in slug", () => {
-		const result = splitSlugAndAppendVersion("GettingStarted/Intro")
-		expect(result).toEqual({
+		expect(splitSlugAndAppendVersion("GettingStarted/Intro")).toEqual({
 			version: "v1.0.0",
 			section: "GettingStarted",
 			filename: "Intro",

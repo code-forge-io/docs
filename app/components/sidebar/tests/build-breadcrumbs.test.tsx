@@ -1,30 +1,31 @@
 import { describe, expect, it, vi } from "vitest"
-import { buildBreadcrumb } from "../build-breadcrumbs"
 import type { SidebarSection } from "../sidebar"
 
-vi.mock("~/utils/versions-utils", async () => {
-	const actual = await vi.importActual<typeof import("~/utils/versions-utils")>("~/utils/versions-utils")
-	return {
-		...actual,
-		useCurrentVersion: () => "v1.0.0",
-		getLatestVersion: () => "v1.0.0",
-		isKnownVersion: (v?: string) => v === "v1.0.0",
-	}
-})
+vi.mock("~/utils/split-slug-and-append-version", () => ({
+	splitSlugAndAppendVersion: (slug: string) => {
+		const parts = slug.split("/").filter(Boolean)
+		const version = "v1.0.0"
 
-vi.mock("~/utils/versions", async () => {
-	const actual = await vi.importActual<typeof import("~/utils/versions")>("~/utils/versions")
-	return {
-		...actual,
-		versions: ["v1.0.0"] as const,
-	}
-})
+		if (parts.length === 2) {
+			const [section, filename] = parts
+			return { version, section, filename }
+		}
+		if (parts.length === 3) {
+			const [section, subsection, filename] = parts
+			return { version, section, subsection, filename }
+		}
+
+		throw new Error(`Bad slug in test: ${slug}`)
+	},
+}))
+
+import { buildBreadcrumb } from "../build-breadcrumbs"
 
 type Doc = { slug: string; title: string }
 const makeDoc = (slug: string, title: string): Doc => ({ slug, title })
 
 type MinimalSection = Pick<SidebarSection, "title" | "slug" | "documentationPages" | "subsections">
-const makeSection = (overrides: Partial<MinimalSection> = {}): SidebarSection => ({
+const makeSection = (overrides: Partial<MinimalSection> = {}) => ({
 	title: "",
 	slug: "",
 	documentationPages: [],
@@ -41,9 +42,7 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-
-		const result = buildBreadcrumb(items, "/v1.0.0/getting-started/unknown")
-		expect(result).toEqual([])
+		expect(buildBreadcrumb(items, "/v1.0.0/getting-started/unknown")).toEqual([])
 	})
 
 	it("returns [section, doc] for a top-level doc", () => {
@@ -54,9 +53,7 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-
-		const result = buildBreadcrumb(items, "/v1.0.0/getting-started/intro")
-		expect(result).toEqual(["Getting Started", "Intro"])
+		expect(buildBreadcrumb(items, "/v1.0.0/getting-started/intro")).toEqual(["Getting Started", "Intro"])
 	})
 
 	it("returns full trail for a nested doc (root → sub → doc)", () => {
@@ -74,8 +71,10 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("configuration/setup", "Setup")],
 			}),
 		]
-
-		const result = buildBreadcrumb(items, "/v1.0.0/configuration/advanced/tuning")
-		expect(result).toEqual(["Configuration", "Advanced", "Tuning"])
+		expect(buildBreadcrumb(items, "/v1.0.0/configuration/advanced/tuning")).toEqual([
+			"Configuration",
+			"Advanced",
+			"Tuning",
+		])
 	})
 })
