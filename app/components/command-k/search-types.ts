@@ -1,0 +1,22 @@
+export interface SearchDoc {
+	id: string //e.g "/configuration/editor#name" where name is the heading inside of the editor page under the configuration section
+	title: string // page title
+	subtitle: string // title of the "sections" inside the page
+	paragraphs: string[] // for that id (section of the current page) get all paragraphs as an array of strings
+}
+
+export interface SearchResult {
+	item: SearchDoc
+	score: number
+	matchedKey: "paragraphs"
+	matchedText: string
+	highlightedText: string
+	refIndex: number
+}
+
+export interface FuzzySearchOptions {
+	keys: Array<"paragraphs">
+	threshold: number
+	includeScore: boolean
+	minMatchCharLength: number
+}

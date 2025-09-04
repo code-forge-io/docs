@@ -9,6 +9,7 @@ export const iconNames = [
 	"SunMoon",
 	"Search",
 	"Rocket",
+	"Pilcrow",
 	"Moon",
 	"Menu",
 	"Info",

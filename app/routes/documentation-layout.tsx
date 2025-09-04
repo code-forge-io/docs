@@ -1,7 +1,7 @@
 import { allPages } from "content-collections"
 import { Outlet } from "react-router"
-import { CommandPalette } from "~/components/command-palette/components/command-palette"
-import { createCompleteSearchIndex } from "~/components/command-palette/search-index-transform"
+import { CommandK } from "~/components/command-k/components/command-k"
+import { createSearchIndex } from "~/components/command-k/create-search-index"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
@@ -18,8 +18,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
 	const { sidebarTree, version } = loaderData
-	const searchIndex = createCompleteSearchIndex(allPages)
-
+	const searchIndex = createSearchIndex(allPages)
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
@@ -32,7 +31,7 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 				</div>
 				<div className="inline-flex gap-4">
 					<ThemeToggle />
-					<CommandPalette searchIndex={searchIndex} version={version} />
+					<CommandK searchIndex={searchIndex} version={version} />
 				</div>
 			</Header>
 

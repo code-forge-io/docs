@@ -24,7 +24,7 @@ export const EmptyState = ({ query }: { query?: string }) => {
 	}
 
 	return (
-		<div className="px-4 py-8 text-center">
+		<div className="space-y-6 px-4 py-8 text-center">
 			<div
 				className={cn(
 					"mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full",
@@ -73,6 +73,14 @@ export const EmptyState = ({ query }: { query?: string }) => {
 					<span>{t("controls.cycle")}</span>
 				</div>
 			</div>
+			<span className="text-[var(--color-footer-text)] text-xs opacity-70">
+				Search by{" "}
+				<span className="font-semibold">
+					<a href="https://www.forge42.dev/" target="_blank" rel="noopener noreferrer">
+						Forge 42
+					</a>
+				</span>
+			</span>
 		</div>
 	)
 }

@@ -43,6 +43,14 @@ export const ResultsFooter = ({
 						</kbd>
 						<span>{t("controls.open")}</span>
 					</div>
+					<span className="text-[var(--color-footer-text)] text-xs opacity-70">
+						Search by{" "}
+						<span className="font-semibold">
+							<a href="https://www.forge42.dev/" target="_blank" rel="noopener noreferrer">
+								Forge 42
+							</a>
+						</span>
+					</span>
 				</div>
 			</div>
 		</div>

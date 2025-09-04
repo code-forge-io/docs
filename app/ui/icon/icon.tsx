@@ -43,5 +43,3 @@ export const Icon = ({ name, testId, className, size = "md", ...props }: IconPro
 		</svg>
 	)
 }
-
-export const pickIcon = (name: IconName) => name

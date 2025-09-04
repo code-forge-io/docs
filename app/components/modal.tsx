@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useRef } from "react"
+import { useScrollLock } from "~/hooks/use-scroll-lock"
 import { cn } from "~/utils/css"
 import { Backdrop } from "./backdrop"
 
@@ -24,13 +25,12 @@ export const Modal = ({
 	const modalRef = useRef<HTMLDivElement>(null)
 	const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
+	useScrollLock(isOpen)
+
 	useEffect(() => {
 		if (!isOpen) return
 		previouslyFocusedRef.current = document.activeElement as HTMLElement | null
-		const prevOverflow = document.body.style.overflow
-		document.body.style.overflow = "hidden"
 		return () => {
-			document.body.style.overflow = prevOverflow || "unset"
 			if (restoreFocus) previouslyFocusedRef.current?.focus?.()
 		}
 	}, [isOpen, restoreFocus])
@@ -65,7 +65,7 @@ export const Modal = ({
 	if (!isOpen) return null
 
 	return (
-		<div className="fixed inset-0 z-50 overflow-y-auto">
+		<div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain">
 			<Backdrop onClose={onClose} />
 			<div className="flex min-h-full items-start justify-center p-4 pt-16 sm:pt-24">
 				<div

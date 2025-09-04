@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 import { COMMAND_K_SEARCH_HISTORY, getStorageItem, removeStorageItem, setStorageItem } from "~/utils/local-storage"
-import type { SearchItem } from "../search-types"
+import type { SearchDoc } from "../search-types"
 
-interface HistoryItem extends SearchItem {
+interface HistoryItem extends SearchDoc {
 	clickedAt: number
 	clickCount: number
 	highlightedText?: string
@@ -35,7 +35,7 @@ export const useSearchHistory = () => {
 		}
 	}, [history])
 
-	const addToHistory = useCallback((item: SearchItem & { highlightedText?: string }) => {
+	const addToHistory = useCallback((item: SearchDoc & { highlightedText?: string }) => {
 		setHistory((prev) => {
 			const existingIndex = prev.findIndex((h) => h.id === item.id)
 

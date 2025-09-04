@@ -1,12 +1,19 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
-import type { SearchItem } from "../search-types"
+import type { SearchDoc } from "../search-types"
 import { SearchResultRow } from "./search-result"
 
+type MatchType = "heading" | "paragraph"
+
+interface HistoryDoc extends SearchDoc {
+	highlightedText?: string
+	type?: MatchType
+}
+
 interface SearchHistoryProps {
-	history: (SearchItem & { highlightedText?: string })[]
-	onSelect: (item: SearchItem) => void
+	history: HistoryDoc[]
+	onSelect: (item: SearchDoc) => void
 	onRemove: (itemId: string) => void
 	onClear: () => void
 }
@@ -79,9 +86,9 @@ const HistoryItem = ({
 	onSelect,
 	onRemove,
 }: {
-	item: SearchItem & { highlightedText?: string }
+	item: HistoryDoc
 	index: number
-	onSelect: (item: SearchItem) => void
+	onSelect: (item: SearchDoc) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div key={`${item.id}-${index}`} className="group relative">
@@ -90,17 +97,19 @@ const HistoryItem = ({
 			highlightedText={item.highlightedText ?? item.title}
 			isSelected={false}
 			onClick={() => onSelect(item)}
+			matchType={item.type ?? "heading"}
 		/>
 		<RemoveItemButton onRemove={onRemove} itemId={item.id} />
 	</div>
 )
+
 const HistoryItemsList = ({
 	history,
 	onSelect,
 	onRemove,
 }: {
-	history: (SearchItem & { highlightedText?: string })[]
-	onSelect: (item: SearchItem) => void
+	history: HistoryDoc[]
+	onSelect: (item: SearchDoc) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div className="max-h-64 overflow-y-auto">
@@ -111,9 +120,7 @@ const HistoryItemsList = ({
 )
 
 export const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryProps) => {
-	if (history.length === 0) {
-		return
-	}
+	if (history.length === 0) return null
 
 	return (
 		<div>
