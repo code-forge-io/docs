@@ -1,4 +1,3 @@
-import { allPages } from "content-collections"
 import { Outlet } from "react-router"
 import { CommandK } from "~/components/command-k/components/command-k"
 import { createSearchIndex } from "~/components/command-k/create-search-index"
@@ -8,16 +7,18 @@ import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
+import { loadContentCollections } from "~/utils/load-content-collections"
 import { resolveVersionForLayout } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-layout"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
 	const { version } = resolveVersionForLayout(params.version, request)
 	const sidebarTree = await createSidebarTree(version)
-	return { sidebarTree, version }
+	const { allPages } = await loadContentCollections(version)
+	return { sidebarTree, version, allPages }
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
-	const { sidebarTree, version } = loaderData
+	const { sidebarTree, version, allPages } = loaderData
 	const searchIndex = createSearchIndex(allPages)
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">

@@ -9,11 +9,13 @@ type MatchType = "heading" | "paragraph"
 interface HistoryDoc extends SearchDoc {
 	highlightedText?: string
 	type?: MatchType
+	slug?: string
+	version?: string
 }
 
 interface SearchHistoryProps {
 	history: HistoryDoc[]
-	onSelect: (item: SearchDoc) => void
+	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
 	onClear: () => void
 }
@@ -88,7 +90,7 @@ const HistoryItem = ({
 }: {
 	item: HistoryDoc
 	index: number
-	onSelect: (item: SearchDoc) => void
+	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div key={`${item.id}-${index}`} className="group relative">
@@ -109,7 +111,7 @@ const HistoryItemsList = ({
 	onRemove,
 }: {
 	history: HistoryDoc[]
-	onSelect: (item: SearchDoc) => void
+	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div className="max-h-64 overflow-y-auto">
@@ -121,7 +123,6 @@ const HistoryItemsList = ({
 
 export const SearchHistory = ({ history, onSelect, onRemove, onClear }: SearchHistoryProps) => {
 	if (history.length === 0) return null
-
 	return (
 		<div>
 			<SearchHistoryHeader onClear={onClear} />

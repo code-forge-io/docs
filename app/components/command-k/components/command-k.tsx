@@ -21,10 +21,13 @@ interface CommandPaletteProps {
 	version: Version
 }
 
+type MatchType = "heading" | "paragraph"
+
 interface HistoryItem extends SearchDoc {
-	type?: string
+	type?: MatchType
 	slug?: string
 	highlightedText?: string
+	version?: string
 }
 
 const withVersion = (version: string, id: string) => `/${version}${id}`
@@ -61,8 +64,8 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		setQuery("")
 	}
 
-	const handleNavigateAndClose = (doc: SearchDoc) => {
-		navigate(withVersion(version, doc.id))
+	const handleNavigateAndClose = (doc: SearchDoc, v: string) => {
+		navigate(withVersion(v, doc.id))
 		handleClose()
 	}
 
@@ -70,24 +73,26 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		if (!isOpen) return
 
 		const rowItem = adaptToRowItem(result.item)
-		const matchType = result.refIndex === 0 ? "heading" : "paragraph"
+		const matchType: MatchType = result.refIndex === 0 ? "heading" : "paragraph"
 
 		const historyItem: HistoryItem = {
 			...rowItem,
 			type: matchType,
 			slug: rowItem.id,
 			highlightedText: result.highlightedText,
+			version,
 		}
 
 		addToHistory(historyItem)
-		handleNavigateAndClose(result.item)
+		handleNavigateAndClose(result.item, version)
 	}
 
-	const handleHistorySelect = (item: { slug?: string; id?: string }) => {
+	const handleHistorySelect = (item: { slug?: string; id?: string; version?: string }) => {
 		const id = item.slug || item.id
 		if (!id) return
 
-		navigate(withVersion(version, id))
+		const v = item.version ?? version
+		navigate(withVersion(v, id))
 		handleClose()
 	}
 
@@ -109,9 +114,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 
 	const renderBody = () => {
 		if (hasQuery) {
-			if (!hasResults) {
-				return <EmptyState query={query} />
-			}
+			if (!hasResults) return <EmptyState query={query} />
 
 			return results.map((result, index) => (
 				<SearchResultRow
