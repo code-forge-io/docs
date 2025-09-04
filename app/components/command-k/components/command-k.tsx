@@ -7,7 +7,7 @@ import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
 import { useSearchHistory } from "../hooks/use-search-history"
-import type { MatchType, SearchRecord, SearchResult } from "../search-types"
+import type { HistoryItem, MatchType, SearchRecord, SearchResult } from "../search-types"
 import { EmptyState } from "./empty-state"
 import { ResultsFooter } from "./results-footer"
 import { SearchHistory } from "./search-history"
@@ -56,9 +56,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		const historyItem = {
 			...rowItem,
 			type: matchType,
-			slug: rowItem.id,
 			highlightedText: result.highlightedText,
-			version,
 		}
 
 		addToHistory(historyItem)
@@ -66,12 +64,8 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		handleClose()
 	}
 
-	const handleHistorySelect = (item: { slug?: string; id?: string; version?: string }) => {
-		const id = item.slug || item.id
-		if (!id) return
-
-		const v = item.version ?? version
-		navigateToPage(v, id)
+	const handleHistorySelect = (item: HistoryItem) => {
+		navigateToPage(version, item.id)
 		handleClose()
 	}
 
@@ -124,11 +118,9 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 	return (
 		<Modal isOpen={isOpen} onClose={handleClose} getInitialFocus={() => inputRef.current} ariaLabel={searchPlaceholder}>
 			<SearchInput ref={inputRef} value={query} onChange={setQuery} placeholder={searchPlaceholder} />
-
 			<div className="max-h-96 overflow-y-auto overscroll-contain" aria-label={searchPlaceholder}>
 				{renderBody()}
 			</div>
-
 			<ResultsFooter resultsCount={results.length} query={query} />
 		</Modal>
 	)

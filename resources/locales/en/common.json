@@ -31,7 +31,8 @@
 	"p": {
 		"last_update": "Last updated: ",
 		"version": "Version",
-		"all_rights_reserved": "All rights reserved."
+		"all_rights_reserved": "All rights reserved.",
+		"search_by": "Search by"
 	},
 	"buttons": {
 		"copy": "Copy",

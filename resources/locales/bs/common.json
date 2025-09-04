@@ -31,7 +31,8 @@
 	"p": {
 		"last_update": "Posljednja izmjena:",
 		"version": "Verzija",
-		"all_rights_reserved": "Sva prava zadržana."
+		"all_rights_reserved": "Sva prava zadržana.",
+		"search_by": "Pretraga od"
 	},
 	"buttons": {
 		"copy": "Kopiraj",

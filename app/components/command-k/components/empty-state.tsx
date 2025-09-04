@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 import { KeyboardHint } from "./keyboard-hint"
+import { ResultsFooterNote } from "./results-footer-note"
 
 export const EmptyState = ({ query }: { query?: string }) => {
 	const { t } = useTranslation()
@@ -40,14 +41,7 @@ export const EmptyState = ({ query }: { query?: string }) => {
 				<KeyboardHint keys="↵" label={t("controls.select")} />
 				<KeyboardHint keys="⇥" label={t("controls.cycle")} />
 			</div>
-			<span className="text-[var(--color-footer-text)] text-xs opacity-70">
-				Search by{" "}
-				<span className="font-semibold">
-					<a href="https://www.forge42.dev/" target="_blank" rel="noopener noreferrer">
-						Forge 42
-					</a>
-				</span>
-			</span>
+			<ResultsFooterNote />
 		</div>
 	)
 }

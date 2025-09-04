@@ -5,12 +5,12 @@ import type { HistoryItem } from "../search-types"
 import { SearchResultRow } from "./search-result"
 interface SearchHistoryProps {
 	history: HistoryItem[]
-	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
-	onRemove: (itemId: string) => void
+	onSelect: (item: HistoryItem) => void
+	onRemove: (id: string) => void
 	onClear: () => void
 }
 
-const SearchHistoryHeader = ({ onClear }: { onClear: () => void }) => {
+const SearchHistoryHeader = ({ onClear }: Pick<SearchHistoryProps, "onClear">) => {
 	const { t } = useTranslation()
 	return (
 		<div
@@ -28,7 +28,7 @@ const SearchHistoryHeader = ({ onClear }: { onClear: () => void }) => {
 	)
 }
 
-const ClearHistoryButton = ({ onClear }: { onClear: () => void }) => {
+const ClearHistoryButton = ({ onClear }: Pick<SearchHistoryProps, "onClear">) => {
 	const { t } = useTranslation()
 	return (
 		<button
@@ -49,16 +49,16 @@ const ClearHistoryButton = ({ onClear }: { onClear: () => void }) => {
 
 const RemoveItemButton = ({
 	onRemove,
-	itemId,
+	id,
 }: {
-	onRemove: (itemId: string) => void
-	itemId: string
+	onRemove: (id: string) => void
+	id: string
 }) => (
 	<button
 		type="button"
 		onClick={(e) => {
 			e.stopPropagation()
-			onRemove(itemId)
+			onRemove(id)
 		}}
 		className={cn(
 			"-translate-y-1/2 absolute top-1/2 right-2 flex h-6 w-6 items-center justify-center rounded-full border opacity-0 transition-all duration-150 group-hover:opacity-100",
@@ -80,8 +80,8 @@ const HistoryItemRow = ({
 }: {
 	item: HistoryItem
 	index: number
-	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
-	onRemove: (itemId: string) => void
+	onSelect: Pick<SearchHistoryProps, "onSelect">["onSelect"]
+	onRemove: Pick<SearchHistoryProps, "onRemove">["onRemove"]
 }) => (
 	<div key={`${item.id}-${index}`} className="group relative">
 		<SearchResultRow
@@ -91,7 +91,7 @@ const HistoryItemRow = ({
 			onClick={() => onSelect(item)}
 			matchType={item.type ?? "heading"}
 		/>
-		<RemoveItemButton onRemove={onRemove} itemId={item.id} />
+		<RemoveItemButton onRemove={onRemove} id={item.id} />
 	</div>
 )
 
@@ -101,8 +101,8 @@ const HistoryItemsList = ({
 	onRemove,
 }: {
 	history: HistoryItem[]
-	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
-	onRemove: (itemId: string) => void
+	onSelect: Pick<SearchHistoryProps, "onSelect">["onSelect"]
+	onRemove: Pick<SearchHistoryProps, "onRemove">["onRemove"]
 }) => (
 	<div className="max-h-64 overflow-y-auto">
 		{history.map((item, index) => (

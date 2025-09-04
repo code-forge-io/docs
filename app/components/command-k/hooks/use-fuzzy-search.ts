@@ -13,26 +13,19 @@ const scoreMatchQuality = (query: string, text: string) => {
 	const q = toSearchable(query)
 	const t = toSearchable(text)
 	if (q.length < 2) return 0 // ignore very short queries
-	if (t === q) return 1 // exact match → strongest
-	if (t.startsWith(q)) return 0.95 // starts with query → very strong
-	if (t.includes(q)) return 0.85 // contains query → weaker
+	if (t === q) return 1 // exact match -> strongest
+	if (t.startsWith(q)) return 0.95 // starts with query -> very strong
+	if (t.includes(q)) return 0.85 // contains query -> weaker
 	return 0 // no match
 }
 
-/**
- * Create a snippet of text around the match, highlighting it with <mark>.
- *
- * - maxLen = 120 → show up to 120 characters around the match
- * - half snippet before and after query for context
- * - adds "..." if clipped
- */
 const highlightSnippet = (text: string, query: string, maxLen = 120) => {
 	const trimmed = text.trim()
 	const q = toSearchable(query)
 	const idx = trimmed.toLowerCase().indexOf(q)
 
 	if (idx === -1) {
-		// no match → just return truncated text
+		// if no match, just return truncated text
 		return trimmed.length > maxLen ? `${trimmed.slice(0, maxLen)}...` : trimmed
 	}
 
@@ -50,11 +43,7 @@ const highlightSnippet = (text: string, query: string, maxLen = 120) => {
 	return `${start > 0 ? "..." : ""}${marked}${end < trimmed.length ? "..." : ""}`
 }
 
-export function fuzzySearch(
-	items: ReadonlyArray<SearchRecord>,
-	query: string,
-	options: Partial<FuzzySearchOptions> = {}
-) {
+export function fuzzySearch(items: ReadonlyArray<SearchRecord>, query: string, options: FuzzySearchOptions) {
 	const threshold = clamp(options.threshold ?? DEFAULTS.threshold, 0, 1)
 	const minLen = Math.max(0, options.minMatchCharLength ?? DEFAULTS.minMatchCharLength)
 
@@ -64,7 +53,7 @@ export function fuzzySearch(
 	const results: SearchResult[] = []
 
 	for (const item of items) {
-		const paragraphs: ReadonlyArray<string | undefined> = item.paragraphs ?? []
+		const paragraphs: ReadonlyArray<string> = item.paragraphs ?? []
 
 		paragraphs.forEach((paragraph, paragraphIndex) => {
 			if (!paragraph) return

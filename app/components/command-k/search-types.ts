@@ -15,7 +15,6 @@ export interface SearchResult {
 
 export interface FuzzySearchOptions {
 	threshold: number
-	includeScore: boolean
 	minMatchCharLength: number
 }
 

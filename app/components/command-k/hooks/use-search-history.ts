@@ -33,12 +33,7 @@ export const useSearchHistory = (version: string) => {
 	}, [storageKey])
 
 	useEffect(() => {
-		try {
-			setStorageItem(storageKey, JSON.stringify(history))
-		} catch (error) {
-			// biome-ignore lint/suspicious/noConsole: keep for debugging
-			console.warn("Failed to save search history:", error)
-		}
+		setStorageItem(storageKey, JSON.stringify(history))
 	}, [history, storageKey])
 
 	const addToHistory = useCallback((item: HistoryItem) => {

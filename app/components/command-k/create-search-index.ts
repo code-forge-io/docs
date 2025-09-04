@@ -1,14 +1,6 @@
 import type { Page } from "content-collections"
+import slug from "slug"
 import { getPageSlug } from "~/utils/get-page-slug"
-
-function slugifyHeading(text: string) {
-	return text
-		.toLowerCase()
-		.trim()
-		.replace(/[`*_~]/g, "")
-		.replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\\\]^_`{|}~]/g, "")
-		.replace(/\s+/g, "-")
-}
 
 function cleanParagraph(raw: string) {
 	return (
@@ -95,7 +87,7 @@ function extractHeadingSections(rawMdx: string) {
 		const block = src.slice(match.index + match.length, nextMatch?.index).trim()
 
 		const rawHeading = cleanHeadingText(match.text)
-		const baseAnchor = slugifyHeading(rawHeading) || "_section"
+		const baseAnchor = slug(rawHeading) || "_section"
 		const anchor = createUniqueAnchor(baseAnchor)
 		const paragraphs = splitIntoParagraphs(block)
 
