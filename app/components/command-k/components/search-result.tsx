@@ -51,30 +51,14 @@ const ResultTitle = ({
 	</div>
 )
 
-const ResultMetadata = ({
-	item,
-	matchType,
-}: {
-	item: SearchRecord
-	matchType: MatchType
-}) => (
+const ResultMetadata = ({ item, matchType }: Pick<SearchResultProps, "item" | "matchType">) => (
 	<div className="mt-2 text-[var(--color-breadcrumb-text)] text-xs">
 		{item.title}
 		{matchType === "paragraph" && item.subtitle ? <span> &gt; {item.subtitle}</span> : null}
 	</div>
 )
 
-const ResultContent = ({
-	item,
-	highlightedText,
-	isSelected,
-	matchType,
-}: {
-	item: SearchRecord
-	highlightedText: string
-	isSelected: boolean
-	matchType: MatchType
-}) => (
+const ResultContent = ({ item, highlightedText, isSelected, matchType }: Omit<SearchResultProps, "onClick">) => (
 	<div className="min-w-0 flex-1">
 		<ResultTitle title={item.title} highlightedText={highlightedText} isSelected={isSelected} />
 		<ResultMetadata item={item} matchType={matchType} />

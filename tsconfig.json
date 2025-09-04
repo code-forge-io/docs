@@ -1,12 +1,5 @@
 {
-	"include": [
-		"env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		"**/**/.server/**/*.ts",
-		".react-router/types/**/*",
-		"app/components/command-k/components/keyboard-hint,tsx"
-	],
+	"include": ["env.d.ts", "**/*.ts", "**/*.tsx", "**/**/.server/**/*.ts", ".react-router/types/**/*"],
 	"compilerOptions": {
 		"types": ["vitest/globals", "@vitest/browser/providers/playwright"],
 		"lib": ["DOM", "DOM.Iterable", "ES2023"],

@@ -49,10 +49,8 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 
 	const handleResultSelect = (result: SearchResult) => {
 		if (!isOpen) return
-
 		const rowItem = result.item
 		const matchType: MatchType = result.refIndex === 0 ? "heading" : "paragraph"
-
 		const historyItem = {
 			...rowItem,
 			type: matchType,

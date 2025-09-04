@@ -51,7 +51,7 @@ const RemoveItemButton = ({
 	onRemove,
 	id,
 }: {
-	onRemove: (id: string) => void
+	onRemove: Pick<SearchHistoryProps, "onRemove">["onRemove"]
 	id: string
 }) => (
 	<button
