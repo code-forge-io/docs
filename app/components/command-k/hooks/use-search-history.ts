@@ -1,17 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { COMMAND_K_SEARCH_HISTORY, getStorageItem, removeStorageItem, setStorageItem } from "~/utils/local-storage"
-import type { SearchDoc } from "../search-types"
-
-type MatchType = "heading" | "paragraph"
-
-interface HistoryItem extends SearchDoc {
-	clickedAt: number
-	clickCount: number
-	highlightedText?: string
-	version?: string
-	type?: MatchType
-	slug?: string
-}
+import type { HistoryItem, MatchType, SearchDoc } from "../search-types"
 
 const MAX_HISTORY_ITEMS = 10
 
@@ -52,8 +41,6 @@ export const useSearchHistory = () => {
 						version: item.version ?? existing.version,
 						type: item.type ?? existing.type,
 						slug: item.slug ?? existing.slug,
-						clickedAt: Date.now(),
-						clickCount: existing.clickCount + 1,
 						highlightedText: item.highlightedText ?? existing.highlightedText,
 					}
 
@@ -62,8 +49,6 @@ export const useSearchHistory = () => {
 
 				const newItem: HistoryItem = {
 					...item,
-					clickedAt: Date.now(),
-					clickCount: 1,
 				}
 
 				return [newItem, ...prev].slice(0, MAX_HISTORY_ITEMS)

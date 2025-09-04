@@ -7,7 +7,7 @@ import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
 import { useSearchHistory } from "../hooks/use-search-history"
-import type { SearchDoc, SearchResult } from "../search-types"
+import type { MatchType, SearchDoc, SearchResult } from "../search-types"
 import { EmptyState } from "./empty-state"
 import { ResultsFooter } from "./results-footer"
 import { SearchHistory } from "./search-history"
@@ -21,23 +21,7 @@ interface CommandPaletteProps {
 	version: Version
 }
 
-type MatchType = "heading" | "paragraph"
-
-interface HistoryItem extends SearchDoc {
-	type?: MatchType
-	slug?: string
-	highlightedText?: string
-	version?: string
-}
-
 const withVersion = (version: string, id: string) => `/${version}${id}`
-
-const adaptToRowItem = (doc: SearchDoc): SearchDoc => ({
-	id: doc.id,
-	title: doc.title,
-	subtitle: doc.subtitle,
-	paragraphs: doc.paragraphs,
-})
 
 export const CommandK = ({ searchIndex, placeholder, version }: CommandPaletteProps) => {
 	const { t } = useTranslation()
@@ -54,9 +38,9 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		minMatchCharLength: 3,
 	})
 
-	const hasQuery = query.trim().length > 0
-	const hasResults = results.length > 0
-	const hasHistory = history.length > 0
+	const hasQuery = !!query.trim()
+	const hasResults = !!results.length
+	const hasHistory = !!history.length
 	const searchPlaceholder = placeholder ?? t("placeholders.search_documentation")
 
 	const handleClose = () => {
@@ -64,18 +48,13 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		setQuery("")
 	}
 
-	const handleNavigateAndClose = (doc: SearchDoc, v: string) => {
-		navigate(withVersion(v, doc.id))
-		handleClose()
-	}
-
 	const handleResultSelect = (result: SearchResult) => {
 		if (!isOpen) return
 
-		const rowItem = adaptToRowItem(result.item)
+		const rowItem = result.item
 		const matchType: MatchType = result.refIndex === 0 ? "heading" : "paragraph"
 
-		const historyItem: HistoryItem = {
+		const historyItem = {
 			...rowItem,
 			type: matchType,
 			slug: rowItem.id,
@@ -84,7 +63,8 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		}
 
 		addToHistory(historyItem)
-		handleNavigateAndClose(result.item, version)
+		navigate(withVersion(version, rowItem.id))
+		handleClose()
 	}
 
 	const handleHistorySelect = (item: { slug?: string; id?: string; version?: string }) => {
@@ -119,7 +99,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 			return results.map((result, index) => (
 				<SearchResultRow
 					key={`${result.item.id}-${result.refIndex}`}
-					item={adaptToRowItem(result.item)}
+					item={result.item}
 					highlightedText={result.highlightedText}
 					isSelected={index === selectedIndex}
 					onClick={() => handleResultSelect(result)}

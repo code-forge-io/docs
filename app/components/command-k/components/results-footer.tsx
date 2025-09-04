@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { cn } from "~/utils/css"
+import { KeyboardHint } from "./keyboard-hint"
 
 export const ResultsFooter = ({
 	resultsCount,
@@ -16,33 +17,8 @@ export const ResultsFooter = ({
 			<div className="flex items-center justify-between text-xs">
 				<span className="font-medium text-[var(--color-footer-text)]">{t("text.result", { count: resultsCount })}</span>
 				<div className="flex items-center gap-4 text-[var(--color-footer-text)]">
-					<div className="flex items-center gap-1">
-						<kbd
-							className={cn(
-								"rounded border border-[var(--color-footer-kbd-border)] bg-[var(--color-footer-kbd-bg)] px-1.5 py-0.5 font-mono"
-							)}
-						>
-							↑
-						</kbd>
-						<kbd
-							className={cn(
-								"rounded border border-[var(--color-footer-kbd-border)] bg-[var(--color-footer-kbd-bg)] px-1.5 py-0.5 font-mono"
-							)}
-						>
-							↓
-						</kbd>
-						<span>{t("controls.navigate")}</span>
-					</div>
-					<div className="flex items-center gap-1">
-						<kbd
-							className={cn(
-								"rounded border border-[var(--color-footer-kbd-border)] bg-[var(--color-footer-kbd-bg)] px-1.5 py-0.5 font-mono"
-							)}
-						>
-							↵
-						</kbd>
-						<span>{t("controls.open")}</span>
-					</div>
+					<KeyboardHint keys={["↑", "↓"]} label={t("controls.navigate")} />
+					<KeyboardHint keys="↵" label={t("controls.select")} />
 					<span className="text-[var(--color-footer-text)] text-xs opacity-70">
 						Search by{" "}
 						<span className="font-semibold">

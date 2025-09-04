@@ -20,3 +20,12 @@ export interface FuzzySearchOptions {
 	includeScore: boolean
 	minMatchCharLength: number
 }
+
+export type MatchType = "heading" | "paragraph"
+
+export interface HistoryItem extends SearchDoc {
+	type?: MatchType
+	slug?: string
+	highlightedText?: string
+	version?: string
+}

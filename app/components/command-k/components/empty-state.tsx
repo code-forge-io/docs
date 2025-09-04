@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
+import { KeyboardHint } from "./keyboard-hint"
 
 export const EmptyState = ({ query }: { query?: string }) => {
 	const { t } = useTranslation()
@@ -35,43 +36,9 @@ export const EmptyState = ({ query }: { query?: string }) => {
 			</div>
 			<p className="mb-4 font-medium text-[var(--color-empty-text)]">{t("text.start_typing_to_search")}</p>
 			<div className="flex items-center justify-center gap-6 text-[var(--color-empty-text-muted)] text-xs">
-				<div className="flex items-center gap-1">
-					<kbd
-						className={cn(
-							"rounded border border-[var(--color-kbd-border)] bg-[var(--color-kbd-bg)] px-1.5 py-0.5 font-mono"
-						)}
-					>
-						↑
-					</kbd>
-					<kbd
-						className={cn(
-							"rounded border border-[var(--color-kbd-border)] bg-[var(--color-kbd-bg)] px-1.5 py-0.5 font-mono"
-						)}
-					>
-						↓
-					</kbd>
-					<span>{t("controls.navigate")}</span>
-				</div>
-				<div className="flex items-center gap-1">
-					<kbd
-						className={cn(
-							"rounded border border-[var(--color-kbd-border)] bg-[var(--color-kbd-bg)] px-1.5 py-0.5 font-mono"
-						)}
-					>
-						↵
-					</kbd>
-					<span>{t("controls.select")}</span>
-				</div>
-				<div className="flex items-center gap-1">
-					<kbd
-						className={cn(
-							"rounded border border-[var(--color-kbd-border)] bg-[var(--color-kbd-bg)] px-1.5 py-0.5 font-mono"
-						)}
-					>
-						{t("controls.tab")}
-					</kbd>
-					<span>{t("controls.cycle")}</span>
-				</div>
+				<KeyboardHint keys={["↑", "↓"]} label={t("controls.navigate")} />
+				<KeyboardHint keys="↵" label={t("controls.select")} />
+				<KeyboardHint keys="⇥" label={t("controls.cycle")} />
 			</div>
 			<span className="text-[var(--color-footer-text)] text-xs opacity-70">
 				Search by{" "}

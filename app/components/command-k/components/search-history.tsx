@@ -1,20 +1,10 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
-import type { SearchDoc } from "../search-types"
+import type { HistoryItem } from "../search-types"
 import { SearchResultRow } from "./search-result"
-
-type MatchType = "heading" | "paragraph"
-
-interface HistoryDoc extends SearchDoc {
-	highlightedText?: string
-	type?: MatchType
-	slug?: string
-	version?: string
-}
-
 interface SearchHistoryProps {
-	history: HistoryDoc[]
+	history: HistoryItem[]
 	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
 	onClear: () => void
@@ -82,13 +72,13 @@ const RemoveItemButton = ({
 	</button>
 )
 
-const HistoryItem = ({
+const HistoryItemRow = ({
 	item,
 	index,
 	onSelect,
 	onRemove,
 }: {
-	item: HistoryDoc
+	item: HistoryItem
 	index: number
 	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
@@ -110,13 +100,13 @@ const HistoryItemsList = ({
 	onSelect,
 	onRemove,
 }: {
-	history: HistoryDoc[]
+	history: HistoryItem[]
 	onSelect: (item: { slug?: string; id?: string; version?: string }) => void
 	onRemove: (itemId: string) => void
 }) => (
 	<div className="max-h-64 overflow-y-auto">
 		{history.map((item, index) => (
-			<HistoryItem key={`${item.id}-${index}`} item={item} index={index} onSelect={onSelect} onRemove={onRemove} />
+			<HistoryItemRow key={`${item.id}-${index}`} item={item} index={index} onSelect={onSelect} onRemove={onRemove} />
 		))}
 	</div>
 )

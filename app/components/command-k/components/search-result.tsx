@@ -1,8 +1,6 @@
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
-import type { SearchDoc } from "../search-types"
-
-type MatchType = "heading" | "paragraph"
+import type { MatchType, SearchDoc } from "../search-types"
 
 interface SearchResultProps {
 	item: SearchDoc
