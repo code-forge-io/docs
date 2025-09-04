@@ -8,11 +8,11 @@ import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
-import { resolveLayoutVersion } from "~/utils/version-links"
+import { resolveVersionForLayout } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-layout"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-	const { version } = resolveLayoutVersion(params.version, request)
+	const { version } = resolveVersionForLayout(params.version, request)
 	const sidebarTree = await createSidebarTree(version)
 	return { sidebarTree, version }
 }

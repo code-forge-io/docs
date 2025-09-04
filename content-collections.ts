@@ -7,6 +7,29 @@ const sectionSchema = z.object({
 	title: z.string(),
 })
 
+const pageSchema = z.object({
+	title: z.string(),
+	summary: z.string(),
+	description: z.string(),
+})
+
+const metaSchema = z.object({ path: z.string() }).partial().optional()
+const outputBaseSchema = z.object({
+	slug: z.string(),
+	_meta: metaSchema,
+})
+
+const sectionOutputSchema = sectionSchema.extend(outputBaseSchema.shape)
+const pageOutputSchema = pageSchema.extend({
+	...outputBaseSchema.shape,
+	section: z.string().optional(),
+	rawMdx: z.string(),
+	content: z.unknown(),
+})
+
+export type Section = z.infer<typeof sectionOutputSchema>
+export type Page = z.infer<typeof pageOutputSchema>
+
 /**
  * Removes leading number prefixes like "01-", "02-" from each path segment.
  */
@@ -30,18 +53,8 @@ const section = defineCollection({
 	transform: (document) => {
 		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
 		const slug = cleanSlug(relativePath)
-
-		return {
-			...document,
-			slug,
-		}
+		return { ...document, slug }
 	},
-})
-
-const pageSchema = z.object({
-	title: z.string(),
-	summary: z.string(),
-	description: z.string(),
 })
 
 /*
@@ -57,7 +70,6 @@ const page = defineCollection({
 	transform: async (document, context) => {
 		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
 		const slug = cleanSlug(relativePath)
-
 		const content = await compileMDX(context, document, {
 			rehypePlugins: [rehypeSlug],
 		})
