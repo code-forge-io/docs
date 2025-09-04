@@ -1,9 +1,9 @@
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
-import type { MatchType, SearchDoc } from "../search-types"
+import type { MatchType, SearchRecord } from "../search-types"
 
 interface SearchResultProps {
-	item: SearchDoc
+	item: SearchRecord
 	highlightedText: string
 	isSelected: boolean
 	onClick: () => void
@@ -55,7 +55,7 @@ const ResultMetadata = ({
 	item,
 	matchType,
 }: {
-	item: SearchDoc
+	item: SearchRecord
 	matchType: MatchType
 }) => (
 	<div className="mt-2 text-[var(--color-breadcrumb-text)] text-xs">
@@ -70,7 +70,7 @@ const ResultContent = ({
 	isSelected,
 	matchType,
 }: {
-	item: SearchDoc
+	item: SearchRecord
 	highlightedText: string
 	isSelected: boolean
 	matchType: MatchType

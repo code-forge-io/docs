@@ -7,7 +7,7 @@ import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
 import { useSearchHistory } from "../hooks/use-search-history"
-import type { MatchType, SearchDoc, SearchResult } from "../search-types"
+import type { MatchType, SearchRecord, SearchResult } from "../search-types"
 import { EmptyState } from "./empty-state"
 import { ResultsFooter } from "./results-footer"
 import { SearchHistory } from "./search-history"
@@ -16,28 +16,23 @@ import { SearchResultRow } from "./search-result"
 import { TriggerButton } from "./trigger-button"
 
 interface CommandPaletteProps {
-	searchIndex: SearchDoc[]
+	searchIndex: SearchRecord[]
 	placeholder?: string
 	version: Version
 }
-
-const withVersion = (version: string, id: string) => `/${version}${id}`
 
 export const CommandK = ({ searchIndex, placeholder, version }: CommandPaletteProps) => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const inputRef = useRef<HTMLInputElement>(null)
-
 	const [query, setQuery] = useState("")
-
 	const { isOpen, openModal, closeModal } = useModalState()
-	const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory()
+	const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory(version)
 
 	const results = fuzzySearch(searchIndex, query, {
 		threshold: 0.8,
 		minMatchCharLength: 3,
 	})
-
 	const hasQuery = !!query.trim()
 	const hasResults = !!results.length
 	const hasHistory = !!history.length
@@ -46,6 +41,10 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 	const handleClose = () => {
 		closeModal()
 		setQuery("")
+	}
+
+	const navigateToPage = (version: string, id: string) => {
+		navigate(`/${version}${id}`)
 	}
 
 	const handleResultSelect = (result: SearchResult) => {
@@ -63,7 +62,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		}
 
 		addToHistory(historyItem)
-		navigate(withVersion(version, rowItem.id))
+		navigateToPage(version, rowItem.id)
 		handleClose()
 	}
 
@@ -72,7 +71,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 		if (!id) return
 
 		const v = item.version ?? version
-		navigate(withVersion(v, id))
+		navigateToPage(v, id)
 		handleClose()
 	}
 

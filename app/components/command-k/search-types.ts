@@ -1,4 +1,4 @@
-export interface SearchDoc {
+export interface SearchRecord {
 	id: string //e.g "/configuration/editor#name" where name is the heading inside of the editor page under the configuration section
 	title: string // page title
 	subtitle: string // title of the "sections" inside the page
@@ -6,16 +6,14 @@ export interface SearchDoc {
 }
 
 export interface SearchResult {
-	item: SearchDoc
+	item: SearchRecord
 	score: number
-	matchedKey: "paragraphs"
 	matchedText: string
 	highlightedText: string
-	refIndex: number
+	refIndex: number // 0 if heading, >0 if actual paragraph
 }
 
 export interface FuzzySearchOptions {
-	keys: Array<"paragraphs">
 	threshold: number
 	includeScore: boolean
 	minMatchCharLength: number
@@ -23,9 +21,7 @@ export interface FuzzySearchOptions {
 
 export type MatchType = "heading" | "paragraph"
 
-export interface HistoryItem extends SearchDoc {
+export interface HistoryItem extends SearchRecord {
 	type?: MatchType
-	slug?: string
 	highlightedText?: string
-	version?: string
 }

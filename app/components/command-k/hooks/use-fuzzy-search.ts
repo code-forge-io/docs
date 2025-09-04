@@ -1,4 +1,4 @@
-import type { FuzzySearchOptions, SearchDoc, SearchResult } from "../search-types"
+import type { FuzzySearchOptions, SearchRecord, SearchResult } from "../search-types"
 
 const DEFAULTS = {
 	threshold: 0.8, // results must score ≥ 0.8 to be considered relevant
@@ -50,7 +50,11 @@ const highlightSnippet = (text: string, query: string, maxLen = 120) => {
 	return `${start > 0 ? "..." : ""}${marked}${end < trimmed.length ? "..." : ""}`
 }
 
-export function fuzzySearch(items: ReadonlyArray<SearchDoc>, query: string, options: Partial<FuzzySearchOptions> = {}) {
+export function fuzzySearch(
+	items: ReadonlyArray<SearchRecord>,
+	query: string,
+	options: Partial<FuzzySearchOptions> = {}
+) {
 	const threshold = clamp(options.threshold ?? DEFAULTS.threshold, 0, 1)
 	const minLen = Math.max(0, options.minMatchCharLength ?? DEFAULTS.minMatchCharLength)
 
@@ -71,7 +75,6 @@ export function fuzzySearch(items: ReadonlyArray<SearchDoc>, query: string, opti
 				results.push({
 					item,
 					score: clamp(score, 0, 1),
-					matchedKey: "paragraphs",
 					matchedText: paragraph,
 					highlightedText: highlightSnippet(paragraph, raw),
 					refIndex: paragraphIndex,
