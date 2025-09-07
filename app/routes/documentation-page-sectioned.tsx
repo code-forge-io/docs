@@ -1,27 +1,23 @@
-import GithubContributeLinks from "~/components/github-contribute-links"
-import PageMdxArticle from "~/components/page-mdx-article"
-import { PageNavigation } from "~/components/page-navigation"
-import { TableOfContents } from "~/components/table-of-content"
+import { DocumentationPageView } from "~/components/documentation-page-view"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { usePreviousNextPages } from "~/hooks/use-previous-next-pages"
-import { extractHeadingTreeFromMarkdown } from "~/utils/extract-heading-tree-from-mdx"
 import { getDomain } from "~/utils/get-domain"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import { generateMetaFields } from "~/utils/seo"
 import { splitSlug } from "~/utils/split-slug"
 import { normalizeVersion } from "~/utils/version-resolvers"
-import type { Route } from "./+types/documentation-page"
+import type { Route } from "./+types/documentation-page-sectioned"
 
 export const meta = ({ data }: Route.MetaArgs) => {
 	const { page, domain, version } = data
-	const title = page.title
-	const description = page.description
 	const { section, subsection, filename } = splitSlug(page.slug)
+	const path = [version, section, subsection, filename].filter(Boolean).join("/")
 	return generateMetaFields({
 		domain,
-		path: `/${version}/${section}/${subsection}/${filename}`,
-		title: `${title} · Package Name`,
-		description,
+		path: `/${path}`,
+		// change "Package Name" to your package name
+		title: `${page.title} · Package Name`,
+		description: page.description,
 	})
 }
 
@@ -30,7 +26,6 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 	if (!section || !filename) throw new Response("Not Found", { status: 404 })
 
 	const { version } = normalizeVersion(v)
-
 	const slug = [section, subsection, filename].filter(Boolean).join("/")
 
 	const { allPages } = await loadContentCollections(version)
@@ -41,26 +36,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 	return { page, version, domain }
 }
 
-export type Page = Awaited<ReturnType<typeof loader>>["page"]
-
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
-	const { sidebarTree } = useDocumentationLayoutLoaderData()
-	const { previous, next } = usePreviousNextPages(sidebarTree)
-	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
+	const {
+		sidebarTree: { sections, documentationPages },
+	} = useDocumentationLayoutLoaderData()
+	const { previous, next } = usePreviousNextPages(sections, documentationPages)
 
-	return (
-		<div className="flex min-h-screen flex-row">
-			<div className="mx-auto flex w-full max-w-screen-4xl flex-col gap-4 pt-4 lg:gap-8 xl:pt-0">
-				<PageMdxArticle page={page} />
-				<PageNavigation previous={previous} next={next} />
-			</div>
-			<div className="hidden w-56 min-w-min flex-shrink-0 xl:block">
-				<div className="sticky top-37 pb-10">
-					<GithubContributeLinks pagePath={page._meta.filePath} />
-					<TableOfContents items={toc} />
-				</div>
-			</div>
-		</div>
-	)
+	return <DocumentationPageView page={page} previous={previous} next={next} />
 }

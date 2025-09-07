@@ -1,3 +1,4 @@
+import type { Page } from "content-collections"
 import { cn } from "~/utils/css"
 import { DesktopSidebarPanel } from "./desktop-sidebar"
 import { MobileSidebarHeader, MobileSidebarOverlay, MobileSidebarPanel } from "./mobile-sidebar"
@@ -7,25 +8,28 @@ export type SidebarSection = {
 	title: string
 	slug: string
 	subsections: SidebarSection[]
-	documentationPages: {
-		title: string
-		slug: string
-	}[]
+	documentationPages: { title: string; slug: string }[]
 }
+
 interface SidebarProps {
 	items: SidebarSection[]
+	documentationPages?: Page[]
 	className?: string
 }
 
-export const Sidebar = ({ items, className = "" }: SidebarProps) => {
+export const Sidebar = ({ items, documentationPages = [], className = "" }: SidebarProps) => {
 	return (
 		<>
-			<DesktopSidebarPanel items={items} className={cn("hidden xl:block", className)} />
+			<DesktopSidebarPanel
+				items={items}
+				documentationPages={documentationPages}
+				className={cn("hidden xl:block", className)}
+			/>
 			<MobileSidebarProvider>
 				<div className="xl:hidden">
 					<MobileSidebarHeader />
 					<MobileSidebarOverlay />
-					<MobileSidebarPanel items={items} className={className} />
+					<MobileSidebarPanel items={items} documentationPages={documentationPages} className={className} />
 				</div>
 			</MobileSidebarProvider>
 		</>

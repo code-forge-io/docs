@@ -1,4 +1,4 @@
-import type { Page } from "~/routes/documentation-page"
+import type { Page } from "content-collections"
 import { Title } from "~/ui/title"
 import { MDXWrapper } from "./mdx-wrapper"
 

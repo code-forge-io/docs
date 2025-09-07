@@ -37,7 +37,11 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 			</Header>
 
 			<div className="xl:flex">
-				<Sidebar items={sidebarTree} className="flex-shrink-0" />
+				<Sidebar
+					items={sidebarTree.sections}
+					documentationPages={sidebarTree.documentationPages}
+					className="flex-shrink-0"
+				/>
 				<main className="mx-4 flex-1 pt-10 pb-16 lg:mx-8">
 					<Outlet />
 				</main>

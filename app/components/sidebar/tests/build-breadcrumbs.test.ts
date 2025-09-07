@@ -14,17 +14,18 @@ vi.mock("~/utils/split-slug", () => ({
 			return { section, subsection, filename }
 		}
 
+		// Note: standalone (1 part) is handled directly by buildBreadcrumbs; we never call splitSlug for it.
 		throw new Error(`Bad slug in test: ${slug}`)
 	},
 }))
 
-import { buildBreadcrumb } from "../build-breadcrumbs"
+import { buildBreadcrumbs } from "../build-breadcrumbs"
 
 type Doc = { slug: string; title: string }
 const makeDoc = (slug: string, title: string): Doc => ({ slug, title })
 
 type MinimalSection = Pick<SidebarSection, "title" | "slug" | "documentationPages" | "subsections">
-const makeSection = (overrides: Partial<MinimalSection> = {}) => ({
+const makeSection = (overrides: Partial<MinimalSection> = {}): MinimalSection => ({
 	title: "",
 	slug: "",
 	documentationPages: [],
@@ -32,7 +33,9 @@ const makeSection = (overrides: Partial<MinimalSection> = {}) => ({
 	...overrides,
 })
 
-describe("buildBreadcrumb", () => {
+const makeStandalone = (slug: string, title: string) => ({ slug, title })
+
+describe("buildBreadcrumbs", () => {
 	it("returns [] when pathname doesn't match any doc", () => {
 		const items = [
 			makeSection({
@@ -41,10 +44,10 @@ describe("buildBreadcrumb", () => {
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/getting-started/unknown")).toEqual([])
+		expect(buildBreadcrumbs(items, "/getting-started/unknown")).toEqual([])
 	})
 
-	it("returns [section, doc] for a top-level doc", () => {
+	it("returns [section, doc] for a top-level doc within a section", () => {
 		const items = [
 			makeSection({
 				title: "Getting Started",
@@ -52,7 +55,7 @@ describe("buildBreadcrumb", () => {
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/getting-started/intro")).toEqual(["Getting Started", "Intro"])
+		expect(buildBreadcrumbs(items, "/getting-started/intro")).toEqual(["Getting Started", "Intro"])
 	})
 
 	it("returns full trail for a nested doc (root → sub → doc)", () => {
@@ -70,11 +73,32 @@ describe("buildBreadcrumb", () => {
 				documentationPages: [makeDoc("configuration/setup", "Setup")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/configuration/advanced/tuning")).toEqual(["Configuration", "Advanced", "Tuning"])
+		expect(buildBreadcrumbs(items, "/configuration/advanced/tuning")).toEqual(["Configuration", "Advanced", "Tuning"])
 	})
 
 	it("returns [] for an empty sidebar", () => {
 		const items: MinimalSection[] = []
-		expect(buildBreadcrumb(items, "/any-path")).toEqual([])
+		expect(buildBreadcrumbs(items, "/any-path")).toEqual([])
+	})
+
+	it("returns [doc] for a standalone top-level doc", () => {
+		const items: MinimalSection[] = []
+		const standalone = [makeStandalone("changelog", "Changelog")]
+		expect(buildBreadcrumbs(items, "/changelog", standalone)).toEqual(["Changelog"])
+	})
+
+	it("prefers sectioned matching when given (sanity check with both provided)", () => {
+		const items = [
+			makeSection({
+				title: "Guides",
+				slug: "guides",
+				documentationPages: [makeDoc("guides/quickstart", "Quickstart")],
+			}),
+		]
+		const standalone = [makeStandalone("quickstart", "Quickstart (Standalone)")]
+
+		expect(buildBreadcrumbs(items, "/guides/quickstart", standalone)).toEqual(["Guides", "Quickstart"])
+
+		expect(buildBreadcrumbs(items, "/quickstart", standalone)).toEqual(["Quickstart (Standalone)"])
 	})
 })

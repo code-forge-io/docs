@@ -6,20 +6,20 @@ import { z } from "zod"
 const sectionSchema = z.object({
 	title: z.string(),
 })
-
 const pageSchema = z.object({
 	title: z.string(),
 	summary: z.string(),
 	description: z.string(),
 })
-
 const metaSchema = z.object({ path: z.string() }).partial().optional()
+
 const outputBaseSchema = z.object({
 	slug: z.string(),
 	_meta: metaSchema,
 })
 
 const sectionOutputSchema = sectionSchema.extend(outputBaseSchema.shape)
+
 const pageOutputSchema = pageSchema.extend({
 	...outputBaseSchema.shape,
 	section: z.string().optional(),
@@ -75,7 +75,6 @@ const page = defineCollection({
 		})
 		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
-
 		return {
 			...document,
 			content,
