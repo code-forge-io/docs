@@ -17,13 +17,18 @@ import type { Route } from "./+types/root"
 import { ClientHintCheck, getHints } from "./services/client-hints"
 import tailwindcss from "./tailwind.css?url"
 import { fonts } from "./utils/fonts"
+import { getDomain } from "./utils/get-domain"
 import { THEME, getStorageItem, setStorageItem } from "./utils/local-storage"
 import { getSystemTheme } from "./utils/theme"
+import { normalizeVersion } from "./utils/version-resolvers"
 
-export async function loader({ context, request }: Route.LoaderArgs) {
+export async function loader({ context, request, params }: Route.LoaderArgs) {
 	const { lang, clientEnv } = context
 	const hints = getHints(request)
-	return { lang, clientEnv, hints }
+	const { version } = params
+	const { version: normalizedVersion } = normalizeVersion(version)
+	const { domain } = getDomain(request)
+	return { lang, clientEnv, hints, version: normalizedVersion, domain }
 }
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: tailwindcss }]

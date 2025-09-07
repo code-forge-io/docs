@@ -1,12 +1,14 @@
 import { useState } from "react"
-import { useNavigate } from "react-router"
+import { useNavigate, useRouteLoaderData } from "react-router"
+import type { loader } from "~/root"
 import { Icon } from "~/ui/icon/icon"
-import { getCurrentVersion, homepageUrlWithVersion, isKnownVersion } from "~/utils/version-resolvers"
+import { homepageUrlWithVersion, isKnownVersion } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
 
 export function VersionDropdown() {
 	const navigate = useNavigate()
-	const { version: currentVersion } = getCurrentVersion()
+	const data = useRouteLoaderData<typeof loader>("root")
+	const currentVersion = data?.version ?? versions[0]
 	const [selectedVersion, setSelectedVersion] = useState(currentVersion)
 
 	function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -29,7 +31,7 @@ export function VersionDropdown() {
 			<select
 				id="version"
 				name="version"
-				className="cursor-pointer appearance-none rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] py-2.5 pr-10 pl-4 font-medium text-sm shadow-sm transition-all duration-200 hover:bg-[var(--color-border)] focus:border-transparent focus:bg-[var(--color-border)] focus:outline-none focus:ring-none"
+				className="cursor-pointer appearance-none rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] py-1.5 pr-7 pl-2 font-medium text-sm shadow-sm transition-transform duration-200 hover:bg-[var(--color-border)] focus:border-transparent focus:bg-[var(--color-border)] focus:outline-none focus:ring-none xl:py-2.5 xl:pr-10 xl:pl-4"
 				value={selectedVersion}
 				onChange={onChange}
 				aria-label="Select documentation version"
@@ -48,7 +50,7 @@ export function VersionDropdown() {
 
 			<Icon
 				name="ChevronDown"
-				className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-[var(--color-text-muted)] transition-colors duration-200"
+				className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-2 size-3 text-[var(--color-text-muted)] transition-colors duration-200 xl:right-3 xl:size-4"
 			/>
 		</div>
 	)

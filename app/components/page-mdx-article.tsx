@@ -10,9 +10,9 @@ export default function PageMdxArticle({ page }: { page: Page }) {
 					{page.title}
 				</Title>
 				{page.description && (
-					<Title as="h5" className="my-6 text-[var(--color-text-muted)] text-lg">
+					<p className="my-6 font-normal text-[var(--color-text-muted)] text-base sm:text-lg md:text-xl">
 						{page.description}
-					</Title>
+					</p>
 				)}
 			</header>
 			<MDXWrapper content={page.content} />

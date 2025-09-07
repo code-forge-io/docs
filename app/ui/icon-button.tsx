@@ -18,7 +18,7 @@ export const IconButton = ({ name, className, ...props }: IconButtonProps) => {
 			)}
 			{...props}
 		>
-			<Icon name={name} className={cn("h-5 w-5 transition-all duration-300", className)} />
+			<Icon name={name} className={cn("size-4 transition-all duration-300 xl:size-5", className)} />
 		</button>
 	)
 }

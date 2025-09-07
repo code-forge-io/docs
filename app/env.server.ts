@@ -4,7 +4,8 @@ const envSchema = z.object({
 	NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 	APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
 	GITHUB_OWNER: z.string()?.optional(), // optional - for edit/report an issue for the documentation page
-	GITHUB_REPO: z.string()?.optional(), // optional - for edit/report an issue for the documentation page
+	GITHUB_REPO: z.string()?.optional(), // optional - for edit/report an issue for the documentation page,
+	GITHUB_REPO_URL: z.string().optional(), // optional - for navigation to the github repository page
 })
 
 type ServerEnv = z.infer<typeof envSchema>
@@ -53,6 +54,7 @@ export function getClientEnv() {
 		NODE_ENV: serverEnv.NODE_ENV,
 		GITHUB_OWNER: serverEnv.GITHUB_OWNER,
 		GITHUB_REPO: serverEnv.GITHUB_REPO,
+		GITHUB_REPO_URL: serverEnv.GITHUB_REPO_URL,
 	}
 }
 

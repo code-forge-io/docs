@@ -1,5 +1,6 @@
-import { Outlet } from "react-router"
+import { Outlet, useRouteLoaderData } from "react-router"
 import { Header } from "~/components/header"
+import { IconLink } from "~/components/icon-link"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
@@ -15,6 +16,8 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
 	const { sidebarTree } = loaderData
+	const { clientEnv } = useRouteLoaderData("root")
+	const { GITHUB_REPO_URL } = clientEnv
 
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
@@ -24,9 +27,13 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 						{/* Replace with your Logo */}
 						<span className="p-0">REACT ROUTER DEVTOOLS</span>
 					</Logo>
-					<VersionDropdown />
 				</div>
-				<ThemeToggle />
+
+				<div className="flex items-center">
+					<VersionDropdown />
+					<ThemeToggle />
+					{GITHUB_REPO_URL && <IconLink name="Github" href={GITHUB_REPO_URL} />}
+				</div>
 			</Header>
 
 			<div className="xl:flex">
@@ -35,6 +42,7 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 					<Outlet />
 				</main>
 			</div>
+			{/* You can add custom footer component here */}
 		</div>
 	)
 }

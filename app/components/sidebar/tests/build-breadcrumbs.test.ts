@@ -1,18 +1,17 @@
 import { describe, expect, it, vi } from "vitest"
 import type { SidebarSection } from "../sidebar"
 
-vi.mock("~/utils/split-slug-and-append-version", () => ({
-	splitSlugAndAppendVersion: (slug: string) => {
+vi.mock("~/utils/split-slug", () => ({
+	splitSlug: (slug: string) => {
 		const parts = slug.split("/").filter(Boolean)
-		const version = "v1.0.0"
 
 		if (parts.length === 2) {
 			const [section, filename] = parts
-			return { version, section, filename }
+			return { section, filename }
 		}
 		if (parts.length === 3) {
 			const [section, subsection, filename] = parts
-			return { version, section, subsection, filename }
+			return { section, subsection, filename }
 		}
 
 		throw new Error(`Bad slug in test: ${slug}`)
@@ -33,7 +32,7 @@ const makeSection = (overrides: Partial<MinimalSection> = {}) => ({
 	...overrides,
 })
 
-describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () => {
+describe("buildBreadcrumb", () => {
 	it("returns [] when pathname doesn't match any doc", () => {
 		const items = [
 			makeSection({
@@ -42,7 +41,7 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/v1.0.0/getting-started/unknown")).toEqual([])
+		expect(buildBreadcrumb(items, "/getting-started/unknown")).toEqual([])
 	})
 
 	it("returns [section, doc] for a top-level doc", () => {
@@ -53,7 +52,7 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("getting-started/intro", "Intro")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/v1.0.0/getting-started/intro")).toEqual(["Getting Started", "Intro"])
+		expect(buildBreadcrumb(items, "/getting-started/intro")).toEqual(["Getting Started", "Intro"])
 	})
 
 	it("returns full trail for a nested doc (root → sub → doc)", () => {
@@ -71,10 +70,11 @@ describe("buildBreadcrumb (versioned paths via splitSlugAndAppendVersion)", () =
 				documentationPages: [makeDoc("configuration/setup", "Setup")],
 			}),
 		]
-		expect(buildBreadcrumb(items, "/v1.0.0/configuration/advanced/tuning")).toEqual([
-			"Configuration",
-			"Advanced",
-			"Tuning",
-		])
+		expect(buildBreadcrumb(items, "/configuration/advanced/tuning")).toEqual(["Configuration", "Advanced", "Tuning"])
+	})
+
+	it("returns [] for an empty sidebar", () => {
+		const items: MinimalSection[] = []
+		expect(buildBreadcrumb(items, "/any-path")).toEqual([])
 	})
 })

@@ -1,6 +1,9 @@
+import { useParams } from "react-router"
+import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { BreadcrumbItem, Breadcrumbs } from "~/ui/breadcrumbs"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
+import { buildBreadcrumb } from "./build-breadcrumbs"
 import { useMobileSidebar } from "./mobile-sidebar-context"
 import type { SidebarSection } from "./sidebar"
 import { SidebarContent } from "./sidebar-content"
@@ -20,7 +23,13 @@ const MobileSidebarMenuButton = () => {
 	)
 }
 
-export const MobileSidebarHeader = ({ breadcrumbs }: { breadcrumbs: string[] }) => {
+export const MobileSidebarHeader = () => {
+	const params = useParams()
+	const { sidebarTree: items } = useDocumentationLayoutLoaderData()
+	const { section, subsection, filename } = params
+	const currentPath = `/${[section, subsection, filename].filter(Boolean).join("/")}`
+
+	const breadcrumbs = buildBreadcrumb(items, currentPath)
 	return (
 		<div className="fixed z-40 flex h-fit w-full items-center gap-3 border-[var(--color-border)] border-b-2 bg-[var(--color-background)] px-4 py-2">
 			<MobileSidebarMenuButton />
@@ -78,7 +87,6 @@ export const MobileSidebarPanel = ({
 				isOpen ? "translate-x-0" : "-translate-x-full",
 				className
 			)}
-			aria-modal="true"
 			aria-label="Navigation menu"
 		>
 			<SidebarContent items={items} onClose={close} />

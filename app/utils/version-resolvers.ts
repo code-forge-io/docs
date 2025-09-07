@@ -1,4 +1,4 @@
-import { href, redirect, useParams } from "react-router"
+import { href, redirect } from "react-router"
 import { versions } from "./versions"
 
 export type Version = (typeof versions)[number]
@@ -16,10 +16,9 @@ export function normalizeVersion(v?: string) {
 	return { version: isKnownVersion(v) ? v : getLatestVersion() }
 }
 
-export function getCurrentVersion() {
-	const { version } = useParams<"version">()
-	return normalizeVersion(version)
-}
+// export function getCurrentVersion(params: { version?: string }) {
+// 	return normalizeVersion(params.version)
+// }
 
 export function resolveVersionForHomepage(version?: string) {
 	if (isUnknownVersion(version) || getLatestVersion() === version) {

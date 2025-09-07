@@ -1,16 +1,30 @@
 import GithubContributeLinks from "~/components/github-contribute-links"
 import PageMdxArticle from "~/components/page-mdx-article"
+import { getDomain } from "~/utils/get-domain"
 import { loadContentCollections } from "~/utils/load-content-collections"
+import { generateMetaFields } from "~/utils/seo"
 import { resolveVersionForHomepage } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-homepage"
 
-export async function loader({ params }: Route.LoaderArgs) {
+export const meta = ({ data }: Route.MetaArgs) => {
+	const { page, domain, version } = data
+	const title = page.title
+	const description = page.description
+	return generateMetaFields({
+		domain,
+		path: `/${version}/home`,
+		title: `${title} · Package Name`,
+		description,
+	})
+}
+
+export async function loader({ params, request }: Route.LoaderArgs) {
 	const { version } = resolveVersionForHomepage(params.version)
 	const { allPages } = await loadContentCollections(version)
 	const page = allPages.find((p) => p._meta.path === "_index")
 	if (!page) throw new Response("Not Found", { status: 404 })
-
-	return { page, version }
+	const { domain } = getDomain(request)
+	return { page, version, domain }
 }
 
 export default function DocumentationHomepage({ loaderData }: Route.ComponentProps) {

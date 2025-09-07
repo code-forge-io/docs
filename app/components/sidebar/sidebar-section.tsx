@@ -1,6 +1,8 @@
-import { NavLink, href } from "react-router"
+import { NavLink, href, useRouteLoaderData } from "react-router"
+import type { loader } from "~/root"
 import { AccordionItem } from "~/ui/accordion"
-import { splitSlugAndAppendVersion } from "~/utils/split-slug-and-append-version"
+import { splitSlug } from "~/utils/split-slug"
+import { versions } from "~/utils/versions"
 import type { SidebarSection } from "./sidebar"
 
 const getIndentClass = (depth: number) => {
@@ -29,11 +31,14 @@ const SectionTitle = ({ title }: { title: string }) => {
 }
 
 const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
+	const data = useRouteLoaderData<typeof loader>("root")
+	const version = data?.version ?? versions[0]
 	const indentClass = getIndentClass(depth)
+	const { section, subsection, filename } = splitSlug(documentPage.slug)
 	return (
 		<NavLink
 			prefetch="intent"
-			to={href("/:version/:section/:subsection?/:filename", splitSlugAndAppendVersion(documentPage.slug))}
+			to={href("/:version/:section/:subsection?/:filename", { version, section, subsection, filename })}
 			onClick={onItemClick}
 			className={({ isActive, isPending }) =>
 				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}
@@ -78,8 +83,8 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 		return (
 			<AccordionItem
 				title={item.title}
-				titleElement="h6"
-				titleClassName="text-sm sm:text-base md:text-lg font-semibold tracking-wide text-[var(--color-text-active)]"
+				titleElement="h4"
+				titleClassName=" font-semibold tracking-wide text-[var(--color-text-active)]"
 				content={content}
 				defaultOpen={true}
 			/>
