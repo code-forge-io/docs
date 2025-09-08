@@ -1,12 +1,11 @@
-import type { Page } from "content-collections"
 import { useParams } from "react-router"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { BreadcrumbItem, Breadcrumbs } from "~/ui/breadcrumbs"
 import { Icon } from "~/ui/icon/icon"
+import type { SidebarTree } from "~/utils/create-sidebar-tree"
 import { cn } from "~/utils/css"
 import { buildBreadcrumbs } from "./build-breadcrumbs"
 import { useMobileSidebar } from "./mobile-sidebar-context"
-import type { SidebarSection } from "./sidebar"
 import { SidebarContent } from "./sidebar-content"
 
 const MobileSidebarMenuButton = () => {
@@ -76,12 +75,10 @@ const MobileSidebarCloseButton = () => {
 }
 
 export const MobileSidebarPanel = ({
-	items,
-	documentationPages,
+	sidebarTree,
 	className,
 }: {
-	items: SidebarSection[]
-	documentationPages: Page[]
+	sidebarTree: SidebarTree
 	className: string
 }) => {
 	const { close, isOpen } = useMobileSidebar()
@@ -94,7 +91,7 @@ export const MobileSidebarPanel = ({
 			)}
 			aria-label="Navigation menu"
 		>
-			<SidebarContent items={items} documentationPages={documentationPages} onClose={close} />
+			<SidebarContent sidebarTree={sidebarTree} onClose={close} />
 			<MobileSidebarCloseButton />
 		</div>
 	)

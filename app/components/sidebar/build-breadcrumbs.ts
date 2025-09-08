@@ -1,28 +1,27 @@
 import type { Page } from "content-collections"
-import { splitSlug } from "~/utils/split-slug"
-import type { SidebarSection } from "./sidebar"
+import { buildDocPathFromSlug } from "~/utils/build-doc-path-from-slug"
+import type { SidebarSection } from "~/utils/create-sidebar-tree"
 
 export const buildBreadcrumbs = (
 	items: SidebarSection[],
 	pathname: string,
 	documentationPages: Pick<Page, "title" | "slug">[] = []
 ) => {
-	// 1) Standalone pages: /:filename
+	// for standalone pages: /:filename
 	for (const page of documentationPages) {
-		const filename = page.slug.split("/").filter(Boolean).at(-1) ?? page.slug
+		const filename = buildDocPathFromSlug(page.slug)
 		const docPath = `/${filename}`
 		if (docPath === pathname) {
 			return [page.title]
 		}
 	}
 
-	// 2) Sectioned pages: /:section/:subsection?/:filename
+	// for ectioned pages: /:section/:subsection?/:filename
 	let trail: string[] = []
 
 	const walk = (section: SidebarSection, acc: string[]): boolean => {
 		for (const doc of section.documentationPages) {
-			const { section: sec, subsection, filename } = splitSlug(doc.slug)
-			const docPath = `/${[sec, subsection, filename].filter(Boolean).join("/")}`
+			const docPath = buildDocPathFromSlug(doc.slug)
 			if (docPath === pathname) {
 				trail = [...acc, section.title, doc.title]
 				return true

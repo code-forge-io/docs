@@ -1,4 +1,4 @@
-import type { Page } from "content-collections"
+import type { SidebarTree } from "~/utils/create-sidebar-tree"
 import { cn } from "~/utils/css"
 import { DesktopSidebarPanel } from "./desktop-sidebar"
 import { MobileSidebarHeader, MobileSidebarOverlay, MobileSidebarPanel } from "./mobile-sidebar"
@@ -12,24 +12,19 @@ export type SidebarSection = {
 }
 
 interface SidebarProps {
-	items: SidebarSection[]
-	documentationPages?: Page[]
+	sidebarTree: SidebarTree
 	className?: string
 }
 
-export const Sidebar = ({ items, documentationPages = [], className = "" }: SidebarProps) => {
+export const Sidebar = ({ sidebarTree, className = "" }: SidebarProps) => {
 	return (
 		<>
-			<DesktopSidebarPanel
-				items={items}
-				documentationPages={documentationPages}
-				className={cn("hidden xl:block", className)}
-			/>
+			<DesktopSidebarPanel sidebarTree={sidebarTree} className={cn("hidden xl:block", className)} />
 			<MobileSidebarProvider>
 				<div className="xl:hidden">
 					<MobileSidebarHeader />
 					<MobileSidebarOverlay />
-					<MobileSidebarPanel items={items} documentationPages={documentationPages} className={className} />
+					<MobileSidebarPanel sidebarTree={sidebarTree} className={className} />
 				</div>
 			</MobileSidebarProvider>
 		</>

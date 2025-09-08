@@ -1,7 +1,18 @@
 import type { Page } from "content-collections"
-import type { SidebarSection } from "~/components/sidebar/sidebar"
 import { loadContentCollections } from "./load-content-collections"
 import type { Version } from "./version-resolvers"
+
+export type SidebarTree = {
+	sections: SidebarSection[]
+	documentationPages: Page[]
+}
+
+export type SidebarSection = {
+	title: string
+	slug: string
+	subsections: SidebarSection[]
+	documentationPages: Page[]
+}
 
 const parentOf = (slug: string) => {
 	const i = slug.lastIndexOf("/")
@@ -27,19 +38,19 @@ export async function createSidebarTree(version: Version) {
 	}
 
 	const documentationPages: Page[] = []
-	for (const p of allPages) {
-		const parts = p.slug.split("/").filter(Boolean)
+	for (const page of allPages) {
+		const parts = page.slug.split("/").filter(Boolean)
 
 		if (parts.length < 2) {
-			if (p.slug !== "index" && !p.slug.startsWith("_")) {
-				documentationPages.push({ ...p, slug: p.slug, title: p.title })
+			if (page.slug !== "index" && !page.slug.startsWith("_")) {
+				documentationPages.push({ ...page, slug: page.slug, title: page.title })
 			}
 			continue
 		}
 
 		const parentSlug = parts.length >= 3 ? parts.slice(0, 2).join("/") : parts[0]
 		const parent = sectionMap.get(parentSlug)
-		if (parent) parent.documentationPages.push({ slug: p.slug, title: p.title })
+		if (parent) parent.documentationPages.push({ ...page, slug: page.slug, title: page.title })
 	}
 
 	const sections = [...sectionMap.values()].filter((s) => !sectionMap.has(parentOf(s.slug)))
