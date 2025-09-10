@@ -16,13 +16,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 	try {
 		const results = await fuzzySearch({ query: query.trim(), version })
-
 		return {
 			results,
 		}
 	} catch (error) {
 		// biome-ignore lint/suspicious/noConsole: keep for debugging
 		console.error("Search error:", error)
-		return
+		return { results: [] }
 	}
 }
