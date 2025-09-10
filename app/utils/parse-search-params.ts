@@ -1,9 +1,9 @@
-import { commandKSearchParamsSchema } from "~/schema/command-k-search-params.schema"
+import type z from "zod"
 
-export function parseCommandKSearchParams(request: Request) {
+export function parseSearchParams<T extends z.ZodTypeAny>(request: Request, schema: T) {
 	const url = new URL(request.url)
 	const params = Object.fromEntries(url.searchParams.entries())
-	const result = commandKSearchParamsSchema.safeParse(params)
+	const result = schema.safeParse(params)
 
 	if (!result.success) {
 		// biome-ignore lint/suspicious/noConsole: keep for debugging

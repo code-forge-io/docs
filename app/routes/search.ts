@@ -1,11 +1,18 @@
-import { createSearchIndex } from "~/components/command-k/create-search-index"
-import { fuzzySearch } from "~/components/command-k/hooks/use-fuzzy-search"
-import { loadContentCollections } from "~/utils/load-content-collections"
-import { parseCommandKSearchParams } from "~/utils/parse-command-k-search-params"
+import z from "zod"
+import { fuzzySearch } from "~/server/search-index"
+import { parseSearchParams } from "~/utils/parse-search-params"
+import { versions } from "~/utils/versions"
 import type { Route } from "./+types/search"
 
+export const commandKSearchParamsSchema = z.object({
+	query: z.string(),
+	version: z.enum(versions),
+})
+
+export type CommandKSearchParams = z.infer<typeof commandKSearchParamsSchema>
+
 export async function loader({ request }: Route.LoaderArgs) {
-	const { params } = parseCommandKSearchParams(request)
+	const { params } = parseSearchParams(request, commandKSearchParamsSchema)
 	if (!params) {
 		throw new Response("Bad Request", { status: 400 })
 	}
@@ -16,16 +23,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 	}
 
 	try {
-		const { allPages } = await loadContentCollections(version)
-		const searchIndex = createSearchIndex(allPages)
-
-		const results = fuzzySearch(searchIndex, query.trim())
+		const results = await fuzzySearch({ query: query.trim(), version })
 
 		return {
 			results,
-			query: query.trim(),
-			version,
-			total: results.length,
 		}
 	} catch (error) {
 		// biome-ignore lint/suspicious/noConsole: keep for debugging

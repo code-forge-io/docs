@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useFetcher } from "react-router"
-import { commandKSearchParamsSchema } from "~/schema/command-k-search-params.schema"
+import { commandKSearchParamsSchema } from "~/routes/search"
 import type { SearchResult } from "../search-types"
 
 function createCommandKSearchParams(params: Record<string, string>) {

@@ -43,7 +43,7 @@ const highlightSnippet = (text: string, query: string, maxLen = 120) => {
 	return `${start > 0 ? "..." : ""}${marked}${end < trimmed.length ? "..." : ""}`
 }
 
-export function fuzzySearch(items: ReadonlyArray<SearchRecord>, query: string, options?: FuzzySearchOptions) {
+export function useFuzzySearch(items: SearchRecord[], query: string, options?: FuzzySearchOptions) {
 	const threshold = clamp(options?.threshold ?? DEFAULTS.threshold, 0, 1)
 	const minLen = Math.max(0, options?.minMatchCharLength ?? DEFAULTS.minMatchCharLength)
 
