@@ -1,7 +1,15 @@
 import { useState } from "react"
 import { useFetcher } from "react-router"
-import { commandKSearchParamsSchema } from "~/routes/search"
+import z from "zod"
+import { versions } from "~/utils/versions"
 import type { SearchResult } from "../search-types"
+
+export const commandKSearchParamsSchema = z.object({
+	query: z.string(),
+	version: z.enum(versions),
+})
+
+export type CommandKSearchParams = z.infer<typeof commandKSearchParamsSchema>
 
 function createCommandKSearchParams(params: Record<string, string>) {
 	const result = commandKSearchParamsSchema.safeParse(params)

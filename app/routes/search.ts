@@ -1,15 +1,7 @@
-import z from "zod"
+import { commandKSearchParamsSchema } from "~/components/command-k/hooks/use-search"
 import { fuzzySearch } from "~/server/search-index"
 import { parseSearchParams } from "~/utils/parse-search-params"
-import { versions } from "~/utils/versions"
 import type { Route } from "./+types/search"
-
-export const commandKSearchParamsSchema = z.object({
-	query: z.string(),
-	version: z.enum(versions),
-})
-
-export type CommandKSearchParams = z.infer<typeof commandKSearchParamsSchema>
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const { params } = parseSearchParams(request, commandKSearchParamsSchema)

@@ -1,7 +1,7 @@
 import { createSearchIndex } from "~/components/command-k/create-search-index"
 import { useFuzzySearch } from "~/components/command-k/hooks/use-fuzzy-search"
+import type { CommandKSearchParams } from "~/components/command-k/hooks/use-search"
 import type { SearchRecord } from "~/components/command-k/search-types"
-import type { CommandKSearchParams } from "~/routes/search"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Version } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
