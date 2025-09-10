@@ -1,4 +1,5 @@
-import { href, redirect } from "react-router"
+import { href, redirect, useRouteLoaderData } from "react-router"
+import type { loader } from "~/root"
 import { versions } from "./versions"
 
 export type Version = (typeof versions)[number]
@@ -19,6 +20,12 @@ export function normalizeVersion(v?: string) {
 // export function getCurrentVersion(params: { version?: string }) {
 // 	return normalizeVersion(params.version)
 // }
+
+// TODO hceck browsers console
+export function useCurrentVersion() {
+	const data = useRouteLoaderData<typeof loader>("root")
+	return data?.version ?? versions[0]
+}
 
 export function resolveVersionForHomepage(version?: string) {
 	if (isUnknownVersion(version) || getLatestVersion() === version) {

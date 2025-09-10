@@ -16,7 +16,7 @@ export const buildBreadcrumbs = (
 		}
 	}
 
-	// for ectioned pages: /:section/:subsection?/:filename
+	// for sectioned pages: /:section/:subsection?/:filename
 	let trail: string[] = []
 
 	const walk = (section: SidebarSection, acc: string[]): boolean => {

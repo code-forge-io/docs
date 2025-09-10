@@ -29,6 +29,7 @@ export const MobileSidebarHeader = () => {
 		sidebarTree: { sections, documentationPages },
 	} = useDocumentationLayoutLoaderData()
 	const { section, subsection, filename } = params
+	//
 	const currentPath = `/${[section, subsection, filename].filter(Boolean).join("/")}`
 
 	const breadcrumbs = buildBreadcrumbs(sections, currentPath, documentationPages)

@@ -1,8 +1,7 @@
-import { NavLink, href, useRouteLoaderData } from "react-router"
-import type { loader } from "~/root"
+import { NavLink } from "react-router"
 import { AccordionItem } from "~/ui/accordion"
-import { splitSlug } from "~/utils/split-slug"
-import { versions } from "~/utils/versions"
+import { buildSectionedTo } from "~/utils/path-builders"
+import { useCurrentVersion } from "~/utils/version-resolvers"
 import type { SidebarSection } from "./sidebar"
 
 const getIndentClass = (depth: number) => {
@@ -10,15 +9,38 @@ const getIndentClass = (depth: number) => {
 	return indentMap[depth as keyof typeof indentMap] || "ml-8"
 }
 
+type DocumentationNavLinkProps = {
+	title: string
+	to: string
+	depth?: number
+	onClick?: () => void
+}
+
+export function DocumentationNavLink({ title, to, depth = 0, onClick }: DocumentationNavLinkProps) {
+	const indentClass = getIndentClass(depth)
+	return (
+		<NavLink
+			prefetch="intent"
+			to={to}
+			onClick={onClick}
+			className={({ isActive, isPending }) =>
+				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}
+         ${isPending ? "text-[var(--color-text-hover)]" : ""}
+         ${
+						isActive
+							? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
+							: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)]"
+					}`
+			}
+		>
+			{title}
+		</NavLink>
+	)
+}
+
 interface SectionItemProps {
 	item: SidebarSection
 	depth?: number
-	onItemClick?: () => void
-}
-
-interface SectionItemLinkProps {
-	documentPage: { slug: string; title: string }
-	depth: number
 	onItemClick?: () => void
 }
 
@@ -30,41 +52,21 @@ const SectionTitle = ({ title }: { title: string }) => {
 	)
 }
 
-const SectionItemLink = ({ documentPage, depth, onItemClick }: SectionItemLinkProps) => {
-	const data = useRouteLoaderData<typeof loader>("root")
-	const version = data?.version ?? versions[0]
-	const indentClass = getIndentClass(depth)
-	const { section, subsection, filename } = splitSlug(documentPage.slug)
-	return (
-		<NavLink
-			prefetch="intent"
-			to={href("/:version/:section/:subsection?/:filename", { version, section, subsection, filename })}
-			onClick={onItemClick}
-			className={({ isActive, isPending }) =>
-				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}
-			${isPending ? "text-[var(--color-text-hover)]" : ""}
-			${
-				isActive
-					? "bg-[var(--color-background-active)] font-medium text-[var(--color-text-active)]"
-					: "text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)]"
-			}
-				`
-			}
-		>
-			{documentPage.title}
-		</NavLink>
-	)
-}
-
 export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) => {
 	const isTopLevel = depth === 0
-
+	const version = useCurrentVersion()
 	const content = (
 		<div>
 			{item.documentationPages.length > 0 && (
 				<div className="mb-4 space-y-1">
 					{item.documentationPages.map((doc) => (
-						<SectionItemLink key={doc.slug} documentPage={doc} depth={depth} onItemClick={onItemClick} />
+						<DocumentationNavLink
+							key={doc.slug}
+							title={doc.title}
+							depth={depth}
+							onClick={onItemClick}
+							to={buildSectionedTo(version, doc.slug)}
+						/>
 					))}
 				</div>
 			)}
