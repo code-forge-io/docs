@@ -1,25 +1,21 @@
 import { Outlet } from "react-router"
 import { CommandK } from "~/components/command-k/components/command-k"
-import { createSearchIndex } from "~/components/command-k/create-search-index"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
 import { VersionDropdown } from "~/components/versions-dropdown"
 import { createSidebarTree } from "~/utils/create-sidebar-tree"
-import { loadContentCollections } from "~/utils/load-content-collections"
 import { resolveVersionForLayout } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-layout"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
 	const { version } = resolveVersionForLayout(params.version, request)
 	const sidebarTree = await createSidebarTree(version)
-	const { allPages } = await loadContentCollections(version)
-	return { sidebarTree, version, allPages }
+	return { sidebarTree, version }
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
-	const { sidebarTree, version, allPages } = loaderData
-	const searchIndex = createSearchIndex(allPages)
+	const { sidebarTree, version } = loaderData
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
@@ -32,7 +28,7 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 				</div>
 				<div className="inline-flex gap-4">
 					<ThemeToggle />
-					<CommandK searchIndex={searchIndex} version={version} />
+					<CommandK version={version} />
 				</div>
 			</Header>
 

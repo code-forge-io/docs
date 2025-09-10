@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router"
 import { Modal } from "~/components/modal"
 import type { Version } from "~/utils/version-resolvers"
-import { fuzzySearch } from "../hooks/use-fuzzy-search"
 import { useKeyboardNavigation } from "../hooks/use-keyboard-navigation"
 import { useModalState } from "../hooks/use-modal-state"
+import { useSearch } from "../hooks/use-search"
 import { useSearchHistory } from "../hooks/use-search-history"
-import type { HistoryItem, MatchType, SearchRecord, SearchResult } from "../search-types"
+import type { HistoryItem, MatchType, SearchResult } from "../search-types"
 import { EmptyState } from "./empty-state"
 import { ResultsFooter } from "./results-footer"
 import { SearchHistory } from "./search-history"
@@ -16,23 +16,19 @@ import { SearchResultRow } from "./search-result"
 import { TriggerButton } from "./trigger-button"
 
 interface CommandPaletteProps {
-	searchIndex: SearchRecord[]
 	placeholder?: string
 	version: Version
 }
 
-export const CommandK = ({ searchIndex, placeholder, version }: CommandPaletteProps) => {
+export const CommandK = ({ placeholder, version }: CommandPaletteProps) => {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const inputRef = useRef<HTMLInputElement>(null)
 	const [query, setQuery] = useState("")
 	const { isOpen, openModal, closeModal } = useModalState()
 	const { history, addToHistory, clearHistory, removeFromHistory } = useSearchHistory(version)
+	const { results, search } = useSearch({ version })
 
-	const results = fuzzySearch(searchIndex, query, {
-		threshold: 0.8,
-		minMatchCharLength: 3,
-	})
 	const hasQuery = !!query.trim()
 	const hasResults = !!results.length
 	const hasHistory = !!history.length
@@ -41,6 +37,7 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 	const handleClose = () => {
 		closeModal()
 		setQuery("")
+		search("")
 	}
 
 	const navigateToPage = (version: string, id: string) => {
@@ -115,7 +112,15 @@ export const CommandK = ({ searchIndex, placeholder, version }: CommandPalettePr
 
 	return (
 		<Modal isOpen={isOpen} onClose={handleClose} getInitialFocus={() => inputRef.current} ariaLabel={searchPlaceholder}>
-			<SearchInput ref={inputRef} value={query} onChange={setQuery} placeholder={searchPlaceholder} />
+			<SearchInput
+				ref={inputRef}
+				value={query}
+				onChange={(val) => {
+					setQuery(val)
+					search(val.trim())
+				}}
+				placeholder={searchPlaceholder}
+			/>
 			<div className="max-h-96 overflow-y-auto overscroll-contain" aria-label={searchPlaceholder}>
 				{renderBody()}
 			</div>
