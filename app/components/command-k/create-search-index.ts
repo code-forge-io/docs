@@ -35,15 +35,20 @@ function splitIntoParagraphs(src: string) {
 		.filter((p) => p.length > 0)
 }
 
+const extractHeadingData = (match: RegExpMatchArray) => {
+	const [fullMatch, hashes, text] = match
+	return {
+		level: hashes.length,
+		text,
+		index: match.index || 0,
+		length: fullMatch.length,
+	}
+}
+
 function extractHeadingSections(rawMdx: string) {
 	const src = stripCodeFences(rawMdx)
 	const headingRegex = /^(#{1,6})\s+(.+?)\s*$/gm
-	const matches = Array.from(src.matchAll(headingRegex), (m) => ({
-		level: m[1].length,
-		text: m[2],
-		index: m.index,
-		length: m[0].length,
-	}))
+	const matches = Array.from(src.matchAll(headingRegex), extractHeadingData)
 
 	const usedAnchors = new Set<string>()
 
@@ -109,11 +114,15 @@ export function createSearchIndex(pages: Page[]) {
 			const pageUrl = pageSlug.startsWith("/") ? pageSlug : `/${pageSlug}`
 			const sections = extractHeadingSections(page.rawMdx)
 
-			return sections.map((section) => ({
-				id: `${pageUrl}#${section.anchor}`,
-				title: page.title,
-				subtitle: section.heading === "_intro" ? page.title : section.heading,
-				paragraphs: [section.heading === "_intro" ? page.title : section.heading, ...section.paragraphs],
-			}))
+			return sections.map((section) => {
+				const heading = section.heading === "_intro" ? page.title : section.heading
+
+				return {
+					id: `${pageUrl}#${section.anchor}`,
+					title: page.title,
+					subtitle: heading,
+					paragraphs: [heading, ...section.paragraphs],
+				}
+			})
 		})
 }

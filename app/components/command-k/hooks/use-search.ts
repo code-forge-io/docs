@@ -33,7 +33,7 @@ export function useSearch({ version }: { version: string }) {
 		const { params } = createCommandKSearchParams({ query: trimmed, version })
 		if (!params) {
 			// biome-ignore lint/suspicious/noConsole: keep for debugging
-			console.error("Failed to create search parameters. Skipping fetch.")
+			console.error("Failed to create search parameters.")
 			return
 		}
 

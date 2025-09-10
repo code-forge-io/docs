@@ -12,7 +12,7 @@ const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 const scoreMatchQuality = (query: string, text: string) => {
 	const q = toSearchable(query)
 	const t = toSearchable(text)
-	if (q.length < 2) return 0 // ignore very short queries
+	if (q.length < DEFAULTS.minMatchCharLength) return 0 // ignore very short queries
 	if (t === q) return 1 // exact match -> strongest
 	if (t.startsWith(q)) return 0.95 // starts with query -> very strong
 	if (t.includes(q)) return 0.85 // contains query -> weaker
