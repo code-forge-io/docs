@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useFetcher } from "react-router"
 import z from "zod"
+import type { Version } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
 import type { SearchResult } from "../search-types"
 
@@ -22,7 +23,7 @@ function createCommandKSearchParams(params: Record<string, string>) {
 	return { params: new URLSearchParams(result.data) }
 }
 
-export function useSearch({ version }: { version: string }) {
+export function useSearch({ version }: { version: Version }) {
 	const fetcher = useFetcher<{ results: SearchResult[] }>()
 	const [query, setQuery] = useState("")
 	//we will show results as soon as we have a non-empty query

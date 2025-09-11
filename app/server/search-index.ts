@@ -9,13 +9,15 @@ import { versions } from "~/utils/versions"
 const searchIndexes: Map<string, SearchRecord[]> = new Map()
 
 export async function preloadSearchIndexes() {
-	for (const version of versions) {
-		if (!searchIndexes.has(version)) {
-			const { allPages } = await loadContentCollections(version)
-			const searchIndex = createSearchIndex(allPages)
-			searchIndexes.set(version, searchIndex)
-		}
-	}
+	await Promise.all(
+		versions.map(async (version) => {
+			if (!searchIndexes.has(version)) {
+				const { allPages } = await loadContentCollections(version)
+				const searchIndex = createSearchIndex(allPages)
+				searchIndexes.set(version, searchIndex)
+			}
+		})
+	)
 }
 
 async function getSearchIndex(version: Version) {

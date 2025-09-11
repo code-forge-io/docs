@@ -40,8 +40,13 @@ export const CommandK = ({ placeholder, version }: CommandPaletteProps) => {
 		search("")
 	}
 
-	const navigateToPage = (version: string, id: string) => {
-		navigate(`/${version}${id}`)
+	const navigateToPage = (id: string) => {
+		const path = [version, id]
+			.filter(Boolean)
+			.map((s) => s.replace(/^\/+|\/+$/g, ""))
+			.join("/")
+
+		navigate(`/${path}`)
 	}
 
 	const handleResultSelect = (result: SearchResult) => {
@@ -55,12 +60,12 @@ export const CommandK = ({ placeholder, version }: CommandPaletteProps) => {
 		}
 
 		addToHistory(historyItem)
-		navigateToPage(version, rowItem.id)
+		navigateToPage(rowItem.id)
 		handleClose()
 	}
 
 	const handleHistorySelect = (item: HistoryItem) => {
-		navigateToPage(version, item.id)
+		navigateToPage(item.id)
 		handleClose()
 	}
 
