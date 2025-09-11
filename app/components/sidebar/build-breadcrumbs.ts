@@ -7,16 +7,15 @@ export const buildBreadcrumbs = (
 	pathname: string,
 	documentationPages: Pick<Page, "title" | "slug">[] = []
 ) => {
-	// for standalone pages
+	// for standalone pages: /:filename
 	for (const page of documentationPages) {
-		const path = buildDocPathFromSlug(page.slug)
-		const docPath = `/${path}`
+		const docPath = buildDocPathFromSlug(page.slug)
 		if (docPath === pathname) {
 			return [page.title]
 		}
 	}
 
-	// for sectioned pages
+	// for sectioned pages: /:section/:subsection?/:filename
 	let trail: string[] = []
 
 	const walk = (section: SidebarSection, acc: string[]): boolean => {
