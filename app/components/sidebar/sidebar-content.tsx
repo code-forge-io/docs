@@ -24,7 +24,6 @@ export const SidebarContent = ({
 			{documentationPages.length > 0 && (
 				<div className="mb-6 space-y-1">
 					{documentationPages.map((p) => (
-						// TODO maybe send whole page, not title etc
 						<DocumentationNavLink
 							key={p.slug}
 							title={p.title}

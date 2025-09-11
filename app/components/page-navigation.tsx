@@ -4,7 +4,7 @@ import { Link } from "react-router"
 import { Icon } from "~/ui/icon/icon"
 import { cn } from "~/utils/css"
 
-export interface PageNavigationItem {
+interface PageNavigationItem {
 	title: string
 	to: string
 }

@@ -10,10 +10,10 @@ function buildDocHref(slug: string, version: string) {
 	const parts = slug.split("/").filter(Boolean)
 	if (parts.length === 1) {
 		const filename = parts[0]
-		return href("/:version?/:filename", { version, filename })
+		return href("/:version/:section?/:subsection?/:filename", { version, filename })
 	}
 	const { section, subsection, filename } = splitSlug(slug)
-	return href("/:version/:section/:subsection?/:filename", {
+	return href("/:version/:section?/:subsection?/:filename", {
 		version,
 		section,
 		subsection,

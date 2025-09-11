@@ -1,7 +1,7 @@
 import GithubContributeLinks from "~/components/github-contribute-links"
 import PageMdxArticle from "~/components/page-mdx-article"
 import { getDomain } from "~/utils/get-domain"
-import { loadContentCollections } from "~/utils/load-content-collections"
+import { getContent } from "~/utils/load-content"
 import { generateMetaFields } from "~/utils/seo"
 import { resolveVersionForHomepage } from "~/utils/version-resolvers"
 import type { Route } from "./+types/documentation-homepage"
@@ -20,7 +20,7 @@ export const meta = ({ data }: Route.MetaArgs) => {
 
 export async function loader({ params, request }: Route.LoaderArgs) {
 	const { version } = resolveVersionForHomepage(params.version)
-	const { allPages } = await loadContentCollections(version)
+	const { allPages } = await getContent(version)
 	const page = allPages.find((p) => p._meta.path === "_index")
 	if (!page) throw new Response("Not Found", { status: 404 })
 	const { domain } = getDomain(request)

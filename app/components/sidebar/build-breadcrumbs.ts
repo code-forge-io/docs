@@ -1,6 +1,6 @@
 import type { Page } from "content-collections"
-import { buildDocPathFromSlug } from "~/utils/build-doc-path-from-slug"
 import type { SidebarSection } from "~/utils/create-sidebar-tree"
+import { buildDocPathFromSlug } from "~/utils/path-builders"
 
 export const buildBreadcrumbs = (
 	items: SidebarSection[],

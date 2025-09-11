@@ -17,11 +17,6 @@ export function normalizeVersion(v?: string) {
 	return { version: isKnownVersion(v) ? v : getLatestVersion() }
 }
 
-// export function getCurrentVersion(params: { version?: string }) {
-// 	return normalizeVersion(params.version)
-// }
-
-// TODO hceck browsers console
 export function useCurrentVersion() {
 	const data = useRouteLoaderData<typeof loader>("root")
 	return data?.version ?? versions[0]

@@ -1,5 +1,5 @@
 import type { Page } from "content-collections"
-import { loadContentCollections } from "./load-content-collections"
+import { getContent } from "./load-content"
 import type { Version } from "./version-resolvers"
 
 export type SidebarTree = {
@@ -20,7 +20,7 @@ const parentOf = (slug: string) => {
 }
 
 export async function createSidebarTree(version: Version) {
-	const { allPages, allSections } = await loadContentCollections(version)
+	const { allPages, allSections } = await getContent(version)
 
 	const sectionMap = new Map<string, SidebarSection>()
 	for (const s of allSections) {

@@ -8,9 +8,12 @@ import { type AppLoadContext, type EntryContext, ServerRouter } from "react-rout
 import i18n from "./localization/i18n" // your i18n configuration file
 import i18nextOpts from "./localization/i18n.server"
 import { resources } from "./localization/resource"
+import { preloadContentCollections } from "./utils/load-content"
 
 // Reject all pending promises from handler functions after 10 seconds
 export const streamTimeout = 10000
+
+await preloadContentCollections()
 
 export default async function handleRequest(
 	request: Request,
