@@ -30,7 +30,9 @@ export const BreadcrumbItem = ({ children, href, isActive = false, className }: 
 		)
 	}
 
-	return <span className="block text-ellipsis text-start text-[var(--color-text-normal)]">{children}</span>
+	return (
+		<span className={cn("block text-ellipsis text-start text-[var(--color-text-normal)]", className)}>{children}</span>
+	)
 }
 
 export const Breadcrumbs = ({ children, className }: BreadcrumbsProps) => {

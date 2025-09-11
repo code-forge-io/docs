@@ -7,4 +7,6 @@ export const setStorageItem = (key: string, value: string) => {
 	}
 }
 
+export const removeStorageItem = (key: string) => localStorage.removeItem(key)
 export const THEME = "theme"
+export const COMMAND_K_SEARCH_HISTORY = "command-k-search-history"

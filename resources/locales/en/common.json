@@ -31,16 +31,36 @@
 	"p": {
 		"last_update": "Last updated: ",
 		"version": "Version",
-		"all_rights_reserved": "All rights reserved."
+		"all_rights_reserved": "All rights reserved.",
+		"search_by": "Search by"
 	},
 	"buttons": {
 		"copy": "Copy",
 		"copied": "Copied",
 		"home": "Back to home",
-		"back": "Go back"
+		"back": "Go back",
+		"clear": "Clear"
 	},
 	"titles": {
 		"good_to_know": "Good to know",
 		"warning": "Warning"
+	},
+	"text": {
+		"result_one": "{{count}} result",
+		"result_other": "{{count}} results",
+		"adjust_search": "Try adjusting your search terms or check for typos",
+		"no_results_for": "No results found for",
+		"start_typing_to_search": "Start typing to search...",
+		"recent_searches": "Recent searches"
+	},
+	"controls": {
+		"navigate": "Navigate",
+		"open": "Open",
+		"tab": "Tab",
+		"select": "Select",
+		"cycle": "Cycle"
+	},
+	"placeholders": {
+		"search_documentation": "Search documentation..."
 	}
 }

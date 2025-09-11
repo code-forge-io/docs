@@ -57,6 +57,69 @@
 		--color-warning-border: #fde68a;
 		--color-warning-text: #92400e;
 		--color-warning-icon: #f59e0b;
+
+		--color-modal-backdrop: rgba(17, 24, 39, 0.5);
+		--color-modal-bg: #ffffff;
+		--color-modal-border: #e5e7eb;
+		--color-modal-shadow: rgba(0, 0, 0, 0.25);
+
+		--color-input-bg: rgba(249, 250, 251, 0.5);
+		--color-input-border: #e5e7eb;
+		--color-input-text: #111827;
+		--color-input-placeholder: #6b7280;
+		--color-input-icon: #9ca3af;
+
+		--color-result-hover: #f9fafb;
+		--color-result-selected: #eff6ff;
+		--color-result-selected-border: #3b82f6;
+		--color-result-selected-text: #1e3a8a;
+		--color-result-text: #111827;
+		--color-result-meta: #6b7280;
+		--color-result-icon: #9ca3af;
+		--color-result-icon-selected: #3b82f6;
+		--color-result-arrow: #d1d5db;
+
+		--color-breadcrumb-bg: #f3f4f6;
+		--color-breadcrumb-text: #6b7280;
+
+		--color-footer-bg: #f9fafb;
+		--color-footer-border: #e5e7eb;
+		--color-footer-text: #6b7280;
+		--color-footer-kbd-bg: #ffffff;
+		--color-footer-kbd-border: #e5e7eb;
+
+		--color-history-header-bg: rgba(249, 250, 251, 0.5);
+		--color-history-header-border: #e5e7eb;
+		--color-history-header-text: #374151;
+		--color-history-clear-hover-bg: #fef2f2;
+		--color-history-clear-hover-text: #dc2626;
+		--color-history-remove-bg: #ffffff;
+		--color-history-remove-border: #e5e7eb;
+		--color-history-remove-text: #9ca3af;
+		--color-history-remove-hover-border: #fecaca;
+		--color-history-remove-hover-text: #ef4444;
+
+		--color-empty-icon-bg: #f3f4f6;
+		--color-empty-icon: #9ca3af;
+		--color-empty-text: #6b7280;
+		--color-empty-text-muted: #9ca3af;
+		--color-empty-icon-accent: #3b82f6;
+
+		--color-kbd-bg: #f3f4f6;
+		--color-kbd-border: #d1d5db;
+		--color-kbd-text: #6b7280;
+
+		--color-trigger-bg: #ffffff;
+		--color-trigger-border: #e5e7eb;
+		--color-trigger-text: #6b7280;
+		--color-trigger-hover-bg: #f9fafb;
+		--color-trigger-hover-border: #d1d5db;
+		--color-trigger-hover-text: #4b5563;
+		--color-trigger-focus-border: #93c5fd;
+		--color-trigger-focus-ring: rgba(59, 130, 246, 0.2);
+
+		--color-highlight-bg: #fef3c7;
+		--color-highlight-text: #92400e;
 	}
 
 	[data-theme="dark"] {
@@ -101,5 +164,68 @@
 		--color-warning-border: rgba(245, 158, 11, 0.2);
 		--color-warning-text: #fbbf24;
 		--color-warning-icon: #f59e0b;
+
+		--color-modal-backdrop: rgb(15, 15, 15, 0.8);
+		--color-modal-bg: rgb(15, 15, 15);
+		--color-modal-border: #374151;
+		--color-modal-shadow: rgba(0, 0, 0, 0.5);
+
+		--color-input-bg: rgba(31, 41, 55, 0.5);
+		--color-input-border: #374151;
+		--color-input-text: #f9fafb;
+		--color-input-placeholder: #9ca3af;
+		--color-input-icon: #6b7280;
+
+		--color-result-hover: rgba(31, 41, 55, 0.5);
+		--color-result-selected: rgba(59, 130, 246, 0.2);
+		--color-result-selected-border: #3b82f6;
+		--color-result-selected-text: #93c5fd;
+		--color-result-text: #f9fafb;
+		--color-result-meta: #9ca3af;
+		--color-result-icon: #6b7280;
+		--color-result-icon-selected: #60a5fa;
+		--color-result-arrow: #4b5563;
+
+		--color-breadcrumb-bg: #0f0f0f;
+		--color-breadcrumb-text: #6b7280;
+
+		--color-footer-bg: #0f0f0f;
+		--color-footer-border: #374151;
+		--color-footer-text: #9ca3af;
+		--color-footer-kbd-bg: #374151;
+		--color-footer-kbd-border: #4b5563;
+
+		--color-history-header-bg: rgba(31, 41, 55, 0.5);
+		--color-history-header-border: #374151;
+		--color-history-header-text: #d1d5db;
+		--color-history-clear-hover-bg: rgba(185, 28, 28, 0.2);
+		--color-history-clear-hover-text: #f87171;
+		--color-history-remove-bg: #0f0f0f;
+		--color-history-remove-border: #374151;
+		--color-history-remove-text: #6b7280;
+		--color-history-remove-hover-border: rgba(185, 28, 28, 0.8);
+		--color-history-remove-hover-text: #f87171;
+
+		--color-empty-icon-bg: #0f0f0f;
+		--color-empty-icon: #6b7280;
+		--color-empty-text: #9ca3af;
+		--color-empty-text-muted: #6b7280;
+		--color-empty-icon-accent: #60a5fa;
+
+		--color-kbd-bg: #0f0f0f;
+		--color-kbd-border: #4b5563;
+		--color-kbd-text: #9ca3af;
+
+		--color-trigger-bg: #0f0f0f;
+		--color-trigger-border: #374151;
+		--color-trigger-text: #9ca3af;
+		--color-trigger-hover-bg: #374151;
+		--color-trigger-hover-border: #4b5563;
+		--color-trigger-hover-text: #d1d5db;
+		--color-trigger-focus-border: #60a5fa;
+		--color-trigger-focus-ring: rgba(96, 165, 250, 0.2);
+
+		--color-highlight-bg: rgba(245, 158, 11, 0.5);
+		--color-highlight-text: #fbbf24;
 	}
 }

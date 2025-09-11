@@ -1,4 +1,5 @@
 import { Outlet } from "react-router"
+import { CommandK } from "~/components/command-k/components/command-k"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Sidebar } from "~/components/sidebar/sidebar"
@@ -14,8 +15,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 	return { sidebarTree, version }
 }
 export default function DocumentationLayout({ loaderData }: Route.ComponentProps) {
-	const { sidebarTree } = loaderData
-
+	const { sidebarTree, version } = loaderData
 	return (
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
@@ -26,7 +26,10 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 					</Logo>
 					<VersionDropdown />
 				</div>
-				<ThemeToggle />
+				<div className="inline-flex gap-4">
+					<ThemeToggle />
+					<CommandK version={version} />
+				</div>
 			</Header>
 
 			<div className="xl:flex">
