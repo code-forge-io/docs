@@ -1,10 +1,9 @@
 import type { Page } from "content-collections"
-import { href, useLocation, useRouteLoaderData } from "react-router"
+import { href, useLocation } from "react-router"
 import type { SidebarSection } from "~/components/sidebar/sidebar"
-import type { loader } from "~/root"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
 import { splitSlug } from "~/utils/split-slug"
-import { versions } from "~/utils/versions"
+import { useCurrentVersion } from "~/utils/version-resolvers"
 
 function buildDocHref(slug: string, version: string) {
 	const parts = slug.split("/").filter(Boolean)
@@ -23,16 +22,12 @@ function buildDocHref(slug: string, version: string) {
 
 export function usePreviousNextPages(sections: SidebarSection[], standalonePages: Page[] = []) {
 	const { pathname } = useLocation()
-	const data = useRouteLoaderData<typeof loader>("root")
-	const version = data?.version ?? versions[0]
+	const version = useCurrentVersion()
 
-	// Keep your existing flattening for sections, then prepend standalone pages
-	// (you said standalone should appear first).
 	const flatFromSections = flattenSidebarItems(sections)
 	const flatStandalone = standalonePages.map((p) => ({ title: p.title, slug: p.slug }))
 	const flatPages = [...flatStandalone, ...flatFromSections]
 
-	// Find current by slug suffix (works for both /:version?/:filename and sectioned routes)
 	const currentIndex = flatPages.findIndex((p) => pathname.endsWith(p.slug))
 
 	const getNavItem = (index: number) => {

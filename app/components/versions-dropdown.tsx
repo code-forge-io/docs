@@ -1,14 +1,12 @@
 import { useState } from "react"
-import { useNavigate, useRouteLoaderData } from "react-router"
-import type { loader } from "~/root"
+import { useNavigate } from "react-router"
 import { Icon } from "~/ui/icon/icon"
-import { homepageUrlWithVersion, isKnownVersion } from "~/utils/version-resolvers"
+import { homepageUrlWithVersion, isKnownVersion, useCurrentVersion } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
 
 export function VersionDropdown() {
 	const navigate = useNavigate()
-	const data = useRouteLoaderData<typeof loader>("root")
-	const currentVersion = data?.version ?? versions[0]
+	const currentVersion = useCurrentVersion()
 	const [selectedVersion, setSelectedVersion] = useState(currentVersion)
 
 	function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
