@@ -72,12 +72,13 @@ export const AccordionItem = ({
 
 	return (
 		<div>
-			<button type="button" className={buttonClasses} onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents:we don't need key with click events */}
+			<div className={buttonClasses} onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
 				<Icon name="ChevronDown" className={cn(iconClasses, isOpen && "rotate-180")} />
 				<Title as={titleElement ?? "h5"} className={titleClassName}>
 					{title}
 				</Title>
-			</button>
+			</div>
 			<AccordionContent isOpen={isOpen}>{content}</AccordionContent>
 		</div>
 	)
