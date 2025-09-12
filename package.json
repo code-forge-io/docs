@@ -28,9 +28,11 @@
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
 		"generate:docs": "npx tsx scripts/generate-docs.ts --branch main",
-		"verify:docs": "tsx scripts/verify-docs.ts"
+		"verify:docs": "tsx scripts/verify-docs.ts",
+		"content-collections:build": "content-collections build"
 	},
 	"dependencies": {
+		"@content-collections/cli": "0.1.7",
 		"@content-collections/core": "0.10.0",
 		"@content-collections/mdx": "0.2.2",
 		"@content-collections/remix-vite": "0.2.2",
