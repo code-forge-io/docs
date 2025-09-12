@@ -9,15 +9,12 @@ import { versions } from "~/utils/versions"
 const searchIndexes: Map<string, SearchRecord[]> = new Map()
 
 export async function preloadSearchIndexes() {
-	// biome-ignore lint/suspicious/noConsole: <explanation>
-	console.log("preloading search indexes for versions:", versions)
 	await Promise.all(
 		versions.map(async (version) => {
 			if (!searchIndexes.has(version)) {
 				const { allPages } = await loadContentCollections(version)
 				const searchIndex = createSearchIndex(allPages)
-				// biome-ignore lint/suspicious/noConsole:TODO remove this
-				console.log({ searchIndex })
+
 				searchIndexes.set(version, searchIndex)
 			}
 		})
@@ -30,8 +27,6 @@ async function getSearchIndex(version: Version) {
 		throw new Error(`Search index for version "${version}" could not be retrieved.`)
 	}
 
-	// biome-ignore lint/suspicious/noConsole:TODO remove this
-	console.log({ index })
 	return index
 }
 
