@@ -73,6 +73,7 @@ const page = defineCollection({
 		const content = await compileMDX(context, document, {
 			rehypePlugins: [rehypeSlug],
 		})
+
 		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
 		return {
