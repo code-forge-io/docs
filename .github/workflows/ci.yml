@@ -67,3 +67,24 @@ jobs:
         # Only works if you set `reportOnFailure: true` in your vite config as specified above
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+
+
+  deploy:
+      needs: [lint, typecheck, check-unused, vitest]
+      name: 🚀 Deploy PR Preview
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: forge-42/fly-deploy@v1.0.0-rc.2
+          id: deploy
+          env:
+            FLY_ORG: ${{ vars.FLY_ORG }}
+            FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+            FLY_REGION: ${{ vars.FLY_REGION }}
+          with:
+            app_name: ${{ env.FLY_ORG }}-${{ github.event.number }}
+            env_vars: |
+              APP_ENV=staging
+              GITHUB_OWNER: "forge-42"
+              GITHUB_REPO: "docs-template"
+              GITHUB_REPO_URL: "https://github.com/forge-42/docs-template"
