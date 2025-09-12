@@ -1,4 +1,4 @@
-name: 🚀 Validation Pipeline
+name: 🚀 Validation & Deploy Pipeline
 concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -83,7 +83,7 @@ jobs:
             FLY_REGION: ${{ vars.FLY_REGION }}
           with:
             app_name: ${{ env.FLY_ORG }}-${{ github.event.number }}
-            env_vars: |
+            secrets: |
               APP_ENV=staging
               GITHUB_OWNER: "forge-42"
               GITHUB_REPO: "docs-template"
