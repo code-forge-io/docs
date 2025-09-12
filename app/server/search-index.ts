@@ -13,8 +13,6 @@ export async function preloadSearchIndexes() {
 		versions.map(async (version) => {
 			if (!searchIndexes.has(version)) {
 				const { allPages } = await loadContentCollections(version)
-				// biome-ignore lint/suspicious/noConsole:TODO remove this
-				console.log({ version, allPages })
 				const searchIndex = createSearchIndex(allPages)
 				// biome-ignore lint/suspicious/noConsole:TODO remove this
 				console.log({ searchIndex })
