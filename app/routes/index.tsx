@@ -2,8 +2,28 @@ import { href, useNavigate } from "react-router"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Icon } from "~/ui/icon/icon"
+import { getDomain } from "~/utils/get-domain"
+import { generateMetaFields } from "~/utils/seo"
 import { getLatestVersion } from "~/utils/version-resolvers"
+import type { Route } from "./+types"
 
+export const meta = ({ data }: Route.MetaArgs) => {
+	const { domain } = data
+
+	return generateMetaFields({
+		domain,
+		path: "/",
+		// change "Package Name" to your package name
+		title: "Package Name",
+		// update description
+		description: "Professional Development Made Simple",
+	})
+}
+
+export async function loader({ request }: Route.LoaderArgs) {
+	const { domain } = getDomain(request)
+	return { domain }
+}
 export default function Index() {
 	const navigate = useNavigate()
 	// Customize index page
