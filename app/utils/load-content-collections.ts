@@ -1,5 +1,4 @@
-import { dirname, resolve } from "node:path"
-import { fileURLToPath } from "node:url"
+import { resolve } from "node:path"
 import type { Page } from "content-collections"
 import type { Section } from "content-collections"
 import type { Version } from "./version-resolvers"
@@ -11,8 +10,7 @@ import type { Version } from "./version-resolvers"
  * During development, if generated-docs missing → tell user to run generate:docs
  */
 export async function loadContentCollections(version: Version) {
-	const here = dirname(fileURLToPath(import.meta.url))
-	const genBase = resolve(here, "../../generated-docs", version, ".content-collections", "generated")
+	const genBase = resolve("/app/generated-docs", version, ".content-collections", "generated")
 
 	const pagesMod = await import(/* @vite-ignore */ `${genBase}/allPages.js`)
 	const sectionsMod = await import(/* @vite-ignore */ `${genBase}/allSections.js`)
