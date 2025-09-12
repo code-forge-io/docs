@@ -1,6 +1,7 @@
 import { useParams } from "react-router"
 import { useDocumentationLayoutLoaderData } from "~/hooks/use-documentation-layout-loader-data"
 import { BreadcrumbItem, Breadcrumbs } from "~/ui/breadcrumbs"
+import { IconButton } from "~/ui/icon-button"
 import { Icon } from "~/ui/icon/icon"
 import type { SidebarTree } from "~/utils/create-sidebar-tree"
 import { cn } from "~/utils/css"
@@ -12,14 +13,12 @@ const MobileSidebarMenuButton = () => {
 	const { open } = useMobileSidebar()
 
 	return (
-		<button
-			type="button"
+		<IconButton
+			name={"Menu"}
 			onClick={open}
-			className="px-3 py-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
-			aria-label="Open navigation menu"
-		>
-			<Icon name="Menu" className="size-5" />
-		</button>
+			className="text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
+			aria-label="Navigation menu"
+		/>
 	)
 }
 

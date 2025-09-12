@@ -28,15 +28,11 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 						<span className="p-0">REACT ROUTER DEVTOOLS</span>
 					</Logo>
 				</div>
-
-				<div className="flex items-center">
+				<div className="inline-flex items-center gap-2 xl:gap-3">
 					<VersionDropdown />
+					<CommandK version={version} />
 					<ThemeToggle />
 					{GITHUB_REPO_URL && <IconLink name="Github" href={GITHUB_REPO_URL} />}
-				</div>
-				<div className="inline-flex gap-4">
-					<ThemeToggle />
-					<CommandK version={version} />
 				</div>
 			</Header>
 

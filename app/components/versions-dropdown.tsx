@@ -29,7 +29,7 @@ export function VersionDropdown() {
 			<select
 				id="version"
 				name="version"
-				className="cursor-pointer appearance-none rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] py-1.5 pr-7 pl-2 font-medium text-sm shadow-sm transition-transform duration-200 hover:bg-[var(--color-border)] focus:border-transparent focus:bg-[var(--color-border)] focus:outline-none focus:ring-none xl:py-2.5 xl:pr-10 xl:pl-4"
+				className="cursor-pointer appearance-none rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] py-1.5 pr-7 pl-2 font-medium text-sm shadow-sm transition-transform duration-200 hover:bg-[var(--color-border)] focus:border-transparent focus:bg-[var(--color-border)] focus:outline-none focus:ring-none xl:py-2 xl:pr-10 xl:pl-4"
 				value={selectedVersion}
 				onChange={onChange}
 				aria-label="Select documentation version"

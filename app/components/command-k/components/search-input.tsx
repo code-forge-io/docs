@@ -13,7 +13,7 @@ export function SearchInput({ value, onChange, placeholder, ref }: SearchInputPr
 	return (
 		<div
 			className={cn(
-				"flex items-center gap-3 border-[var(--color-input-border)] border-b bg-[var(--color-input-bg)] px-4 py-4"
+				"flex items-center gap-3 border-[var(--color-input-border)] border-b bg-[var(--color-input-bg)] px-4 py-3"
 			)}
 		>
 			<Icon name="Search" className="size-5 flex-shrink-0 text-[var(--color-input-icon)]" />

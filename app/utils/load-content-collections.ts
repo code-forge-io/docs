@@ -10,7 +10,9 @@ import type { Version } from "./version-resolvers"
  * During development, if generated-docs missing → tell user to run generate:docs
  */
 export async function loadContentCollections(version: Version) {
-	const genBase = resolve("/app/generated-docs", version, ".content-collections", "generated")
+	const projectRoot = process.cwd()
+
+	const genBase = resolve(projectRoot, "generated-docs", version, ".content-collections", "generated")
 
 	const pagesMod = await import(/* @vite-ignore */ `${genBase}/allPages.js`)
 	const sectionsMod = await import(/* @vite-ignore */ `${genBase}/allSections.js`)
