@@ -85,6 +85,6 @@ jobs:
             app_name: ${{ env.FLY_ORG }}-${{ github.event.number }}
             env_vars: |
               APP_ENV=staging
-              GITHUB_OWNER=forge-42
-              GITHUB_REPO=docs-template
-              GITHUB_REPO_URL=https://github.com/forge-42/docs-template
+              GITHUB_OWNER=${{github.repository_owner}}
+              GITHUB_REPO=${{github.event.repository.name}}
+              GITHUB_REPO_URL=https://github.com/${{ github.repository }}
