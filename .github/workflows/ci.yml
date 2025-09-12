@@ -83,8 +83,8 @@ jobs:
             FLY_REGION: ${{ vars.FLY_REGION }}
           with:
             app_name: ${{ env.FLY_ORG }}-${{ github.event.number }}
-            secrets: |
+            env_vars: |
               APP_ENV=staging
-              GITHUB_OWNER: "forge-42"
-              GITHUB_REPO: "docs-template"
-              GITHUB_REPO_URL: "https://github.com/forge-42/docs-template"
+              GITHUB_OWNER=forge-42
+              GITHUB_REPO=docs-template
+              GITHUB_REPO_URL=https://github.com/forge-42/docs-template
