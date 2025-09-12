@@ -108,7 +108,7 @@ function extractHeadingSections(rawMdx: string) {
 
 export function createSearchIndex(pages: Page[]) {
 	return pages
-		.filter((page) => page._meta.fileName !== "_index.mdx" && page.slug !== "_index")
+		.filter((page) => page._meta.fileName === "_index.mdx" && page.slug !== "_index")
 		.flatMap((page) => {
 			const pageSlug = getPageSlug(page)
 			const pageUrl = pageSlug.startsWith("/") ? pageSlug : `/${pageSlug}`

@@ -11,7 +11,13 @@ const pageSchema = z.object({
 	summary: z.string(),
 	description: z.string(),
 })
-const metaSchema = z.object({ path: z.string() }).partial().optional()
+const metaSchema = z.object({
+	filePath: z.string(),
+	fileName: z.string(),
+	directory: z.string(),
+	path: z.string(),
+	extension: z.string(),
+})
 
 const outputBaseSchema = z.object({
 	slug: z.string(),
@@ -24,7 +30,7 @@ const pageOutputSchema = pageSchema.extend({
 	...outputBaseSchema.shape,
 	section: z.string().optional(),
 	rawMdx: z.string(),
-	content: z.unknown(),
+	content: z.string(),
 })
 
 export type Section = z.infer<typeof sectionOutputSchema>

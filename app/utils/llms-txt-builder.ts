@@ -9,7 +9,7 @@ function buildSectionTitles(sections: Section[]) {
 
 function groupPagesByFolder(pages: Page[]) {
 	return pages.reduce((groups, p) => {
-		const id = p.section ?? p._meta?.path?.split("/")[0]
+		const id = p.section ?? p._meta.path?.split("/")[0]
 		if (!id) return groups
 		const list = groups.get(id) ?? []
 		if (!groups.has(id)) groups.set(id, list)
