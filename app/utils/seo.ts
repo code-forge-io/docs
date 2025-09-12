@@ -19,11 +19,11 @@ export function generateMetaFields({ domain, title, description, path, additiona
 			title,
 			description,
 			url: fullUrl,
-			siteName: "Loam",
+			// Change to your package name
+			siteName: "Package Name",
 			image: `${image}-1200x630.png`,
 		},
 		[
-			{ name: "siteName", content: "Loam.at" },
 			// Open Graph
 			{ property: "og:type", content: "website" },
 			...(additionalData ?? []),
