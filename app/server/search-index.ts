@@ -26,6 +26,8 @@ async function getSearchIndex(version: Version) {
 		throw new Error(`Search index for version "${version}" could not be retrieved.`)
 	}
 
+	// biome-ignore lint/suspicious/noConsole:TODO remove this
+	console.log({ index })
 	return index
 }
 

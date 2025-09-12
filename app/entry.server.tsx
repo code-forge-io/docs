@@ -15,7 +15,6 @@ import { preloadContentCollections } from "./utils/load-content"
 export const streamTimeout = 10000
 
 await preloadContentCollections()
-
 await preloadSearchIndexes()
 
 export default async function handleRequest(
