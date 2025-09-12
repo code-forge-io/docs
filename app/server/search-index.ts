@@ -9,6 +9,8 @@ import { versions } from "~/utils/versions"
 const searchIndexes: Map<string, SearchRecord[]> = new Map()
 
 export async function preloadSearchIndexes() {
+	// biome-ignore lint/suspicious/noConsole: <explanation>
+	console.log("preloading search indexes for versions:", versions)
 	await Promise.all(
 		versions.map(async (version) => {
 			if (!searchIndexes.has(version)) {
