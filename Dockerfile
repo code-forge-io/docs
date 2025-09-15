@@ -18,7 +18,7 @@ RUN apt-get update -qq && \
 # Dependencies stage
 FROM base AS dependencies
 COPY .npmrc package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --frozen-lockfile
 
 # Build stage
 FROM dependencies AS build
