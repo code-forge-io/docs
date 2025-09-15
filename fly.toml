@@ -8,8 +8,13 @@ primary_region = 'fra'
 
 [build]
 
+
+[deploy]
+  strategy = 'bluegreen'
+  wait_timeout = '15m0s'
+
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
