@@ -1,13 +1,14 @@
-# fly.toml app configuration file generated for docs-template-test on 2025-09-12T12:27:12+02:00
+# fly.toml app configuration file generated for docs-template-test on 2025-09-15T13:34:48+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'docs-template-test'
 primary_region = 'fra'
+kill_signal = 'SIGINT'
+kill_timeout = '5s'
 
 [build]
-
 
 [deploy]
   strategy = 'bluegreen'
@@ -16,21 +17,19 @@ primary_region = 'fra'
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = 'suspend'
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
 
-	[[services.http_checks]]
-		interval = '10s'
-		timeout = '2s'
-		grace_period = '5s'
-		method = 'GET'
-		path = "/"
-		protocol = 'http'
-
+  [[services.http_checks]]
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '5s'
+    method = 'GET'
+    path = '/'
+    protocol = 'http'
 
 [[vm]]
   memory = '512mb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
+  processes = ['app']
