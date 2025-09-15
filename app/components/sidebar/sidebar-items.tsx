@@ -24,7 +24,7 @@ export function DocumentationNavLink({ title, to, depth = 0, onClick }: Document
 			to={to}
 			onClick={onClick}
 			className={({ isActive, isPending }) =>
-				`block rounded-md px-3 py-2 text-xs sm:text-sm md:text-base ${indentClass}
+				`block rounded-md px-3 py-2 text-sm md:text-base ${indentClass}
          ${isPending ? "text-[var(--color-text-hover)]" : ""}
          ${
 						isActive
@@ -46,7 +46,7 @@ interface SectionItemProps {
 
 const SectionTitle = ({ title }: { title: string }) => {
 	return (
-		<h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-sm tracking-wide sm:text-base md:text-lg">
+		<h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-base tracking-wide md:text-lg">
 			{title}
 		</h3>
 	)

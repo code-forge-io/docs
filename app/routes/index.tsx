@@ -41,7 +41,7 @@ export default function Index() {
 						Version {getLatestVersion()} Now Available
 					</div>
 
-					<h1 className="font-bold text-5xl text-[var(--color-text-active)] leading-snug">
+					<h1 className="font-bold text-[var(--color-text-active)] text-xl leading-snug md:text-2xl xl:text-3xl">
 						Professional Development
 						<br />
 						<span className="bg-gradient-to-r from-[#48ddf3] to-[#fb4bb5] bg-clip-text text-transparent">
