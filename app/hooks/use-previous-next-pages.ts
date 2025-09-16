@@ -1,6 +1,5 @@
-import type { Page } from "content-collections"
 import { href, useLocation } from "react-router"
-import type { SidebarSection } from "~/components/sidebar/sidebar"
+import type { SidebarTree } from "~/utils/create-sidebar-tree"
 import { flattenSidebarItems } from "~/utils/flatten-sidebar"
 import { splitSlug } from "~/utils/split-slug"
 import { useCurrentVersion } from "~/utils/version-resolvers"
@@ -20,12 +19,13 @@ function buildDocHref(slug: string, version: string) {
 	})
 }
 
-export function usePreviousNextPages(sections: SidebarSection[], standalonePages: Page[] = []) {
+export function usePreviousNextPages(sidebarTree: SidebarTree) {
 	const { pathname } = useLocation()
 	const version = useCurrentVersion()
+	const { sections, documentationPages } = sidebarTree
 
 	const flatFromSections = flattenSidebarItems(sections)
-	const flatStandalone = standalonePages.map((p) => ({ title: p.title, slug: p.slug }))
+	const flatStandalone = documentationPages.map((p) => ({ title: p.title, slug: p.slug }))
 	const flatPages = [...flatStandalone, ...flatFromSections]
 
 	const currentIndex = flatPages.findIndex((p) => pathname.endsWith(p.slug))

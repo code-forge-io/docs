@@ -43,11 +43,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 
 export default function DocumentationPage({ loaderData }: Route.ComponentProps) {
 	const { page } = loaderData
-	const {
-		sidebarTree: { sections, documentationPages },
-	} = useDocumentationLayoutLoaderData()
-	const { previous, next } = usePreviousNextPages(sections, documentationPages)
+	const { sidebarTree } = useDocumentationLayoutLoaderData()
+	const { previous, next } = usePreviousNextPages(sidebarTree)
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
+
 	return (
 		<div className="flex min-h-screen flex-row">
 			<div className="mx-auto flex w-full max-w-screen-4xl flex-col gap-4 pt-4 lg:gap-8 xl:pt-0">
