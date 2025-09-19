@@ -21,7 +21,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
-          app_name: ${{ env.FLY_ORG }}-${{ github.ref_name }}
+          app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
           env_vars: |
               APP_ENV=staging
               GITHUB_OWNER=${{github.repository_owner}}
