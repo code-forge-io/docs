@@ -17,7 +17,7 @@ This folder contains all the resources used by the documentation site, such as S
 
 `content/`
 
-This folder contains sections and subsections with .mdx files that hold your documentation content. Below is the recommended structure to follow.
+This folder contains .md and .mdx files that hold your documentation content. Below is the recommended structure to follow.
 
 
 An example of a valid content/ folder structure for organizing your package documentation:
@@ -46,12 +46,15 @@ content/
         ├── 01-buttons.mdx
         └── 02-modals.mdx
 ```
-- Top-level .mdx files (like 01-changelog.mdx) are allowed.
-- Sections (like 04-getting-started, 05-core-features) are subfolders inside the content/ folder.
-- Subsections (like 03-data-management, 04-ui-components) are nested folders within sections.
-- Each section or subsection should have an index.md file for its sidebar title.
+- Top-level .mdx files (like 01-changelog.mdx) are allowed, but we recommend placing them in order before the sections, as shown in the example.
 
-### Example of the valid `02-introduction.mdx` file:
+- Sections (like 04-getting-started, 05-core-features) are subfolders inside the `content` folder.
+
+- Subsections (like 03-data-management, 04-ui-components) are nested folders within sections. Filenames inside them should start with `01-*.mdx`.
+
+- Each section or subsection should include an `index.md` file, which defines its sidebar title.
+
+### Example of the valid `**/*.mdx` file:
 ```
 ---
 title: "Introduction to Forge42 Base Stack"
@@ -75,7 +78,7 @@ cd my-app
 npm install
 ```
 
-### Example of the valid `04-getting-started/index.md` file:
+### Example of the valid `**/*.md` file:
 ```
 ---
 title: Getting Started

@@ -5,7 +5,7 @@ export default [
 	route("search", "routes/search.ts"),
 	layout("routes/documentation-layout.tsx", [
 		route(":version?/home", "routes/documentation-homepage.tsx"),
-		route(":version/:section/:subsection?/:filename", "routes/documentation-page.tsx"),
+		route(":version/:section?/:subsection?/:filename", "routes/documentation-page.tsx"),
 	]),
 	route("sitemap-index.xml", "routes/sitemap-index[.]xml.ts"),
 	route("robots.txt", "routes/robots[.]txt.ts"),

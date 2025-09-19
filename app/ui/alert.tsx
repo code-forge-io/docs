@@ -2,7 +2,6 @@ import type { ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { cn } from "~/utils/css"
 import { Icon } from "./icon/icon"
-import { Title } from "./title"
 
 interface AlertProps {
 	children: ReactNode
@@ -54,15 +53,20 @@ export const Alert = ({ children, title, variant, className = "" }: AlertProps) 
 	const defaultTitle = variant === "info" ? t("titles.good_to_know") : t("titles.warning")
 
 	return (
-		<div className={cn("my-6 flex flex-col gap-2 rounded-xl border p-6", styles.container, className)}>
-			<div className="flex items-center gap-2">
+		<div className={cn("my-6 flex flex-col gap-2 rounded-xl border p-4 md:p-6", styles.container, className)}>
+			<div className="inline-flex items-center gap-2">
 				<div className={cn("inline-flex", styles.icon)}>{getIcon()}</div>
-				<Title className={` font-semibold ${styles.title}`} as={"h6"}>
-					{title || defaultTitle}
-				</Title>
+				<p className={cn("mt-0 mb-0 font-semibold text-sm md:text-base", styles.title)}>{title || defaultTitle}</p>
 			</div>
 
-			<div className={cn("prose prose-xs sm:prose-sm md:prose-base max-w-none", styles.content)}>{children}</div>
+			<div
+				className={cn(
+					"prose prose-xs sm:prose-sm md:prose-base max-w-none text-sm leading-6 sm:text-base md:text-lg",
+					styles.content
+				)}
+			>
+				{children}
+			</div>
 		</div>
 	)
 }

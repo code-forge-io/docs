@@ -37,7 +37,7 @@ const AccordionContent = ({ isOpen, children }: { isOpen: boolean; children: Rea
  * Content visibility toggles when the heading is clicked. Supports smooth transitions.
  *
  * @param title - The heading text for the accordion item.
- * @param titleElement - The HTML heading element tag to render (`h1` through `h6`).
+ * @param titleElement - The HTML heading element tag to render (`h1` through `h5`).
  * @param titleClassName - Optional classes to customize the title's appearance.
  * @param content - The content to show/hide when toggling the accordion.
  * @param defaultOpen - Whether the item should be open by default.
@@ -66,18 +66,19 @@ export const AccordionItem = ({
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 
 	const buttonClasses =
-		"flex gap-2 items-center w-full p-2 transition-all duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:cursor-pointer rounded-md"
+		"flex gap-2 items-center w-full p-2 transition-transform duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:cursor-pointer rounded-md"
 
 	const iconClasses = "w-4 h-4 transition-transform duration-300"
 
 	return (
 		<div>
-			<button type="button" className={buttonClasses} onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents:we don't need key with click events */}
+			<div className={buttonClasses} onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
 				<Icon name="ChevronDown" className={cn(iconClasses, isOpen && "rotate-180")} />
-				<Title as={titleElement ?? "h6"} className={titleClassName}>
+				<Title as={titleElement ?? "h5"} className={titleClassName}>
 					{title}
 				</Title>
-			</button>
+			</div>
 			<AccordionContent isOpen={isOpen}>{content}</AccordionContent>
 		</div>
 	)

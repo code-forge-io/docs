@@ -6,7 +6,7 @@ export const ListItem = (props: ComponentPropsWithoutRef<"li">) => {
 		<li
 			{...props}
 			className={cn(
-				"space-y-1 pl-1 text-[var(--color-text-normal)] [&>li]:ml-2 [&>li]:marker:font-medium",
+				"space-y-1 pl-1 text-[var(--color-text-normal)] text-xs sm:text-sm md:text-base [&>li]:ml-2 [&>li]:marker:font-medium",
 				props.className
 			)}
 		/>

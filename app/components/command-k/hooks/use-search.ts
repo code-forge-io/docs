@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useFetcher } from "react-router"
 import z from "zod"
 import type { Version } from "~/utils/version-resolvers"
 import { versions } from "~/utils/versions"
 import type { SearchResult } from "../search-types"
+import { useDebounce } from "./use-debounce"
 
 export const commandKSearchParamsSchema = z.object({
 	query: z.string(),
@@ -23,31 +24,36 @@ function createCommandKSearchParams(params: Record<string, string>) {
 	return { params: new URLSearchParams(result.data) }
 }
 
+const debounceMs = 250
+const minChars = 1
+
 export function useSearch({ version }: { version: Version }) {
 	const fetcher = useFetcher<{ results: SearchResult[] }>()
 	const [query, setQuery] = useState("")
-	//we will show results as soon as we have a non-empty query
-	//this does not debounce or wait for fetcher.state === "idle".
+	const debouncedQuery = useDebounce(query, debounceMs)
+	const lastLoadedRef = useRef<string | null>(null)
+
 	const results = query.trim() ? (fetcher.data?.results ?? []) : []
 
 	function search(q: string) {
-		const trimmed = q.trim()
+		setQuery(q)
+	}
 
-		if (!trimmed) {
-			setQuery("")
+	useEffect(() => {
+		const trimmed = debouncedQuery.trim()
+		if (!trimmed || trimmed.length < minChars) {
+			lastLoadedRef.current = null
 			return
 		}
 
-		setQuery(trimmed)
+		if (lastLoadedRef.current === trimmed) return
+		lastLoadedRef.current = trimmed
+
 		const { params } = createCommandKSearchParams({ query: trimmed, version })
-		if (!params) {
-			// biome-ignore lint/suspicious/noConsole: keep for debugging
-			console.error("Failed to create search parameters.")
-			return
-		}
+		if (!params) return
 
 		fetcher.load(`/search?${params.toString()}`)
-	}
+	}, [debouncedQuery, version, fetcher])
 
 	return {
 		results,

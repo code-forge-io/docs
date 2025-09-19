@@ -1,4 +1,5 @@
-import { href, redirect, useParams } from "react-router"
+import { href, redirect, useRouteLoaderData } from "react-router"
+import type { loader } from "~/root"
 import { versions } from "./versions"
 
 export type Version = (typeof versions)[number]
@@ -16,9 +17,9 @@ export function normalizeVersion(v?: string) {
 	return { version: isKnownVersion(v) ? v : getLatestVersion() }
 }
 
-export function getCurrentVersion() {
-	const { version } = useParams<"version">()
-	return normalizeVersion(version)
+export function useCurrentVersion() {
+	const data = useRouteLoaderData<typeof loader>("root")
+	return data?.version ?? versions[0]
 }
 
 export function resolveVersionForHomepage(version?: string) {

@@ -22,12 +22,10 @@ export function ThemeToggle() {
 
 	const isDarkTheme = theme === "dark"
 	return (
-		<div className="relative">
-			<IconButton
-				aria-label={`Switch to ${isDarkTheme ? "light" : "dark"} mode`}
-				name={isDarkTheme ? "Moon" : "Sun"}
-				onClick={toggle}
-			/>
-		</div>
+		<IconButton
+			aria-label={`Switch to ${isDarkTheme ? "light" : "dark"} mode`}
+			name={isDarkTheme ? "Moon" : "Sun"}
+			onClick={toggle}
+		/>
 	)
 }

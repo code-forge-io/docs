@@ -10,30 +10,29 @@
 		"execute": "tsx",
 		"clean": "git clean -fdX --exclude=\"!.env\"",
 		"script": "tsx scripts/setup.ts",
-		"prebuild": "pnpm run content-collections:build",
 		"build": "react-router build",
 		"predev": "pnpm run typegen && pnpm run verify:docs",
 		"dev": "react-router dev",
 		"start": "NODE_ENV=production node ./build/server/index.js",
-		"pretest": "pnpm run content-collections:build && pnpm run typegen",
+		"pretest": "pnpm run typegen",
 		"test": "vitest run --browser.headless",
 		"test:ui": "vitest",
 		"test:cov": "vitest run --coverage --browser.headless",
-		"pretypecheck": "pnpm run content-collections:build && pnpm run typegen",
+		"pretypecheck": "pnpm run typegen",
 		"typecheck": "tsc",
 		"validate": "pnpm run check && pnpm run typecheck && pnpm run test && pnpm run check:unused",
 		"check": "biome check .",
 		"check:fix": "biome check --fix .",
-		"precheck:unused": "pnpm run content-collections:build && pnpm run typegen",
+		"precheck:unused": " pnpm run typegen",
 		"check:unused": "knip --max-issues 1",
 		"check:unused:fix": "knip --fix",
 		"typegen": "react-router typegen",
-		"content-collections:build": "content-collections build",
 		"generate:docs": "npx tsx scripts/generate-docs.ts --branch main",
-		"verify:docs": "tsx scripts/verify-docs.ts"
+		"verify:docs": "tsx scripts/verify-docs.ts",
+		"content-collections:build": "content-collections build"
 	},
 	"dependencies": {
-		"@content-collections/cli": "0.1.6",
+		"@content-collections/cli": "0.1.7",
 		"@content-collections/core": "0.10.0",
 		"@content-collections/mdx": "0.2.2",
 		"@content-collections/remix-vite": "0.2.2",
@@ -95,13 +94,13 @@
 		"vitest": "3.0.5",
 		"vitest-browser-react": "0.0.4"
 	},
-	"packageManager": "pnpm@10.2.0",
+	"packageManager": "pnpm@10.13.0",
 	"optionalDependencies": {
 		"@rollup/rollup-linux-x64-gnu": "^4.34.3"
 	},
 	"engines": {
-		"node": ">=22.11.0",
-		"pnpm": ">=10.2.0"
+		"node": ">=22.17.0",
+		"pnpm": ">=10.13.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild", "lefthook", "msw"]

@@ -2,8 +2,28 @@ import { href, useNavigate } from "react-router"
 import { Header } from "~/components/header"
 import { Logo } from "~/components/logo"
 import { Icon } from "~/ui/icon/icon"
+import { getDomain } from "~/utils/get-domain"
+import { generateMetaFields } from "~/utils/seo"
 import { getLatestVersion } from "~/utils/version-resolvers"
+import type { Route } from "./+types"
 
+export const meta = ({ data }: Route.MetaArgs) => {
+	const { domain } = data
+
+	return generateMetaFields({
+		domain,
+		path: "/",
+		// change "Package Name" to your package name
+		title: "Package Name",
+		// update description
+		description: "Professional Development Made Simple",
+	})
+}
+
+export async function loader({ request }: Route.LoaderArgs) {
+	const { domain } = getDomain(request)
+	return { domain }
+}
 export default function Index() {
 	const navigate = useNavigate()
 	// Customize index page
@@ -21,7 +41,7 @@ export default function Index() {
 						Version {getLatestVersion()} Now Available
 					</div>
 
-					<h1 className="font-bold text-5xl text-[var(--color-text-active)] leading-snug">
+					<h1 className="font-bold text-[var(--color-text-active)] text-xl leading-snug md:text-2xl xl:text-3xl">
 						Professional Development
 						<br />
 						<span className="bg-gradient-to-r from-[#48ddf3] to-[#fb4bb5] bg-clip-text text-transparent">

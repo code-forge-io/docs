@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@content-collections/cli':
-        specifier: 0.1.6
-        version: 0.1.6(@content-collections/core@0.10.0(typescript@5.7.3))
+        specifier: 0.1.7
+        version: 0.1.7(@content-collections/core@0.10.0(typescript@5.7.3))
       '@content-collections/core':
         specifier: 0.10.0
         version: 0.10.0(typescript@5.7.3)
@@ -435,8 +435,8 @@ packages:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
 
-  '@content-collections/cli@0.1.6':
-    resolution: {integrity: sha512-1MrxENMhAOAMFoLYNmlyCgwVB3i75PMX9vNLJ+jVh7akSfDrRRDWGn4E4WXDWCs27krSN7o98OJQVNav7Ndapw==}
+  '@content-collections/cli@0.1.7':
+    resolution: {integrity: sha512-dZn8vd6JSu2mXE1KYOEEq6Y7pwZ3vWjHE/LDj+9aSXNEddfXRGem2NNMO24NCuqFH/uIoVpS00Wnkj6gNqqnQw==}
     hasBin: true
     peerDependencies:
       '@content-collections/core': 0.x
@@ -446,8 +446,8 @@ packages:
     peerDependencies:
       typescript: ^5.0.2
 
-  '@content-collections/integrations@0.2.1':
-    resolution: {integrity: sha512-AyEcS2MmcOXSYt6vNmJsAiu6EBYjtNiwYGUVUmpG3llm8Gt8uiNrhIhlHyv3cuk+N8KJ2PWemLcMqtQJ+sW3bA==}
+  '@content-collections/integrations@0.3.0':
+    resolution: {integrity: sha512-He+TXQC94LO/1bNygTioh3J5H0K/mkFVPVkIrM5kHybprvi5bRmGa91ViZ6K6icFAzGH4jFD0iasR56fZcMGTA==}
     peerDependencies:
       '@content-collections/core': 0.x
 
@@ -2150,8 +2150,8 @@ packages:
   electron-to-chromium@1.5.208:
     resolution: {integrity: sha512-ozZyibehoe7tOhNaf16lKmljVf+3npZcJIEbJRVftVsmAg5TeA1mGS9dVCZzOwr2xT7xK15V0p7+GZqSPgkuPg==}
 
-  emoji-regex@10.4.0:
-    resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
+  emoji-regex@10.5.0:
+    resolution: {integrity: sha512-lb49vf1Xzfx080OKA0o6l8DQQpV+6Vg95zyCJX9VB/BqKYlhG7N4wgROUUHRA+ZPUefLnteQOad7z1kT2bV7bg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -4412,14 +4412,14 @@ snapshots:
 
   '@colors/colors@1.5.0': {}
 
-  '@content-collections/cli@0.1.6(@content-collections/core@0.10.0(typescript@5.7.3))':
+  '@content-collections/cli@0.1.7(@content-collections/core@0.10.0(typescript@5.7.3))':
     dependencies:
       '@clerc/core': 0.44.0
       '@clerc/plugin-completions': 0.44.0(@clerc/core@0.44.0)
       '@clerc/plugin-help': 0.44.0(@clerc/core@0.44.0)
       '@clerc/plugin-version': 0.44.0(@clerc/core@0.44.0)
       '@content-collections/core': 0.10.0(typescript@5.7.3)
-      '@content-collections/integrations': 0.2.1(@content-collections/core@0.10.0(typescript@5.7.3))
+      '@content-collections/integrations': 0.3.0(@content-collections/core@0.10.0(typescript@5.7.3))
 
   '@content-collections/core@0.10.0(typescript@5.7.3)':
     dependencies:
@@ -4437,7 +4437,7 @@ snapshots:
       yaml: 2.8.1
       zod: 3.25.76
 
-  '@content-collections/integrations@0.2.1(@content-collections/core@0.10.0(typescript@5.7.3))':
+  '@content-collections/integrations@0.3.0(@content-collections/core@0.10.0(typescript@5.7.3))':
     dependencies:
       '@content-collections/core': 0.10.0(typescript@5.7.3)
 
@@ -6013,7 +6013,7 @@ snapshots:
 
   electron-to-chromium@1.5.208: {}
 
-  emoji-regex@10.4.0: {}
+  emoji-regex@10.5.0: {}
 
   emoji-regex@8.0.0: {}
 
@@ -7751,7 +7751,7 @@ snapshots:
   string-width@6.1.0:
     dependencies:
       eastasianwidth: 0.2.0
-      emoji-regex: 10.4.0
+      emoji-regex: 10.5.0
       strip-ansi: 7.1.0
 
   string_decoder@1.1.1:

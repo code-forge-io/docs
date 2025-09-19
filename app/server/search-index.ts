@@ -14,6 +14,7 @@ export async function preloadSearchIndexes() {
 			if (!searchIndexes.has(version)) {
 				const { allPages } = await loadContentCollections(version)
 				const searchIndex = createSearchIndex(allPages)
+
 				searchIndexes.set(version, searchIndex)
 			}
 		})

@@ -1,6 +1,5 @@
-import { useLocation } from "react-router"
+import type { SidebarTree } from "~/utils/create-sidebar-tree"
 import { cn } from "~/utils/css"
-import { buildBreadcrumb } from "./build-breadcrumbs"
 import { DesktopSidebarPanel } from "./desktop-sidebar"
 import { MobileSidebarHeader, MobileSidebarOverlay, MobileSidebarPanel } from "./mobile-sidebar"
 import { MobileSidebarProvider } from "./mobile-sidebar-context"
@@ -9,29 +8,23 @@ export type SidebarSection = {
 	title: string
 	slug: string
 	subsections: SidebarSection[]
-	documentationPages: {
-		title: string
-		slug: string
-	}[]
+	documentationPages: { title: string; slug: string }[]
 }
+
 interface SidebarProps {
-	items: SidebarSection[]
+	sidebarTree: SidebarTree
 	className?: string
 }
 
-export const Sidebar = ({ items, className = "" }: SidebarProps) => {
-	const location = useLocation()
-	const breadcrumbs = buildBreadcrumb(items, location.pathname)
-
+export const Sidebar = ({ sidebarTree, className = "" }: SidebarProps) => {
 	return (
 		<>
-			<DesktopSidebarPanel items={items} className={cn("hidden xl:block", className)} />
-
+			<DesktopSidebarPanel sidebarTree={sidebarTree} className={cn("hidden xl:block", className)} />
 			<MobileSidebarProvider>
 				<div className="xl:hidden">
-					<MobileSidebarHeader breadcrumbs={breadcrumbs} />
+					<MobileSidebarHeader />
 					<MobileSidebarOverlay />
-					<MobileSidebarPanel items={items} className={className} />
+					<MobileSidebarPanel sidebarTree={sidebarTree} className={className} />
 				</div>
 			</MobileSidebarProvider>
 		</>

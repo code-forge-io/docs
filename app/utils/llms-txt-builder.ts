@@ -1,12 +1,7 @@
 import { createDomain } from "~/utils/http"
-import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Page, Section } from "../../content-collections"
+import { getContent } from "./load-content"
 import { type Version, pageUrlWithVersion } from "./version-resolvers"
-
-async function loadVersionData(version: Version) {
-	const { allPages, allSections } = await loadContentCollections(version)
-	return { version, pages: allPages, sections: allSections }
-}
 
 function buildSectionTitles(sections: Section[]) {
 	return new Map(sections.map((s) => [s.slug.split("/").pop() || "", s.title]))
@@ -14,7 +9,7 @@ function buildSectionTitles(sections: Section[]) {
 
 function groupPagesByFolder(pages: Page[]) {
 	return pages.reduce((groups, p) => {
-		const id = p.section ?? p._meta?.path?.split("/")[0]
+		const id = p.section ?? p._meta.path?.split("/")[0]
 		if (!id) return groups
 		const list = groups.get(id) ?? []
 		if (!groups.has(id)) groups.set(id, list)
@@ -52,8 +47,8 @@ export async function renderLlmsTxt(opts: {
 	const { request, version, title, tagline } = opts
 	const domain = createDomain(request)
 
-	const { pages, sections } = await loadVersionData(version)
-	const content = renderVersionBlock(domain, version, pages, sections)
+	const { allPages, allSections } = await getContent(version)
+	const content = renderVersionBlock(domain, version, allPages, allSections)
 
 	return [`# ${title}`, `> ${tagline}`, content, ""].join("\n")
 }
