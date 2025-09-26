@@ -1,3 +1,4 @@
+import { posix } from "node:path"
 import { defineCollection, defineConfig } from "@content-collections/core"
 import { compileMDX } from "@content-collections/mdx"
 import rehypeSlug from "rehype-slug"
@@ -46,7 +47,9 @@ const cleanSlug = (p: string) =>
 		.map((seg) => seg.replace(/^\d{2,}-/, ""))
 		.join("/")
 
-const toPosix = (s: string) => s.replace(/\\/g, "/")
+const toPosix = (s: string) => {
+	return posix.normalize(s.replace(/\\/g, "/"))
+}
 const stripExt = (s: string) => s.replace(/\.(md|mdx)$/i, "")
 const stripTrailingIndex = (s: string) => s.replace(/\/index$/i, "")
 

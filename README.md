@@ -97,12 +97,13 @@ pnpm install
 ```
 3. Read through the README.md files in the project to understand our decisions.
 
-4. Add `content` folder
+4. Run `pnpm run generate:docs` script
 
-5. Run `pnpm run generate:docs` script
-
-6. Start the development server:
+5. Start the development server:
 ```bash
 pnpm run dev
 ```
+
+6. After you see that everything works with the current content inside the `content` folder, remove those files and add your own
+
 7. Happy coding!
