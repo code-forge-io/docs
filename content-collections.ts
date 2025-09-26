@@ -1,3 +1,4 @@
+import { posix } from "node:path"
 import { defineCollection, defineConfig } from "@content-collections/core"
 import { compileMDX } from "@content-collections/mdx"
 import rehypeSlug from "rehype-slug"
@@ -39,11 +40,18 @@ export type Page = z.infer<typeof pageOutputSchema>
 /**
  * Removes leading number prefixes like "01-", "02-" from each path segment.
  */
-const cleanSlug = (path: string) =>
-	path
+const cleanSlug = (p: string) =>
+	toPosix(p)
 		.split("/")
+		.filter(Boolean)
 		.map((seg) => seg.replace(/^\d{2,}-/, ""))
 		.join("/")
+
+const toPosix = (s: string) => {
+	return posix.normalize(s.replace(/\\/g, "/"))
+}
+const stripExt = (s: string) => s.replace(/\.(md|mdx)$/i, "")
+const stripTrailingIndex = (s: string) => s.replace(/\/index$/i, "")
 
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
@@ -57,8 +65,7 @@ const section = defineCollection({
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
-		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
-		const slug = cleanSlug(relativePath)
+		const slug = stripTrailingIndex(cleanSlug(document._meta.path))
 		return { ...document, slug }
 	},
 })
@@ -74,14 +81,11 @@ const page = defineCollection({
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
-		const relativePath = document._meta.path.split("/").filter(Boolean).join("/")
-		const slug = cleanSlug(relativePath)
-		const content = await compileMDX(context, document, {
-			rehypePlugins: [rehypeSlug],
-		})
-
-		// rawMdx is the content without the frontmatter, used to read headings from the mdx file and create a content tree for the table of content component
+		const cleanedSlug = cleanSlug(document._meta.path)
+		const slug = stripExt(cleanedSlug)
+		const content = await compileMDX(context, document, { rehypePlugins: [rehypeSlug] })
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
+
 		return {
 			...document,
 			content,

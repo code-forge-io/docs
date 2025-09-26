@@ -1,4 +1,5 @@
-import { resolve } from "node:path"
+import path, { resolve } from "node:path"
+import { pathToFileURL } from "node:url"
 import type { Page } from "content-collections"
 import type { Section } from "content-collections"
 import type { Version } from "./version-resolvers"
@@ -11,11 +12,14 @@ import type { Version } from "./version-resolvers"
  */
 export async function loadContentCollections(version: Version) {
 	const projectRoot = process.cwd()
-
 	const genBase = resolve(projectRoot, "generated-docs", version, ".content-collections", "generated")
 
-	const pagesMod = await import(/* @vite-ignore */ `${genBase}/allPages.js`)
-	const sectionsMod = await import(/* @vite-ignore */ `${genBase}/allSections.js`)
+	const pagesPath = pathToFileURL(path.join(genBase, "allPages.js")).href
+
+	const sectionsPath = pathToFileURL(path.join(genBase, "allSections.js")).href
+
+	const pagesMod = await import(/* @vite-ignore */ pagesPath)
+	const sectionsMod = await import(/* @vite-ignore */ sectionsPath)
 
 	const allPages = pagesMod.default as Page[]
 	const allSections = sectionsMod.default as Section[]
