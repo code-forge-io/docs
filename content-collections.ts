@@ -50,6 +50,8 @@ const cleanSlug = (p: string) =>
 const toPosix = (s: string) => {
 	return posix.normalize(s.replace(/\\/g, "/"))
 }
+const stripExt = (s: string) => s.replace(/\.(md|mdx)$/i, "")
+const stripTrailingIndex = (s: string) => s.replace(/\/index$/i, "")
 
 /*
  * This collection defines a documentation section shown in the sidebar of the package documentation.
@@ -63,7 +65,7 @@ const section = defineCollection({
 	include: "**/index.md",
 	schema: sectionSchema,
 	transform: (document) => {
-		const slug = cleanSlug(document._meta.path)
+		const slug = stripTrailingIndex(cleanSlug(document._meta.path))
 		return { ...document, slug }
 	},
 })
@@ -79,7 +81,8 @@ const page = defineCollection({
 	include: "**/**/*.mdx",
 	schema: pageSchema,
 	transform: async (document, context) => {
-		const slug = cleanSlug(document._meta.path)
+		const cleanedSlug = cleanSlug(document._meta.path)
+		const slug = stripExt(cleanedSlug)
 		const content = await compileMDX(context, document, { rehypePlugins: [rehypeSlug] })
 		const rawMdx = document.content.replace(/^---\s*[\r\n](.*?|\r|\n)---/, "").trim()
 
