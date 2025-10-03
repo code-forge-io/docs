@@ -24,8 +24,8 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 			<Header>
 				<div className="flex items-start gap-3">
 					<Logo>
-						{/* Replace with your Logo */}
-						<span className="p-0">REACT ROUTER DEVTOOLS</span>
+						{/* FIXME Replace with your Logo */}
+						<span className="p-0">DOCS-TEMPLATE</span>
 					</Logo>
 				</div>
 				<div className="inline-flex items-center gap-2 xl:gap-3">
@@ -42,7 +42,7 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 					<Outlet />
 				</main>
 			</div>
-			{/* You can add custom footer component here */}
+			{/* FIXME You can add custom footer component here */}
 		</div>
 	)
 }

@@ -4,6 +4,9 @@ This template is designed to support a flexible content structure using `.md` an
 
 The project is built using the [@forge-42/base-stack](https://github.com/forge-42/base-stack) and leverages the [content-collections](https://github.com/sdorra/content-collections).
 
+> **Note**:
+> We added a few `FIXME` comments in the codebase as notes to you. These simply mark small places where we expect you to make changes. Nothing major — it should only take you 2 minutes to go through them.
+
 
 ## Documentation Template Structure Overview
 

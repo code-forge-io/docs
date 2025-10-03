@@ -20,8 +20,8 @@ export const meta = ({ data }: Route.MetaArgs) => {
 	return generateMetaFields({
 		domain,
 		path: fullPath,
-		// change "Package Name" to your package name
-		title: `${page.title} · Package Name`,
+		// FIXME change "Docs Template" to your package name
+		title: `${page.title} · Docs Template`,
 		description: page.description,
 	})
 }
@@ -48,7 +48,7 @@ export default function DocumentationPage({ loaderData }: Route.ComponentProps) 
 	const toc = extractHeadingTreeFromMarkdown(page.rawMdx)
 
 	return (
-		<div className="flex min-h-screen flex-row">
+		<div className="flex min-h-screen flex-row ">
 			<div className="mx-auto flex w-full max-w-screen-4xl flex-col gap-4 pt-4 lg:gap-8 xl:pt-0">
 				<PageMdxArticle page={page} />
 				<PageNavigation previous={previous} next={next} />

@@ -18,8 +18,9 @@ export function generateMetaFields({ domain, title, description, path, additiona
 			title,
 			description,
 			url: fullUrl,
-			// Change to your package name
-			siteName: "Package Name",
+			// FIXME Change to your package name
+			siteName: "Docs Template",
+			// FIXME Change to your image
 			image: PackageLogo,
 		},
 		[
