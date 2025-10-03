@@ -12,7 +12,7 @@ export const CodeBlock = ({ children, className = "", ...props }: CodeBlockProps
 	const lines = processLines(code)
 
 	return (
-		<div className="group relative">
+		<div className="group relative ">
 			<PreElement lines={lines} className={className} {...props} />
 			<CopyButton lines={lines} />
 		</div>

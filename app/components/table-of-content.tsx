@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router"
 import { useActiveHeadingId } from "~/hooks/use-active-heading-id"
 import type { HeadingItem } from "~/utils/extract-heading-tree-from-mdx"
@@ -48,10 +48,11 @@ const TocItem = ({ item, depth = 0, activeId, onItemClick }: TocItemProps) => {
 		<div>
 			<Link
 				to={`#${item.slug}`}
-				style={{ paddingLeft }}
 				className={className}
 				onClick={handleClick}
 				aria-current={isActive && "location"}
+				data-toc-slug={item.slug}
+				style={{ paddingLeft, scrollMarginTop: 8 }}
 			>
 				{item.title}
 			</Link>
@@ -66,12 +67,6 @@ const TocItem = ({ item, depth = 0, activeId, onItemClick }: TocItemProps) => {
 	)
 }
 
-const TableOfContentsHeader = () => (
-	<h2 className="mb-4 border-[var(--color-border)] border-b pb-2 font-semibold text-[var(--color-text-active)] text-base">
-		On this page
-	</h2>
-)
-
 const Navigation = ({
 	items,
 	activeId,
@@ -80,14 +75,49 @@ const Navigation = ({
 	items: HeadingItem[]
 	activeId: string | null
 	onItemClick: (slug: string) => Promise<void>
-}) => (
-	<nav aria-label="Table of contents" className="-mr-4 max-h-[calc(100vh-var(--header-height))] overflow-y-auto pr-4">
-		<div className="space-y-1 pb-2">
-			{items.map((item) => (
-				<TocItem key={item.slug} item={item} activeId={activeId} onItemClick={onItemClick} />
-			))}
-		</div>
-	</nav>
+}) => {
+	const navRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (!activeId) return
+		const nav = navRef.current
+		if (!nav) return
+
+		const el = nav.querySelector<HTMLElement>(`[data-toc-slug="${CSS.escape(activeId)}"]`)
+		if (!el) return
+
+		const padding = 24
+		const elTop = el.offsetTop
+		const elBottom = elTop + el.offsetHeight
+		const viewTop = nav.scrollTop
+		const viewBottom = viewTop + nav.clientHeight
+
+		if (elTop < viewTop + padding) {
+			nav.scrollTo({ top: Math.max(elTop - padding, 0), behavior: "smooth" })
+		} else if (elBottom > viewBottom - padding) {
+			nav.scrollTo({ top: elBottom - nav.clientHeight + padding, behavior: "smooth" })
+		}
+	}, [activeId])
+
+	return (
+		<nav
+			ref={navRef}
+			aria-label="Table of contents"
+			className="-mr-4 max-h[calc(100vh-var(--header-height))] overflow-y-auto pr-4"
+		>
+			<div className="space-y-1 pb-2">
+				{items.map((item) => (
+					<TocItem key={item.slug} item={item} activeId={activeId} onItemClick={onItemClick} />
+				))}
+			</div>
+		</nav>
+	)
+}
+
+const TableOfContentsHeader = () => (
+	<h2 className="mb-4 border-[var(--color-border)] border-b pb-2 font-semibold text-[var(--color-text-active)] text-base">
+		On this page
+	</h2>
 )
 
 export const TableOfContents = ({ items }: TableOfContentsProps) => {

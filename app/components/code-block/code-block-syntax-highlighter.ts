@@ -13,6 +13,8 @@ const MASTER_REGEX = new RegExp(
 		"//.*?(?=\\n|$)",
 		// multi-line comment
 		"/\\*[\\s\\S]*?\\*/",
+		// hash comment at start of line
+		"^\\s*#.*$",
 		// strings
 		"(['\"])(?:(?!\\1)[^\\\\]|\\\\.)*\\1",
 		// numbers
@@ -101,7 +103,7 @@ const isKeyword = (value: string) => KEYWORDS.includes(value)
 const isOperator = (value: string) => OPERATORS.includes(value)
 const isFunction = (value: string) => /^[A-Z]/.test(value)
 const isWhitespace = (value: string) => /^\s/.test(value)
-const isComment = (value: string) => value.startsWith("//") || value.startsWith("/*")
+const isComment = (v: string) => v.startsWith("//") || v.startsWith("/*") || /^\s*#/.test(v)
 const isString = (value: string) => /^['"`]/.test(value)
 const isNumber = (value: string) => /^\d/.test(value)
 const isIdentifier = (value: string) => /^[a-zA-Z_$]/.test(value)

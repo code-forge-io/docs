@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for docs-template-test on 2025-09-19T15:08:49+02:00
+# fly.toml app configuration file generated for docs-template-main on 2025-10-03T11:40:42+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'docs-template-test'
+app = 'docs-template-main'
 primary_region = 'fra'
 
 [build]
@@ -17,6 +17,4 @@ primary_region = 'fra'
   processes = ['app']
 
 [[vm]]
-  memory = '256mb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'

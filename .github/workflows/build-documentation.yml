@@ -31,3 +31,25 @@ jobs:
       - name: Generate docs
         working-directory: docs
         run: pnpm run generate:docs
+
+
+  deploy:
+    name: 🚀 Deploy Release
+    needs: [build-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: forge-42/fly-deploy@v1.0.0-rc.2
+        id: deploy
+        env:
+          FLY_ORG: ${{ vars.FLY_ORG }}
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_REGION: ${{ vars.FLY_REGION }}
+        with:
+          app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
+          env_vars: |
+            APP_ENV=production
+            GITHUB_OWNER=${{ github.repository_owner }}
+            GITHUB_REPO=${{ github.event.repository.name }}
+            GITHUB_REPO_URL=https://github.com/${{ github.repository }}
