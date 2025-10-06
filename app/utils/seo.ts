@@ -1,6 +1,6 @@
 import { generateMeta } from "@forge42/seo-tools/remix/metadata"
 import type { MetaDescriptor } from "react-router"
-import PackageLogo from "../../public/statics/images/package-logo-1200x630.png"
+import PackageLogo from "/static/images/package-logo-1200x630.png"
 
 interface MetaFields {
 	domain: string
