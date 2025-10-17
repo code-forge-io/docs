@@ -36,7 +36,7 @@ const outputDir = "generated-docs"
 const APP_ENV = getServerEnv().APP_ENV
 // Auto-detect a docs workspace: prefer CWD if it contains `content/`, otherwise try ./docs
 function findDocsWorkspace(start: string) {
-	const candidates = [start]
+	const candidates = [start, resolve(start, "docs")]
 	// biome-ignore lint/suspicious/noConsole: TODO REMOE THIS
 	console.log("Candidates for docs workspace:", candidates)
 	for (const dir of candidates) {

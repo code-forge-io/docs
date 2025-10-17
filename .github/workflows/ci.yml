@@ -69,7 +69,8 @@ jobs:
         run: pnpm install --prefer-offline --frozen-lockfile
 
       - name: Generate docs
-        working-directory: docs
+        #FIXME uncomment this if you use inside another repo
+        # working-directory: docs
         env:
           APP_ENV: production
         run: pnpm run generate:docs
