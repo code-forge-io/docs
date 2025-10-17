@@ -34,11 +34,26 @@ const resetDir = (p: string) => {
 const contentDir = "content"
 const outputDir = "generated-docs"
 const APP_ENV = getServerEnv().APP_ENV
-const currentDocsWorkspace = process.cwd()
+// Auto-detect a docs workspace: prefer CWD if it contains `content/`, otherwise try ./docs
+function findDocsWorkspace(start: string) {
+	const candidates = [start, resolve(start, "docs")]
+	for (const dir of candidates) {
+		const hasContent = existsSync(resolve(dir, "content"))
+		const hasPkg = existsSync(resolve(dir, "package.json"))
+		if (hasContent && hasPkg) return dir
+	}
+
+	throw new Error(`Could not locate docs workspace. Tried '.' and './docs'. `)
+}
+
+const docsRoot = findDocsWorkspace(process.cwd())
+const currentDocsWorkspace = docsRoot
 
 let docsRelative = ""
 try {
-	docsRelative = run("git rev-parse --show-prefix", { cwd: currentDocsWorkspace }).replace(/\/?$/, "")
+	const repoTop = execSync("git rev-parse --show-toplevel", { cwd: docsRoot, encoding: "utf8" }).trim()
+	const rel = path.relative(repoTop, docsRoot).replace(/\\/g, "/")
+	docsRelative = rel ? `${rel.replace(/\/?$/, "")}/` : ""
 } catch {
 	docsRelative = ""
 }
