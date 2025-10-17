@@ -41,6 +41,9 @@ jobs:
         uses: pnpm/action-setup@v4
       - name: Install dependencies
         run: pnpm install
+      - name: Install Playwright browsers
+        # downloads browser binaries required by Playwright (Chromium/Firefox/WebKit)
+        run: pnpm exec playwright install --with-deps
       - name: 🔎 Validate
         run: pnpm run test
 
