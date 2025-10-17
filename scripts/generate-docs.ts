@@ -32,14 +32,11 @@ const resetDir = (p: string) => {
 }
 
 const contentDir = "content"
-const outputDirName = "generated-docs"
-
-const docsRoot = findDocsWorkspace(process.cwd())
-const outputDir = resolve(docsRoot, outputDirName)
+const outputDir = "generated-docs"
 const APP_ENV = getServerEnv().APP_ENV
 // Auto-detect a docs workspace: prefer CWD if it contains `content/`, otherwise try ./docs
 function findDocsWorkspace(start: string) {
-	const candidates = [start, resolve(start, "docs")]
+	const candidates = [start]
 	// biome-ignore lint/suspicious/noConsole: TODO REMOE THIS
 	console.log("Candidates for docs workspace:", candidates)
 	for (const dir of candidates) {
@@ -52,6 +49,7 @@ function findDocsWorkspace(start: string) {
 	throw new Error(`Could not locate docs workspace. Tried '.' and './docs'. `)
 }
 
+const docsRoot = findDocsWorkspace(process.cwd())
 const currentDocsWorkspace = docsRoot
 
 let docsRelative = ""
