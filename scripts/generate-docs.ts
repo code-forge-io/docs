@@ -37,10 +37,13 @@ const APP_ENV = getServerEnv().APP_ENV
 // Auto-detect a docs workspace: prefer CWD if it contains `content/`, otherwise try ./docs
 function findDocsWorkspace(start: string) {
 	const candidates = [start, resolve(start, "docs")]
+	// biome-ignore lint/suspicious/noConsole: TODO REMOE THIS
+	console.log("Candidates for docs workspace:", candidates)
 	for (const dir of candidates) {
 		const hasContent = existsSync(resolve(dir, "content"))
-		const hasPkg = existsSync(resolve(dir, "package.json"))
-		if (hasContent && hasPkg) return dir
+		// biome-ignore lint/suspicious/noConsole: TODO REMOE THIS
+		console.log(`Checking ${dir} for content/:`, hasContent ? "found" : "not found")
+		if (hasContent) return dir
 	}
 
 	throw new Error(`Could not locate docs workspace. Tried '.' and './docs'. `)
