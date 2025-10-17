@@ -45,40 +45,51 @@ jobs:
         run: pnpm run test
 
   build-docs:
-    if: ${{ github.event_name == 'pull_request' }}
-    name: Build Docs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          # checkout the PR head branch
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: "package.json"
           cache: pnpm
 
-      - name: Install deps
+      # One install at the workspace root is enough
+      - name: Install deps (root)
         run: pnpm install --prefer-offline --frozen-lockfile
 
+      # Decide where the docs app lives: ./docs or .
+      - name: Resolve DOCS_DIR
+        id: paths
+        shell: bash
+        run: |
+          if [ -d docs ] && [ -f docs/package.json ]; then
+            DOCS_DIR="docs"
+          else
+            DOCS_DIR="."
+          fi
+
+          # expose for later steps
+          echo "DOCS_DIR=$DOCS_DIR" >> "$GITHUB_OUTPUT"
+
+          # ok to print within this step using the shell variable
+          echo "Using DOCS_DIR=$DOCS_DIR"
+
       - name: Generate docs
-        #FIXME uncomment this if you use inside another repo
-        # working-directory: docs
         env:
           APP_ENV: production
-        run: pnpm run generate:docs
+        run: pnpm -C "${{ steps.paths.outputs.DOCS_DIR }}" run generate:docs
 
       - name: Pack generated docs (tarball)
         run: |
-          tar -czf docs-generated.tgz -C docs generated-docs
+          OUT_BASE="${{ steps.paths.outputs.DOCS_DIR }}"
+          tar -czf docs-generated.tgz -C "$OUT_BASE" generated-docs
           ls -lh docs-generated.tgz
+
       - name: Upload generated docs (tgz)
         uses: actions/upload-artifact@v4
         with:
@@ -90,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docs-versions
-          path: docs/app/utils/versions.ts
+          path: ${{ steps.paths.outputs.DOCS_DIR }}/app/utils/versions.ts
           if-no-files-found: error
 
   deploy-docs-pr-preview:

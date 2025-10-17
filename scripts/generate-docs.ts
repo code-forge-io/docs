@@ -32,7 +32,8 @@ const resetDir = (p: string) => {
 }
 
 const contentDir = "content"
-const outputDir = "generated-docs"
+const docsRoot = findDocsWorkspace(process.cwd())
+const outputDir = resolve(docsRoot, "generated-docs")
 const APP_ENV = getServerEnv().APP_ENV
 // Auto-detect a docs workspace: prefer CWD if it contains `content/`, otherwise try ./docs
 function findDocsWorkspace(start: string) {
@@ -49,7 +50,6 @@ function findDocsWorkspace(start: string) {
 	throw new Error(`Could not locate docs workspace. Tried '.' and './docs'. `)
 }
 
-const docsRoot = findDocsWorkspace(process.cwd())
 const currentDocsWorkspace = docsRoot
 
 let docsRelative = ""
@@ -257,7 +257,7 @@ function isPullRequestCI() {
 	}
 
 	// Write versions file for the app
-	const versionsFile = resolve("app/utils/versions.ts")
+	const versionsFile = resolve(docsRoot, "app/utils/versions.ts")
 	writeFileSync(
 		versionsFile,
 		`// Auto-generated file. Do not edit manually.
