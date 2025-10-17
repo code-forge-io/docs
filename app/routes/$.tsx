@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router"
-import { Link } from "~/library/link"
+import { Link } from "~/ui/link"
 import type { Route } from "./+types/$"
 
 export const loader = async ({ params }: Route.LoaderArgs) => {

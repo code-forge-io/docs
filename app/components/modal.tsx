@@ -62,26 +62,37 @@ export const Modal = ({
 		return () => window.removeEventListener("keydown", onKey)
 	}, [isOpen, onClose])
 
+	const handleOverlayPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		const root = modalRef.current
+		if (!root) return
+		if (!root.contains(e.target as Node)) onClose()
+	}
+
 	if (!isOpen) return null
 
 	return (
-		<div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain">
-			<Backdrop onClose={onClose} />
-			<div className="flex min-h-full items-start justify-center p-4 pt-16 sm:pt-24">
-				<div
-					ref={modalRef}
-					aria-modal="true"
-					{...(ariaLabel ? { "aria-label": ariaLabel } : {})}
-					className={cn(
-						"w-full max-w-2xl transform overflow-hidden rounded-xl border-[var(--color-modal-border)] bg-[var(--color-modal-bg)] shadow-[0_25px_50px_-12px_var(--color-modal-shadow)] transition-all duration-200",
-						className
-					)}
-					onMouseDown={(e) => e.stopPropagation()}
-					onClick={(e) => e.stopPropagation()}
-				>
-					{children}
+		<>
+			<Backdrop onClose={onClose} className="pointer-events-none z-40" />
+			<div
+				className="fixed inset-0 z-50 overflow-y-auto overscroll-contain"
+				onPointerDown={handleOverlayPointerDown}
+				role="presentation"
+			>
+				<div className="flex min-h-full items-start justify-center p-4 pt-16 sm:pt-24">
+					<div
+						ref={modalRef}
+						aria-modal="true"
+						{...(ariaLabel ? { "aria-label": ariaLabel } : {})}
+						className={cn(
+							"w-full max-w-2xl transform overflow-hidden rounded-xl border-[var(--color-modal-border)] bg-[var(--color-modal-bg)] shadow-[0_25px_50px_-12px_var(--color-modal-shadow)] transition-transform duration-200",
+							className
+						)}
+						onPointerDown={(e) => e.stopPropagation()}
+					>
+						{children}
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	)
 }

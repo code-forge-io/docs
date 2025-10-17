@@ -1,4 +1,4 @@
-import type { Page } from "content-collections"
+import type { Page } from "content-collections-types"
 import { getContent } from "./load-content"
 import type { Version } from "./version-resolvers"
 

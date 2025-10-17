@@ -1,59 +1,22 @@
-name: 🚀 Validation Pipeline
-concurrency:
-  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+name: 📚🚀 Build documentation on release
+
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch: {}
 
-permissions:
-  actions: write
-  contents: read
-  # Required to put a comment into the pull-request
-  pull-requests: write
+concurrency:
+  group: docs-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  lint:
-    name: ⬣ Biome lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
-      - name: Run Biome
-        run: biome ci .
-
-  validate:
-    name: 🔎 Validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: "package.json"
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-      - name: Install dependencies
-        run: pnpm install
-      - name: 🔎 Validate
-        run: pnpm run test
-
   build-docs:
-    if: ${{ github.event_name == 'pull_request' }}
     name: Build Docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # checkout the PR head branch
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Setup pnpm
@@ -92,10 +55,9 @@ jobs:
           path: docs/app/utils/versions.ts
           if-no-files-found: error
 
-  deploy-docs-pr-preview:
-    if: ${{ github.event_name == 'pull_request' }}
-    needs: [lint, validate, build-docs]
-    name: Deploy Docs PR Preview
+  deploy-docs-on-release:
+    needs: [build-docs]
+    name: Deploy Docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -125,7 +87,7 @@ jobs:
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
           workspace_name: docs
-          app_name: react-router-devtools-docs-pr-${{ github.event.number }}
+          app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
           use_isolated_workspace: true
           env_vars: |
             APP_ENV=production

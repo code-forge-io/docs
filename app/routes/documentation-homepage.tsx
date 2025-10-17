@@ -13,8 +13,7 @@ export const meta = ({ data }: Route.MetaArgs) => {
 	return generateMetaFields({
 		domain,
 		path: `/${version}/home`,
-		// FIXME Change "Docs Template" to your package name
-		title: `${title} · Docs Template`,
+		title: `${title} · React Router Devtools`,
 		description,
 	})
 }

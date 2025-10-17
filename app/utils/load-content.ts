@@ -1,5 +1,5 @@
-import type { Section } from "content-collections"
-import type { Page } from "content-collections"
+import type { Section } from "content-collections-types"
+import type { Page } from "content-collections-types"
 import { loadContentCollections } from "~/utils/load-content-collections"
 import type { Version } from "~/utils/version-resolvers"
 import { versions } from "./versions"
@@ -20,5 +20,6 @@ export async function getContent(version: Version) {
 	if (!contentForVersion) {
 		throw new Error(`Content for version "${version}" could not be retrieved.`)
 	}
-	return contentForVersion
+	const { allPages, allSections } = await loadContentCollections(version)
+	return { allPages, allSections }
 }
