@@ -67,6 +67,8 @@ jobs:
         run: pnpm install --prefer-offline --frozen-lockfile
 
       - name: Generate docs
+        env:
+          APP_ENV: production
         run: pnpm run generate:docs
 
       - name: Pack generated docs (tarball)
