@@ -3,8 +3,6 @@ concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -41,9 +39,8 @@ jobs:
         uses: pnpm/action-setup@v4
       - name: Install dependencies
         run: pnpm install
-      - name: Install Playwright browsers
-        # downloads browser binaries required by Playwright (Chromium/Firefox/WebKit)
-        run: pnpm exec playwright install --with-deps
+      - run: pnpm install --prefer-offline --frozen-lockfile
+      - run: pnpm exec playwright install chromium --with-deps
       - name: 🔎 Validate
         run: pnpm run test
 
@@ -61,8 +58,7 @@ jobs:
           node-version-file: "package.json"
           cache: pnpm
 
-      # One install at the workspace root is enough
-      - name: Install deps (root)
+      - name: Install deps
         run: pnpm install --prefer-offline --frozen-lockfile
 
       # Decide where the docs app lives: ./docs or .
