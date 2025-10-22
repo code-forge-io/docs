@@ -125,7 +125,7 @@ jobs:
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
           # FIXME:MONOREPO If docs are in a subdirectory, change this to: docs
-          workspace_name: .
+          # workspace_name: .
           app_name: react-router-devtools-docs-pr-${{ github.event.number }}
           use_isolated_workspace: true
           env_vars: |
