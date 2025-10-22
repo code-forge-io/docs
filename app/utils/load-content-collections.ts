@@ -12,6 +12,8 @@ import type { Version } from "./version-resolvers"
  */
 export async function loadContentCollections(version: Version) {
 	const { NODE_ENV } = getServerEnv()
+	// biome-ignore lint/suspicious/noConsole: todo REMOVE CONSOLE LOG
+	console.log({ NODE_ENV })
 	const projectRoot = process.cwd()
 	// locally we use the actual content-collections source for DX and hot-reloads
 	if (NODE_ENV === "development") {
