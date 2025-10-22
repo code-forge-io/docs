@@ -15,7 +15,7 @@ export async function loadContentCollections(version: Version) {
 	const projectRoot = process.cwd()
 	// locally we use the actual content-collections source for DX and hot-reloads
 	if (NODE_ENV === "development") {
-		const { allPages, allSections } = await import("content-collections")
+		const { allPages, allSections } = await import(/* @vite-ignore */ "content-collections")
 		return { allPages, allSections }
 	}
 	const genBase = resolve(projectRoot, "generated-docs", version, ".content-collections", "generated")
