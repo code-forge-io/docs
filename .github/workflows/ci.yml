@@ -126,7 +126,7 @@ jobs:
         with:
           # FIXME:MONOREPO If docs are in a subdirectory, change this to: docs
           # workspace_name: .
-          app_name: react-router-devtools-docs-pr-${{ github.event.number }}
+          app_name: ${{ github.event.repository.name }}-${{ github.event.number }}
           use_isolated_workspace: true
           env_vars: |
             APP_ENV=production
