@@ -115,7 +115,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: docs-versions
-          path: app/utils
+          path: app/utils/
+
+      - name: Verify files before deploy
+        run: |
+          echo "=== Checking generated-docs structure ==="
+          ls -la generated-docs/
+          echo "=== Checking versions.ts ==="
+          cat app/utils/versions.ts
 
       - uses: forge-42/fly-deploy@v1.0.0-rc.2
         id: deploy
@@ -124,8 +131,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
-          # FIXME:MONOREPO If docs are in a subdirectory, change this to: docs
-          # workspace_name: .
+          # FIXME:MONOREPO If docs are in a subdirectory, add: workspace_name: docs
           app_name: ${{ github.event.repository.name }}-${{ github.event.number }}
           use_isolated_workspace: true
           env_vars: |
