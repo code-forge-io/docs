@@ -1,7 +1,7 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
-import { join, resolve } from "node:path"
+import { join, relative, resolve } from "node:path"
 import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
@@ -33,6 +33,30 @@ const resetDir = (p: string) => {
 const contentDir = "content"
 const workspaceRoot = process.cwd()
 const outputDir = resolve(workspaceRoot, "generated-docs")
+
+// If this script is executed from a subdirectory of the repository (for example
+// the `docs/` package inside a monorepo), we need the path of that subdir
+// relative to the repository root so worktrees point at the right package.
+let repoRoot = workspaceRoot
+let workspaceRelativePath = ""
+try {
+	// This will return the repository top-level directory.
+	repoRoot = run("git rev-parse --show-toplevel")
+	// Compute the path from repo root to the current working dir. If empty,
+	// we are at repo root and no adjustment is needed.
+	// Use posix-style join/resolve via path utilities already imported.
+	workspaceRelativePath = repoRoot === workspaceRoot ? "" : relative(repoRoot, workspaceRoot)
+} catch {
+	// If git is not available or the command fails, fall back to assuming the
+	// current working directory is the repository root.
+	repoRoot = workspaceRoot
+	workspaceRelativePath = ""
+}
+
+// biome-ignore lint/suspicious/noConsole: TODO remove this
+console.log(chalk.cyan(`Docs workspace root: ${workspaceRoot}`))
+// biome-ignore lint/suspicious/noConsole: TODO remove this
+console.log("outputDir:", outputDir)
 const allTags = () => run("git tag --list").split("\n").filter(Boolean)
 
 function resolveTagsFromSpec(spec: string) {
@@ -64,6 +88,8 @@ function buildDocs(sourceDir: string, outDir: string) {
 		)
 	}
 
+	// biome-ignore lint/suspicious/noConsole: TODO remove this
+	console.log(chalk.cyan(`Building docs from: ${sourceDir} → ${outDir}`))
 	const docsContentDir = resolve(sourceDir, contentDir)
 	if (!existsSync(docsContentDir)) {
 		throw new Error(
@@ -123,8 +149,12 @@ function buildRef(ref: string, labelForOutDir: string) {
 			})
 		}
 
+		// If this script was run from a subdirectory (for example `docs/` inside
+		// a monorepo), adjust the sourceDir inside the created worktree so we
+		// build the correct package.
+		const sourceDir = workspaceRelativePath ? resolve(worktreePath, workspaceRelativePath) : worktreePath
 		const outDir = resolve(outputDir, labelForOutDir)
-		buildDocs(worktreePath, outDir)
+		buildDocs(sourceDir, outDir)
 	} finally {
 		run(`git worktree remove "${worktreePath}" --force`, {
 			cwd: workspaceRoot,
