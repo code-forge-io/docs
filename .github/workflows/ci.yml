@@ -47,10 +47,6 @@ jobs:
   build-docs:
     name: ⬆️ Build Docs
     runs-on: ubuntu-latest
-    # FIXME:MONOREPO If docs are in a subdirectory, uncomment the next line
-    # defaults:
-    #   run:
-    #     working-directory: docs
     steps:
       - uses: actions/checkout@v4
         with:
@@ -92,13 +88,8 @@ jobs:
 
   deploy-docs-pr-preview:
     name: 🚀 Deploy Docs
-    if: ${{ github.event_name == 'pull_request' }}
-    needs: [lint, validate, build-docs]
+    needs: [build-docs]
     runs-on: ubuntu-latest
-    # FIXME:MONOREPO If docs are in a subdirectory, uncomment the next line
-    # defaults:
-    #   run:
-    #     working-directory: docs
     steps:
       - uses: actions/checkout@v4
 
@@ -119,13 +110,6 @@ jobs:
           name: docs-versions
           path: app/utils/
 
-      - name: Verify files before deploy
-        run: |
-          echo "=== Checking generated-docs structure ==="
-          ls -la generated-docs/
-          echo "=== Checking versions.ts ==="
-          cat app/utils/versions.ts
-
       - uses: forge-42/fly-deploy@v1.0.0-rc.2
         id: deploy
         env:
@@ -133,7 +117,6 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
-          # FIXME:MONOREPO If docs are in a subdirectory, add: workspace_name: docs
           app_name: ${{ github.event.repository.name }}-${{ github.event.number }}
           use_isolated_workspace: true
           env_vars: |
