@@ -32,14 +32,8 @@ const resetDir = (p: string) => {
 
 const contentDir = "content"
 const workspaceRoot = process.cwd()
-// biome-ignore lint/suspicious/noConsole: TODO remove this console.log
-console.log(chalk.cyan(`Workspace root: ${workspaceRoot}`))
 const outputDir = resolve(workspaceRoot, "generated-docs")
-// biome-ignore lint/suspicious/noConsole: TODO remove this console.log
-console.log(chalk.cyan(`Output directory: ${outputDir}`))
 const allTags = () => run("git tag --list").split("\n").filter(Boolean)
-// biome-ignore lint/suspicious/noConsole: TODO remove this console.log
-console.log(chalk.cyan(`Found tags: ${allTags().join(", ")}`))
 
 function resolveTagsFromSpec(spec: string) {
 	const tags = allTags().filter((t) => semver.valid(t))

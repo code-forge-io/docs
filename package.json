@@ -1,6 +1,6 @@
 {
 	"name": "@forge42/docs-template",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"author": "forge-42",
 	"private": true,
 	"sideEffects": false,
