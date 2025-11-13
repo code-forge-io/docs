@@ -53,7 +53,13 @@ export const Alert = ({ children, title, variant, className = "" }: AlertProps) 
 	const defaultTitle = variant === "info" ? t("titles.good_to_know") : t("titles.warning")
 
 	return (
-		<div className={cn("my-6 flex flex-col gap-2 rounded-xl border p-4 md:p-6", styles.container, className)}>
+		<div
+			className={cn(
+				"scrollbar scrollbar-thin my-6 flex flex-col gap-2 overflow-x-auto rounded-xl border p-4 md:p-6",
+				styles.container,
+				className
+			)}
+		>
 			<div className="inline-flex items-center gap-2">
 				<div className={cn("inline-flex", styles.icon)}>{getIcon()}</div>
 				<p className={cn("mt-0 mb-0 font-semibold text-sm leading-6 sm:text-base md:text-lg", styles.title)}>

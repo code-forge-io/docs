@@ -64,7 +64,7 @@ const MobileSidebarCloseButton = () => {
 		<button
 			type="button"
 			onClick={close}
-			className="absolute top-2 right-4 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
+			className="absolute top-2 right-3 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
 			aria-label="Close navigation menu"
 		>
 			<Icon name="X" className="size-5" />
@@ -83,7 +83,7 @@ export const MobileSidebarPanel = ({
 	return (
 		<div
 			className={cn(
-				"scrollbar fixed left-0 z-50 flex h-[calc(100vh-var(--header-height))] w-80 flex-col overflow-hidden bg-[var(--color-background)] p-4 transition-transform duration-500 ease-in-out",
+				"scrollbar fixed left-0 z-50 flex h-[calc(100vh-var(--header-height))] w-72 flex-col overflow-hidden bg-[var(--color-background)] px-3 py-3 transition-transform duration-500 ease-in-out",
 				isOpen ? "translate-x-0" : "-translate-x-full",
 				className
 			)}

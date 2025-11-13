@@ -5,8 +5,8 @@ import { useCurrentVersion } from "~/utils/version-resolvers"
 import type { SidebarSection } from "./sidebar"
 
 const getIndentClass = (depth: number) => {
-	const indentMap = { 0: "ml-0", 1: "ml-4", 2: "ml-8" }
-	return indentMap[depth as keyof typeof indentMap] || "ml-8"
+	const indentMap = { 0: "ml-4", 1: "ml-7", 2: "ml-10" }
+	return indentMap[depth as keyof typeof indentMap] || "ml-10"
 }
 
 type DocumentationNavLinkProps = {
@@ -24,7 +24,7 @@ export function DocumentationNavLink({ title, to, depth = 0, onClick }: Document
 			to={to}
 			onClick={onClick}
 			className={({ isActive, isPending }) =>
-				`block rounded-md px-3 py-2 text-sm md:text-base ${indentClass}
+				`block rounded-md px-3 py-1 text-sm md:text-base ${indentClass}
          ${isPending ? "text-[var(--color-text-hover)]" : ""}
          ${
 						isActive
@@ -46,7 +46,7 @@ interface SectionItemProps {
 
 const SectionTitle = ({ title }: { title: string }) => {
 	return (
-		<h3 className="mb-3 px-3 font-semibold text-[var(--color-text-active)] text-base tracking-wide md:text-lg">
+		<h3 className="mb-3 ml-4 px-3 font-semibold text-[var(--color-text-active)] text-sm uppercase tracking-wide md:text-base">
 			{title}
 		</h3>
 	)
@@ -85,7 +85,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 		return (
 			<AccordionItem
 				title={item.title}
-				titleElement="h4"
+				titleElement="h5"
 				titleClassName=" font-semibold tracking-wide text-[var(--color-text-active)]"
 				content={content}
 				defaultOpen={true}
