@@ -1,0 +1,164 @@
+---
+title: "Project Structure"
+summary: "Understanding the template organization"
+description: "Learn about the folder structure and key files in the documentation template."
+---
+
+## Folder Overview
+
+```
+docs/
+├── .content-collections/    # Auto-generated (dev mode)
+├── .github/                 # GitHub Actions workflows
+├── app/                     # React Router application
+│   ├── components/          # UI components
+│   ├── hooks/              # React hooks
+│   ├── routes/             # Route definitions
+│   ├── utils/              # Utility functions
+│   ├── routes.ts           # Route configuration
+│   └── tailwind.css        # Tailwind styles
+├── content/                # Your documentation (MDX/MD)
+├── generated-docs/         # Generated docs (production)
+├── public/                 # Static assets
+├── resources/              # Icons, fonts, assets
+├── content-collections.ts  # Content config
+├── generate-docs.ts        # Docs generation script
+├── Dockerfile              # Docker configuration
+├── fly.toml               # Fly.io deployment config
+├── .env.example           # Environment variables template
+└── package.json           # Dependencies and scripts
+```
+
+## Core Folders
+
+### `app/`
+
+The React Router v7 application that powers your documentation site.
+
+**Key folders:**
+- **`components/`** - Reusable UI components (Command K, Code blocks, Sidebar, MDXWrapper, etc.)
+- **`hooks/`** - Custom React hooks for documentation features
+- **`routes/`** - Route components (homepage, documentation layout, documentation pages)
+- **`utils/`** - Helper functions and utilities
+- **`tailwind.css`** - Global styles and Tailwind configuration
+
+### `resources/`
+
+Static resources used throughout the site:
+- SVG icons
+- Custom fonts
+- Other design assets
+
+Feel free to add your own assets here.
+
+### `content/`
+
+**This is where your documentation lives.** All `.md` and `.mdx` files should be placed here following the content organization structure (see Content Guide).
+
+### `generated-docs/`
+
+**Production-only folder.** Contains processed documentation organized by version:
+- `main/` - Latest docs from main branch (no tags)
+- `v1.0.0/`, `v2.0.0/` - Versioned documentation
+
+This folder is created by the `generate-docs.ts` script and used during production builds.
+
+### `.content-collections/`
+
+**Development-only folder (auto-generated).** Contains processed content for hot reloading. Don't edit this folder manually—it's regenerated automatically.
+
+## Key Files
+
+### `package.json`
+
+Contains important scripts:
+
+```json
+{
+  "scripts": {
+		...
+    "generate:docs": "tsx generate-docs.ts",
+    "content-collections:build": "content-collections build"
+  }
+}
+```
+
+### `content-collections.ts`
+
+Configures how MDX/MD files are processed. Defines:
+- Document schema (frontmatter fields)
+- File patterns to match
+- Content transformations
+
+### `generate-docs.ts`
+
+Script that generates versioned documentation from your git releases. Uses:
+- Git commands to fetch releases/tags
+- Processes and organizes docs by version
+
+### `fly.toml`
+
+Fly.io deployment configuration. Defines:
+- App name
+- Region
+- Build settings
+- Health checks
+- Environment variables
+
+### `Dockerfile`
+
+Docker configuration for building and running the app in production.
+
+### `.env.example`
+
+Template for environment variables:
+
+```env
+GITHUB_REPO_URL=https://github.com/your-org/your-repo
+GITHUB_BRANCH=main
+```
+
+Copy this to `.env` and fill in your values.
+
+### `routes.ts`
+
+React Router configuration file that defines:
+- Route patterns
+- Layout hierarchy
+- Route metadata
+
+## Components You'll Use
+
+### `MDXWrapper`
+
+Wraps your MDX content with styling. Located in `app/components/`.
+
+### Custom MDX Components
+
+Pre-built components you can use in your MDX:
+- `<InfoAlert>` - Information callouts
+- `<WarningAlert>` - Warning messages
+
+To use custom components in MDX, pass them to the `components` prop in `MDXContent`.
+
+### Command K
+
+Built-in search component that indexes your documentation automatically.
+
+### Sidebar
+
+Auto-generated from your content structure. Respects the ordering prefixes in your filenames.
+
+## Customization Points
+
+All FIXME comments mark places you'll want to customize:
+- Brand colors in `tailwind.css`
+- Package name references
+- GitHub repository links
+- Site metadata
+
+Find them with:
+
+```bash
+grep -r "FIXME" --include="*.ts" --include="*.tsx" --include="*.css"
+```

@@ -1,0 +1,109 @@
+---
+title: "Getting Started"
+summary: "Set up your documentation site"
+description: "Step-by-step guide to setting up and running the Forge 42 documentation template."
+---
+
+## Prerequisites
+
+- **Node.js** 18+ and **pnpm** installed
+- **Git** for version control
+- A repository where you want to add documentation
+
+## Installation
+
+### Monorepo Structure (Recommended)
+
+If you're using a monorepo, place the docs-template under a `/docs` folder:
+
+```
+your-monorepo/
+├── packages/
+│   └── your-package/
+├── docs/              # ← Unzip template here
+│   ├── app/
+│   ├── content/
+│   └── package.json
+└── package.json
+```
+
+### Single Repository Structure
+
+For a single repository, unzip the template into a `/docs` folder:
+
+```
+your-repo/
+├── src/
+├── docs/              # ← Unzip template here
+│   ├── app/
+│   ├── content/
+│   └── package.json
+└── package.json
+```
+
+## Setup Steps
+
+### 1. Install Dependencies
+
+From your repository root:
+
+```bash
+pnpm install
+```
+
+### 2. Configure Environment Variables
+
+Copy `.env.example` to `.env`:
+
+```bash
+cd docs
+cp .env.example .env
+```
+
+Edit `.env` and add your repository details.
+
+These variables enable "Edit this page" and "Report an issue" links.
+
+### 3. Start Development Server
+
+```bash
+pnpm run dev
+```
+
+Your documentation will be available at `http://localhost:4280`
+
+### 4. Test with Sample Content
+
+The template comes with sample content. Browse through it to understand the structure, then replace it with your own documentation.
+
+## Development Workflow
+
+During development, the template uses the `.content-collections` folder (auto-generated) for live reloading. You can edit MDX files and see changes instantly without restarting the server.
+
+### Key Commands
+
+```bash
+# Start dev server
+pnpm run dev
+
+# Build for production
+pnpm run build
+
+# Generate versioned docs (production)
+pnpm run generate:docs
+
+# Generate versioned docs with specific versions
+pnpm run generate:docs -- --versions
+
+# Rebuild content collections
+pnpm run content-collections:build
+```
+
+## Next Steps
+
+1. **Review the sample content** in the `content/` folder
+2. **Understand the project structure** to know where everything lives
+3. **Learn content organization** to structure your documentation properly
+4. **Set up deployment** when ready to go live
+
+Now you're ready to start writing documentation!

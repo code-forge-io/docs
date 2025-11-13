@@ -1,0 +1,353 @@
+---
+title: "Customization & Tips"
+summary: "Customize the template to match your brand"
+description: "Learn how to customize styling, components, and features to make the documentation template your own."
+---
+
+## Finding Customization Points
+
+We've marked key customization points with `FIXME` comments throughout the codebase. Find them all:
+
+```bash
+grep -r "FIXME" --include="*.ts" --include="*.tsx" --include="*.css"
+```
+
+These typically take just 2 minutes to update and include:
+- Brand colors
+- Package names
+- Repository URLs
+- Site metadata
+
+## Styling Customization
+
+### Tailwind CSS Configuration
+
+The main styles are in `app/tailwind.css`. This is where you'll customize:
+
+**Brand Colors:**
+```css
+@theme {
+  --color-primary-50: /* your brand color */;
+  --color-primary-100: /* ... */;
+  /* ... */
+  --color-primary-900: /* ... */;
+}
+```
+
+**Typography:**
+```css
+@theme {
+  --font-sans: "Your Font", system-ui, sans-serif;
+  --font-mono: "Your Mono Font", monospace;
+}
+```
+
+**Dark Mode:**
+The template uses Tailwind v4's native dark mode. Customize dark theme colors in the same `@theme` block.
+
+### Component Styling
+
+All components in `app/components/` can be styled. Key components to customize:
+
+- **Sidebar** - Navigation appearance
+- **Command K** - Search modal styling
+- **MDXWrapper** - Content styling
+- **Code blocks** - Syntax highlighting theme
+
+## Adding Custom MDX Components
+
+### 1. Create Your Component
+
+Create a new component in `app/components/`:
+
+```tsx
+// app/components/Callout.tsx
+interface CalloutProps {
+  type: 'info' | 'warning' | 'success';
+  children: React.ReactNode;
+}
+
+export function Callout({ type, children }: CalloutProps) {
+  return (
+    <div className={`callout callout-${type}`}>
+      {children}
+    </div>
+  );
+}
+```
+
+### 2. Register in MDXContent
+
+Find the `MDXContent` component and add your component:
+
+```tsx
+import { Callout } from '~/components/Callout';
+
+<MDXContent
+  code={doc.body.code}
+  components={{
+    InfoAlert,
+    WarningAlert,
+    Callout,  // ← Add your component
+  }}
+/>
+```
+
+### 3. Use in MDX
+
+```mdx
+<Callout type="success">
+Your custom component is now available!
+</Callout>
+```
+
+## Modifying Routes
+
+Routes are defined in `app/routes.ts`. The template uses React Router v7's route configuration.
+
+### Adding a New Top-Level Page
+
+```ts
+// app/routes.ts
+import { type RouteConfig } from "@react-router/dev/routes";
+
+export default [
+  // ... existing routes
+  {
+    path: "/changelog",
+    file: "routes/changelog.tsx",
+  },
+] satisfies RouteConfig;
+```
+
+### Modifying Documentation Layout
+
+The documentation layout is in `app/routes/docs.$version.$.tsx`. This handles:
+- Sidebar rendering
+- Content area
+- Version selection
+- GitHub links
+
+## Configuration Files
+
+### content-collections.ts
+
+This file defines how your MDX files are processed:
+
+```ts
+import { defineCollection, defineConfig } from "@content-collections/core";
+
+const docs = defineCollection({
+  name: "docs",
+  directory: "content",
+  include: "**/*.mdx",
+  schema: (z) => ({
+    title: z.string(),
+    summary: z.string().optional(),
+    description: z.string(),
+  }),
+});
+
+export default defineConfig({
+  collections: [docs],
+});
+```
+
+**Customization ideas:**
+- Add custom frontmatter fields
+- Add different content collections
+- Modify file processing
+
+### generate-docs.ts
+
+This script handles documentation versioning. Key parts you might customize:
+
+- **Git commands** - Change how releases are fetched
+- **File processing** - Modify what gets copied
+- **Version naming** - Change version folder names
+
+## Adding Features
+
+### Analytics
+
+Add analytics by modifying `app/root.tsx`:
+
+```tsx
+// Add to <head>
+<script
+  async
+  src="https://analytics.example.com/script.js"
+  data-website-id="your-id"
+/>
+```
+
+### Custom Search
+
+The Command K component can be extended to search external sources or add custom filters.
+
+### Additional Navigation
+
+Add a footer, header links, or breadcrumbs by modifying the layout components.
+
+## Performance Tips
+
+### 1. Optimize Images
+
+Place images in `public/` or `resources/`:
+
+```mdx
+![Alt text](/images/diagram.png)
+```
+
+Use modern formats (WebP, AVIF) for better performance.
+
+### 2. Code Splitting
+
+React Router v7 automatically code-splits routes. Keep your route components focused and lean.
+
+### 3. Lazy Loading
+
+For heavy components, use React's lazy loading:
+
+```tsx
+import { lazy } from 'react';
+
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+```
+
+## Content Tips
+
+### 1. Use Descriptive Titles
+
+Good titles improve SEO and navigation:
+- ❌ "API"
+- ✅ "API Reference Guide"
+
+### 2. Write Clear Descriptions
+
+The `description` frontmatter is used for SEO meta tags:
+
+```yaml
+---
+description: "Learn how to authenticate users in your app using OAuth 2.0 and JWT tokens with our authentication library."
+---
+```
+
+### 3. Break Up Long Pages
+
+Instead of one huge page, split into multiple pages in a section:
+
+```
+03-advanced/
+├── index.md
+├── 01-caching.mdx
+├── 02-performance.mdx
+└── 03-security.mdx
+```
+
+### 4. Use Visual Aids
+
+Add diagrams, screenshots, and code examples to improve understanding.
+
+## Common Customizations
+
+### Change Primary Color
+
+Edit `app/tailwind.css`:
+
+```css
+@theme {
+  --color-primary-500: #f97316; /* Orange */
+}
+```
+
+### Update Package Name
+
+Search and replace throughout the codebase:
+
+```bash
+grep -r "your-old-package-name" --include="*.ts" --include="*.tsx"
+```
+
+### Add Social Links
+
+Modify the footer or header components to include:
+- GitHub
+- Twitter
+- Discord
+- Slack
+
+### Change Font
+
+1. Add font files to `resources/fonts/`
+2. Update `tailwind.css`:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+```
+
+## Development Workflow Tips
+
+### Hot Reload
+
+The dev server supports hot module replacement. Changes to:
+- MDX files reload instantly
+- React components reload on save
+- Tailwind classes update live
+
+### Content Organization
+
+Keep related files together and use consistent naming:
+
+```
+content/
+└── 04-api-reference/
+    ├── index.md
+    ├── 01-authentication.mdx
+    ├── 02-endpoints.mdx
+    └── 03-errors.mdx
+```
+
+### Testing
+
+Use Vitest for testing components:
+
+```bash
+pnpm test
+```
+
+Add tests in `__tests__/` folders alongside your components.
+
+## Troubleshooting
+
+### Content Not Showing
+
+1. Check file naming follows `NN-name.mdx` format
+2. Verify frontmatter is valid YAML
+3. Run `pnpm run content-collections:build` to rebuild
+
+### Styling Not Applying
+
+1. Check Tailwind classes are valid v4 syntax
+2. Verify `tailwind.css` is imported in `root.tsx`
+3. Clear browser cache
+
+### Build Errors
+
+1. Check for TypeScript errors: `pnpm tsc`
+2. Verify all imports are correct
+3. Check content-collections schema matches your frontmatter
+
+## Getting Help
+
+If you run into issues:
+
+1. Check the FIXME comments for guidance
+2. Review the sample content for examples
+3. Reach out to the Forge 42 team
+
+Happy documenting! 🚀
