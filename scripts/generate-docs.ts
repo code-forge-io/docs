@@ -1,13 +1,19 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
-import path, { join, resolve, posix as pathPosix } from "node:path"
+import path, { join, resolve } from "node:path"
 import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
 import { getServerEnv } from "~/env.server"
 
+const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
+const CONTENT_DIR = "content"
+const OUTPUT_DIR = "generated-docs"
+const CURRENT_WORKSPACE = process.cwd()
+
 type RunOpts = { cwd?: string; inherit?: boolean }
+
 function run(cmd: string, opts: RunOpts = {}) {
 	const exOpts: ExecSyncOptions = {
 		cwd: opts.cwd,
@@ -25,48 +31,50 @@ function run(cmd: string, opts: RunOpts = {}) {
 	}
 }
 
-const ensureDir = (p: string) => mkdirSync(p, { recursive: true })
-const resetDir = (p: string) => {
-	if (existsSync(p)) rmSync(p, { recursive: true, force: true })
-	ensureDir(p)
+function ensureDir(dir: string) {
+	mkdirSync(dir, { recursive: true })
 }
 
-const contentDir = "content"
-const outputDir = "generated-docs"
-const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
-const currentDocsWorkspace = process.cwd()
-
-let docsRelative = ""
-try {
-	docsRelative = run("git rev-parse --show-prefix", { cwd: currentDocsWorkspace }).replace(/\/?$/, "")
-} catch {
-	docsRelative = ""
+function resetDir(dir: string) {
+	if (existsSync(dir)) rmSync(dir, { recursive: true, force: true })
+	ensureDir(dir)
 }
 
-const repoPath = (...segs: string[]) => path.normalize(path.join(...segs.filter(Boolean)))
+function isPullRequestCI() {
+	// biome-ignore lint/nursery/noProcessEnv: process.env.GITHUB_EVENT_NAME === "pull_request" || !!process.env.GITHUB_HEAD_REF
+	return process.env.GITHUB_EVENT_NAME === "pull_request" || !!process.env.GITHUB_HEAD_REF
+}
 
-const allTags = () => run("git tag --list").split("\n").filter(Boolean)
+function repoPath(...segments: string[]) {
+	return path.normalize(path.join(...segments.filter(Boolean)))
+}
+
+const REPO_ROOT = run("git rev-parse --show-toplevel", { cwd: CURRENT_WORKSPACE })
+
+const WORKSPACE_RELATIVE = (() => {
+	try {
+		return run("git rev-parse --show-prefix", { cwd: CURRENT_WORKSPACE }).replace(/\/?$/, "")
+	} catch {
+		return ""
+	}
+})()
+
+function getAllTags() {
+	return run("git tag --list").split("\n").filter(Boolean)
+}
 
 function resolveTagsFromSpec(spec: string) {
-	const tags = allTags().filter((t) => semver.valid(t))
-	const tokens = spec
+	const allValidTags = getAllTags().filter((t) => semver.valid(t))
+	const specTokens = spec
 		.split(",")
 		.map((t) => t.trim())
 		.filter(Boolean)
-	const matched = tags.filter((tag) =>
-		tokens.some((token) => semver.satisfies(tag, token, { includePrerelease: true }))
-	)
-	return matched.sort(semver.rcompare)
-}
 
-function detectDefaultBranch() {
-	try {
-		const ref = run("git symbolic-ref refs/remotes/origin/HEAD")
-		const parts = ref.split("/")
-		return parts[parts.length - 1]
-	} catch {
-		throw new Error("Cannot detect default branch from origin/HEAD")
-	}
+	const matchedTags = allValidTags.filter((tag) =>
+		specTokens.some((token) => semver.satisfies(tag, token, { includePrerelease: true }))
+	)
+
+	return matchedTags.sort(semver.rcompare)
 }
 
 function hasLocalRef(ref: string) {
@@ -78,175 +86,227 @@ function hasLocalRef(ref: string) {
 	}
 }
 
-const REPO_ROOT = run("git rev-parse --show-toplevel", { cwd: currentDocsWorkspace })
-
 function refHasPath(ref: string, pathFromRepoRoot: string): boolean {
-	const p = pathFromRepoRoot.replace(/^\/+/, "").replace(/\/+$/, "")
+	const cleanPath = pathFromRepoRoot.replace(/^\/+/, "").replace(/\/+$/, "")
 	try {
-		run(`git -C "${REPO_ROOT}" rev-parse --verify --quiet "${ref}:${p}"`)
+		run(`git -C "${REPO_ROOT}" rev-parse --verify --quiet "${ref}:${cleanPath}"`)
 		return true
 	} catch {
 		return false
 	}
 }
 
-function buildDocs(sourceDir: string, outDir: string) {
-	if (!existsSync(sourceDir)) throw new Error(`Docs workspace not found: ${sourceDir}`)
+function fetchBranch(branch: string) {
+	run(`git fetch --tags --prune origin ${branch}`, { cwd: CURRENT_WORKSPACE, inherit: true })
+}
 
-	const docsContentDir = resolve(sourceDir, contentDir)
-	if (!existsSync(docsContentDir)) {
-		throw new Error(`Docs content directory "${contentDir}" not found at ${docsContentDir}`)
+function buildDocs(sourceDir: string, outDir: string) {
+	if (!existsSync(sourceDir)) {
+		throw new Error(`Docs workspace not found: ${sourceDir}`)
+	}
+
+	const contentPath = resolve(sourceDir, CONTENT_DIR)
+	if (!existsSync(contentPath)) {
+		throw new Error(`Content directory "${CONTENT_DIR}" not found at ${contentPath}`)
 	}
 
 	resetDir(outDir)
 	run("pnpm run content-collections:build", { cwd: sourceDir, inherit: true })
 
-	const ccSrc = resolve(sourceDir, ".content-collections")
-	const ccDest = join(outDir, ".content-collections")
-	if (!existsSync(ccSrc)) throw new Error(`Build output missing at ${ccSrc}`)
+	const buildSrc = resolve(sourceDir, ".content-collections")
+	const buildDest = join(outDir, ".content-collections")
 
-	resetDir(ccDest)
-	cpSync(ccSrc, ccDest, { recursive: true })
+	if (!existsSync(buildSrc)) {
+		throw new Error(`Build output missing at ${buildSrc}`)
+	}
 
-	// biome-ignore lint/suspicious/noConsole: <explanation>
-	console.log(chalk.green(`✔ Built docs → ${ccDest}`))
+	resetDir(buildDest)
+	cpSync(buildSrc, buildDest, { recursive: true })
+
+	// biome-ignore lint/suspicious/noConsole: build logging
+	console.log(chalk.green(`✔ Built docs → ${buildDest}`))
 }
 
-function buildRef(ref: string, labelForOutDir: string) {
-	const tmpBase = mkdtempSync(resolve(os.tmpdir(), "docs-wt-"))
-	const safeLabel = labelForOutDir.replace(/[^\w.-]+/g, "_")
-	const worktreePath = resolve(tmpBase, safeLabel)
+function installDependencies(worktreePath: string, docsWorkspace: string) {
+	const hasRootPackage = existsSync(resolve(worktreePath, "package.json"))
+	const hasRootLock = existsSync(resolve(worktreePath, "pnpm-lock.yaml"))
+
+	if (hasRootPackage) {
+		const lockFlag = hasRootLock ? "--frozen-lockfile" : "--no-frozen-lockfile"
+		run(`pnpm install ${lockFlag}`, { cwd: worktreePath, inherit: true })
+	}
+
+	// Install docs workspace dependencies if different from root
+	if (docsWorkspace !== worktreePath) {
+		const hasDocsPackage = existsSync(resolve(docsWorkspace, "package.json"))
+		const hasDocsLock = existsSync(resolve(docsWorkspace, "pnpm-lock.yaml"))
+
+		if (hasDocsPackage && hasDocsLock) {
+			run("pnpm install --frozen-lockfile", { cwd: docsWorkspace, inherit: true })
+		}
+	}
+}
+
+function buildFromRef(ref: string, label: string) {
+	const tmpDir = mkdtempSync(resolve(os.tmpdir(), "docs-wt-"))
+	const safeLabel = label.replace(/[^\w.-]+/g, "_")
+	const worktreePath = resolve(tmpDir, safeLabel)
 
 	run(`git worktree add --detach "${worktreePath}" "${ref}"`, {
-		cwd: currentDocsWorkspace,
+		cwd: CURRENT_WORKSPACE,
 		inherit: true,
 	})
 
 	try {
-		const docsWorkspace = docsRelative ? resolve(worktreePath, docsRelative) : worktreePath
+		const docsWorkspace = WORKSPACE_RELATIVE ? resolve(worktreePath, WORKSPACE_RELATIVE) : worktreePath
 
-		const rootPkg = existsSync(resolve(worktreePath, "package.json"))
-		const rootLock = existsSync(resolve(worktreePath, "pnpm-lock.yaml"))
-		if (rootPkg) {
-			run(`pnpm install ${rootLock ? "--frozen-lockfile" : "--no-frozen-lockfile"}`, {
-				cwd: worktreePath,
-				inherit: true,
-			})
-		}
+		installDependencies(worktreePath, docsWorkspace)
 
-		const docsPkg = existsSync(resolve(docsWorkspace, "package.json"))
-		const docsLock = existsSync(resolve(docsWorkspace, "pnpm-lock.yaml"))
-		if (docsPkg && docsLock) {
-			run("pnpm install --frozen-lockfile", { cwd: docsWorkspace, inherit: true })
-		}
-
-		const outDir = resolve(outputDir, labelForOutDir)
+		const outDir = resolve(OUTPUT_DIR, label)
 		buildDocs(docsWorkspace, outDir)
 	} finally {
 		run(`git worktree remove "${worktreePath}" --force`, {
-			cwd: currentDocsWorkspace,
+			cwd: CURRENT_WORKSPACE,
 			inherit: true,
 		})
-		rmSync(tmpBase, { recursive: true, force: true })
+		rmSync(tmpDir, { recursive: true, force: true })
 	}
 }
 
-function buildBranch(branch: string, labelForOutDir: string) {
-	run(`git fetch --tags --prune origin ${branch}`, {
-		cwd: currentDocsWorkspace,
-		inherit: true,
-	})
+function buildFromBranch(branch: string, label: string) {
+	fetchBranch(branch)
 	const localRef = `refs/heads/${branch}`
 	const targetRef = hasLocalRef(localRef) ? localRef : `origin/${branch}`
-	return buildRef(targetRef, labelForOutDir)
+	buildFromRef(targetRef, label)
 }
 
-function buildTag(tag: string) {
-	return buildRef(`refs/tags/${tag}`, tag)
+function buildFromTag(tag: string) {
+	buildFromRef(`refs/tags/${tag}`, tag)
 }
 
-function isPullRequestCI() {
-	return process.env.GITHUB_EVENT_NAME === "pull_request" || !!process.env.GITHUB_HEAD_REF
+function buildCurrentWorkspace(label: string) {
+	const outDir = resolve(OUTPUT_DIR, label)
+	buildDocs(CURRENT_WORKSPACE, outDir)
 }
 
-;(async () => {
+function buildForDevelopment() {
+	// biome-ignore lint/suspicious/noConsole: build logging
+	console.log(chalk.cyan("[dev] Building current workspace → current"))
+	buildCurrentWorkspace("current")
+	return ["current"]
+}
+
+function buildForPullRequest(versionsSpec: string) {
+	const versions: string[] = []
+
+	// biome-ignore lint/suspicious/noConsole: build logging
+	console.log(chalk.cyan("[pr] Building PR workspace → current"))
+	buildCurrentWorkspace("current")
+	versions.push("current")
+
+	// Build additional version tags if requested
+	if (versionsSpec) {
+		const tags = resolveTagsFromSpec(versionsSpec)
+		if (tags.length === 0) {
+			throw new Error(`No tags matched spec "${versionsSpec}"`)
+		}
+
+		// biome-ignore lint/suspicious/noConsole: build logging
+		console.log(chalk.cyan(`[pr] Building tags: ${tags.join(", ")}`))
+		for (const tag of tags) {
+			buildFromTag(tag)
+		}
+		versions.push(...tags)
+	}
+
+	return versions
+}
+
+function buildForProduction(branch: string, versionsSpec: string): string[] {
+	// Build specific version tags
+	if (versionsSpec) {
+		const tags = resolveTagsFromSpec(versionsSpec)
+		if (tags.length === 0) {
+			throw new Error(`No tags matched spec "${versionsSpec}"`)
+		}
+
+		// biome-ignore lint/suspicious/noConsole: build logging
+		console.log(chalk.cyan(`[ci] Building tags: ${tags.join(", ")}`))
+		for (const tag of tags) {
+			buildFromTag(tag)
+		}
+		return tags
+	}
+
+	// Build default branch
+	const contentPath = repoPath(WORKSPACE_RELATIVE, CONTENT_DIR)
+	fetchBranch(branch)
+
+	const hasContent = refHasPath(`origin/${branch}`, contentPath)
+	if (!hasContent) {
+		throw new Error(`Branch 'origin/${branch}' has no '${contentPath}'. Use --versions to build tags instead.`)
+	}
+
+	// biome-ignore lint/suspicious/noConsole: build logging
+	console.log(chalk.cyan(`[ci] Building branch '${branch}' → ${branch}`))
+	buildFromBranch(branch, branch)
+	return [branch]
+}
+
+function parseCliArgs() {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
-			versions: { type: "string" }, // optional: comma/space list of semver ranges or exact tags (e.g. "v1.0.0, v1.1.x")
-			branch: { type: "string" }, // optional: default branch override (e.g. main)
+			versions: { type: "string" },
+			branch: { type: "string" },
 		},
 	})
 
-	const defaultBranch =
-		(values.branch as string | undefined)?.trim() || detectDefaultBranch()
-
-	const rawVersions = (values.versions as string | undefined)?.trim() ?? ""
-	const hasVersionsArg = rawVersions.length > 0
-
-	let builtVersions: string[] = []
-
-	if (APP_ENV === "development") {
-		// Local dev: always build the current workspace → current
-		console.log(chalk.cyan(`(dev) Building docs from current workspace: ${currentDocsWorkspace} → current`))
-		buildDocs(currentDocsWorkspace, join(outputDir, "current"))
-		builtVersions = ["current"]
-	} else if (isPullRequestCI()) {
-		// PR builds
-		if (hasVersionsArg) {
-			// Build PR content as "current" + requested tags
-			console.log(chalk.cyan(`(pr) Building PR docs → current`))
-			buildDocs(currentDocsWorkspace, join(outputDir, "current"))
-
-			const tags = resolveTagsFromSpec(rawVersions)
-			if (!tags.length) throw new Error(`No tags matched spec "${rawVersions}".`)
-			console.log(chalk.cyan(`(pr) Also building tags: ${tags.join(", ")}`))
-			for (const t of tags) buildTag(t)
-
-			builtVersions = ["current", ...tags]
-		} else {
-			// Only PR content as "current"
-			console.log(chalk.cyan(`(pr) Building PR docs → current`))
-			buildDocs(currentDocsWorkspace, join(outputDir, "current"))
-			builtVersions = ["current"]
-		}
-	} else {
-		// Non-PR (e.g., release)
-		if (hasVersionsArg) {
-			// Build exactly the versions provided (this keeps older docs available if you list them)
-			const tags = resolveTagsFromSpec(rawVersions)
-			if (!tags.length) throw new Error(`No tags matched spec "${rawVersions}".`)
-			console.log(chalk.cyan(`(ci) Building tags: ${tags.join(", ")}`))
-			for (const t of tags) buildTag(t)
-			builtVersions = [...tags]
-		} else {
-			// Fallback: build default branch (useful if you want a "main" channel)
-			const checkPath = repoPath(docsRelative, contentDir) // "docs/content"
-			run(`git fetch --prune origin ${defaultBranch}`, { cwd: currentDocsWorkspace, inherit: true })
-
-			const hasOnDefault = refHasPath(`origin/${defaultBranch}`, checkPath)
-			if (!hasOnDefault) {
-				throw new Error(
-					`Default branch 'origin/${defaultBranch}' has no '${checkPath}'. Pass --versions to build tags.`
-				)
-			}
-			console.log(chalk.cyan(`(ci) Building docs from '${defaultBranch}' → ${defaultBranch}`))
-			buildBranch(defaultBranch, defaultBranch)
-			builtVersions = [defaultBranch]
-		}
+	const branch = (values.branch as string | undefined)?.trim()
+	if (!branch) {
+		throw new Error(
+			`❌ Missing required --branch flag
+   Usage: pnpm run generate:docs --branch main [--versions ">=1.0.0"]`
+		)
 	}
 
-	// Write versions file for the app
+	const versions = (values.versions as string | undefined)?.trim() ?? ""
+
+	return { branch, versions }
+}
+
+function writeVersionsFile(versions: string[]) {
 	const versionsFile = resolve("app/utils/versions.ts")
-	writeFileSync(
-		versionsFile,
-		`// Auto-generated file. Do not edit manually.
-export const versions = ${JSON.stringify(builtVersions, null, 2)} as const
+	const content = `// Auto-generated file. Do not edit manually.
+export const versions = ${JSON.stringify(versions, null, 2)} as const
 `
-	)
+	writeFileSync(versionsFile, content)
+
+	// biome-ignore lint/suspicious/noConsole: build logging
 	console.log(chalk.green(`✔ Wrote versions.ts → ${versionsFile}`))
+}
+
+async function main() {
+	const { branch, versions: versionsSpec } = parseCliArgs()
+
+	let builtVersions: string[]
+
+	if (APP_ENV === "development") {
+		builtVersions = buildForDevelopment()
+	} else if (isPullRequestCI()) {
+		builtVersions = buildForPullRequest(versionsSpec)
+	} else {
+		builtVersions = buildForProduction(branch, versionsSpec)
+	}
+
+	writeVersionsFile(builtVersions)
+
+	// biome-ignore lint/suspicious/noConsole: build logging
 	console.log(chalk.green("✅ Done"))
-})().catch((e) => {
-	console.error(chalk.red("❌ Build failed:"), e)
+}
+
+main().catch((error) => {
+	// biome-ignore lint/suspicious/noConsole: error logging
+	console.error(chalk.red("❌ Build failed:"), error)
 	process.exit(1)
 })
