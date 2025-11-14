@@ -1,13 +1,13 @@
 import { type ExecSyncOptions, execSync } from "node:child_process"
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import os from "node:os"
-import path, { join, resolve } from "node:path"
+import { join, resolve } from "node:path"
 import { parseArgs } from "node:util"
 import chalk from "chalk"
 import semver from "semver"
-import { getServerEnv } from "~/env.server"
+// import { getServerEnv } from "~/env.server"
 
-const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
+// const APP_ENV = getServerEnv().APP_ENV as "development" | "production"
 const CONTENT_DIR = "content"
 const OUTPUT_DIR = "generated-docs"
 const CURRENT_WORKSPACE = process.cwd()
@@ -40,11 +40,11 @@ function resetDir(dir: string) {
 	ensureDir(dir)
 }
 
-function repoPath(...segments: string[]) {
-	return path.normalize(path.join(...segments.filter(Boolean)))
-}
+// function repoPath(...segments: string[]) {
+// 	return path.normalize(path.join(...segments.filter(Boolean)))
+// }
 
-const REPO_ROOT = run("git rev-parse --show-toplevel", { cwd: CURRENT_WORKSPACE })
+// const REPO_ROOT = run("git rev-parse --show-toplevel", { cwd: CURRENT_WORKSPACE })
 
 const WORKSPACE_RELATIVE = (() => {
 	try {
@@ -72,28 +72,28 @@ function resolveTagsFromSpec(spec: string) {
 	return matchedTags.sort(semver.rcompare)
 }
 
-function hasLocalRef(ref: string) {
-	try {
-		run(`git show-ref --verify --quiet ${ref}`)
-		return true
-	} catch {
-		return false
-	}
-}
+// function hasLocalRef(ref: string) {
+// 	try {
+// 		run(`git show-ref --verify --quiet ${ref}`)
+// 		return true
+// 	} catch {
+// 		return false
+// 	}
+// }
 
-function refHasPath(ref: string, pathFromRepoRoot: string): boolean {
-	const cleanPath = pathFromRepoRoot.replace(/^\/+/, "").replace(/\/+$/, "")
-	try {
-		run(`git -C "${REPO_ROOT}" rev-parse --verify --quiet "${ref}:${cleanPath}"`)
-		return true
-	} catch {
-		return false
-	}
-}
+// function refHasPath(ref: string, pathFromRepoRoot: string): boolean {
+// 	const cleanPath = pathFromRepoRoot.replace(/^\/+/, "").replace(/\/+$/, "")
+// 	try {
+// 		run(`git -C "${REPO_ROOT}" rev-parse --verify --quiet "${ref}:${cleanPath}"`)
+// 		return true
+// 	} catch {
+// 		return false
+// 	}
+// }
 
-function fetchBranch(branch: string) {
-	run(`git fetch --tags --prune origin ${branch}`, { cwd: CURRENT_WORKSPACE, inherit: true })
-}
+// function fetchBranch(branch: string) {
+// 	run(`git fetch --tags --prune origin ${branch}`, { cwd: CURRENT_WORKSPACE, inherit: true })
+// }
 
 function buildDocs(sourceDir: string, outDir: string) {
 	if (!existsSync(sourceDir)) {
@@ -167,12 +167,12 @@ function buildFromRef(ref: string, label: string) {
 	}
 }
 
-function buildFromBranch(branch: string, label: string) {
-	fetchBranch(branch)
-	const localRef = `refs/heads/${branch}`
-	const targetRef = hasLocalRef(localRef) ? localRef : `origin/${branch}`
-	buildFromRef(targetRef, label)
-}
+// function buildFromBranch(branch: string, label: string) {
+// 	fetchBranch(branch)
+// 	const localRef = `refs/heads/${branch}`
+// 	const targetRef = hasLocalRef(localRef) ? localRef : `origin/${branch}`
+// 	buildFromRef(targetRef, label)
+// }
 
 function buildFromTag(tag: string) {
 	buildFromRef(`refs/tags/${tag}`, tag)
@@ -183,42 +183,20 @@ function buildCurrentWorkspace(label: string) {
 	buildDocs(CURRENT_WORKSPACE, outDir)
 }
 
-function buildMainBranchFallback(branch: string) {
-	const contentPath = repoPath(WORKSPACE_RELATIVE, CONTENT_DIR)
-	fetchBranch(branch)
+// function buildMainBranchFallback(branch: string) {
+// 	const contentPath = repoPath(WORKSPACE_RELATIVE, CONTENT_DIR)
+// 	fetchBranch(branch)
 
-	const hasContent = refHasPath(`origin/${branch}`, contentPath)
-	if (!hasContent) {
-		throw new Error(`Branch 'origin/${branch}' has no '${contentPath}'. Cannot build docs.`)
-	}
+// 	const hasContent = refHasPath(`origin/${branch}`, contentPath)
+// 	if (!hasContent) {
+// 		throw new Error(`Branch 'origin/${branch}' has no '${contentPath}'. Cannot build docs.`)
+// 	}
 
-	// biome-ignore lint/suspicious/noConsole: build logging
-	console.log(chalk.cyan(`Building fallback: branch '${branch}' → ${branch}`))
-	buildFromBranch(branch, branch)
-	return [branch]
-}
-
-function parseCliArgs() {
-	const { values } = parseArgs({
-		args: process.argv.slice(2),
-		options: {
-			versions: { type: "string" },
-			branch: { type: "string" },
-		},
-	})
-
-	const branch = (values.branch as string | undefined)?.trim()
-	if (!branch) {
-		throw new Error(
-			`❌ Missing required --branch flag
-   Usage: pnpm run generate:docs --branch main [--versions ">=1.0.0"]`
-		)
-	}
-
-	const versions = (values.versions as string | undefined)?.trim() ?? ""
-
-	return { branch, versions }
-}
+// 	// biome-ignore lint/suspicious/noConsole: build logging
+// 	console.log(chalk.cyan(`Building fallback: branch '${branch}' → ${branch}`))
+// 	buildFromBranch(branch, branch)
+// 	return [branch]
+// }
 
 function writeVersionsFile(versions: string[]) {
 	const versionsFile = resolve("app/utils/versions.ts")
@@ -230,51 +208,53 @@ export const versions = ${JSON.stringify(versions, null, 2)} as const
 	// biome-ignore lint/suspicious/noConsole: build logging
 	console.log(chalk.green(`✔ Wrote versions.ts → ${versionsFile}`))
 }
+function parseCliArgs() {
+	const { values } = parseArgs({
+		args: process.argv.slice(2),
+		options: {
+			versions: { type: "string" }, // optional
+		},
+	})
+
+	const versions = (values.versions as string | undefined)?.trim() ?? ""
+	return { versions }
+}
 
 async function main() {
-	const { branch, versions: versionsSpec } = parseCliArgs()
+	const { versions: versionsSpec } = parseCliArgs()
 	let builtVersions: string[]
 
-	if (APP_ENV === "development") {
-		// Development: always build current workspace
+	// Try to build version tags if specified
+	if (versionsSpec) {
+		const tags = resolveTagsFromSpec(versionsSpec)
+
+		if (tags.length > 0) {
+			// Build version tags
+			// biome-ignore lint/suspicious/noConsole: build logging
+			console.log(chalk.cyan(`Building tags: ${tags.join(", ")}`))
+			for (const tag of tags) {
+				buildFromTag(tag)
+			}
+			builtVersions = tags
+		} else {
+			// No tags matched → fallback to current workspace
+			// biome-ignore lint/suspicious/noConsole: build logging
+			console.log(chalk.yellow(`No tags matched "${versionsSpec}", building current workspace`))
+			buildCurrentWorkspace("current")
+			builtVersions = ["current"]
+		}
+	} else {
+		// No versions specified → build current workspace
 		// biome-ignore lint/suspicious/noConsole: build logging
-		console.log(chalk.cyan("[dev] Building current workspace → current"))
+		console.log(chalk.cyan("Building current workspace → current"))
 		buildCurrentWorkspace("current")
 		builtVersions = ["current"]
-	} else {
-		// Production
-		if (versionsSpec) {
-			// Try to build from version tags
-			const tags = resolveTagsFromSpec(versionsSpec)
-
-			if (tags.length > 0) {
-				// Build all matching tags
-				// biome-ignore lint/suspicious/noConsole: build logging
-				console.log(chalk.cyan(`[prod] Building tags: ${tags.join(", ")}`))
-				for (const tag of tags) {
-					buildFromTag(tag)
-				}
-				builtVersions = tags
-			} else {
-				// No tags matched → fallback to main branch
-				// biome-ignore lint/suspicious/noConsole: build logging
-				console.log(chalk.yellow(`[prod] No tags matched "${versionsSpec}", falling back to branch`))
-				builtVersions = buildMainBranchFallback(branch)
-			}
-		} else {
-			// No versions specified → build main branch
-			// biome-ignore lint/suspicious/noConsole: build logging
-			console.log(chalk.cyan(`[prod] No versions specified, building branch '${branch}'`))
-			builtVersions = buildMainBranchFallback(branch)
-		}
 	}
 
 	writeVersionsFile(builtVersions)
-
 	// biome-ignore lint/suspicious/noConsole: build logging
 	console.log(chalk.green("✅ Done"))
 }
-
 main().catch((error) => {
 	// biome-ignore lint/suspicious/noConsole: error logging
 	console.error(chalk.red("❌ Build failed:"), error)
