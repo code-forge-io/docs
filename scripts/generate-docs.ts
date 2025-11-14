@@ -40,11 +40,6 @@ function resetDir(dir: string) {
 	ensureDir(dir)
 }
 
-function isPullRequestCI() {
-	// biome-ignore lint/nursery/noProcessEnv: process.env.GITHUB_EVENT_NAME === "pull_request" || !!process.env.GITHUB_HEAD_REF
-	return process.env.GITHUB_EVENT_NAME === "pull_request" || !!process.env.GITHUB_HEAD_REF
-}
-
 function repoPath(...segments: string[]) {
 	return path.normalize(path.join(...segments.filter(Boolean)))
 }
@@ -136,7 +131,6 @@ function installDependencies(worktreePath: string, docsWorkspace: string) {
 		run(`pnpm install ${lockFlag}`, { cwd: worktreePath, inherit: true })
 	}
 
-	// Install docs workspace dependencies if different from root
 	if (docsWorkspace !== worktreePath) {
 		const hasDocsPackage = existsSync(resolve(docsWorkspace, "package.json"))
 		const hasDocsLock = existsSync(resolve(docsWorkspace, "pnpm-lock.yaml"))
@@ -189,66 +183,17 @@ function buildCurrentWorkspace(label: string) {
 	buildDocs(CURRENT_WORKSPACE, outDir)
 }
 
-function buildForDevelopment() {
-	// biome-ignore lint/suspicious/noConsole: build logging
-	console.log(chalk.cyan("[dev] Building current workspace → current"))
-	buildCurrentWorkspace("current")
-	return ["current"]
-}
-
-function buildForPullRequest(versionsSpec: string) {
-	const versions: string[] = []
-
-	// biome-ignore lint/suspicious/noConsole: build logging
-	console.log(chalk.cyan("[pr] Building PR workspace → current"))
-	buildCurrentWorkspace("current")
-	versions.push("current")
-
-	// Build additional version tags if requested
-	if (versionsSpec) {
-		const tags = resolveTagsFromSpec(versionsSpec)
-		if (tags.length === 0) {
-			throw new Error(`No tags matched spec "${versionsSpec}"`)
-		}
-
-		// biome-ignore lint/suspicious/noConsole: build logging
-		console.log(chalk.cyan(`[pr] Building tags: ${tags.join(", ")}`))
-		for (const tag of tags) {
-			buildFromTag(tag)
-		}
-		versions.push(...tags)
-	}
-
-	return versions
-}
-
-function buildForProduction(branch: string, versionsSpec: string): string[] {
-	// Build specific version tags
-	if (versionsSpec) {
-		const tags = resolveTagsFromSpec(versionsSpec)
-		if (tags.length === 0) {
-			throw new Error(`No tags matched spec "${versionsSpec}"`)
-		}
-
-		// biome-ignore lint/suspicious/noConsole: build logging
-		console.log(chalk.cyan(`[ci] Building tags: ${tags.join(", ")}`))
-		for (const tag of tags) {
-			buildFromTag(tag)
-		}
-		return tags
-	}
-
-	// Build default branch
+function buildMainBranchFallback(branch: string) {
 	const contentPath = repoPath(WORKSPACE_RELATIVE, CONTENT_DIR)
 	fetchBranch(branch)
 
 	const hasContent = refHasPath(`origin/${branch}`, contentPath)
 	if (!hasContent) {
-		throw new Error(`Branch 'origin/${branch}' has no '${contentPath}'. Use --versions to build tags instead.`)
+		throw new Error(`Branch 'origin/${branch}' has no '${contentPath}'. Cannot build docs.`)
 	}
 
 	// biome-ignore lint/suspicious/noConsole: build logging
-	console.log(chalk.cyan(`[ci] Building branch '${branch}' → ${branch}`))
+	console.log(chalk.cyan(`Building fallback: branch '${branch}' → ${branch}`))
 	buildFromBranch(branch, branch)
 	return [branch]
 }
@@ -288,15 +233,40 @@ export const versions = ${JSON.stringify(versions, null, 2)} as const
 
 async function main() {
 	const { branch, versions: versionsSpec } = parseCliArgs()
-
 	let builtVersions: string[]
 
 	if (APP_ENV === "development") {
-		builtVersions = buildForDevelopment()
-	} else if (isPullRequestCI()) {
-		builtVersions = buildForPullRequest(versionsSpec)
+		// Development: always build current workspace
+		// biome-ignore lint/suspicious/noConsole: build logging
+		console.log(chalk.cyan("[dev] Building current workspace → current"))
+		buildCurrentWorkspace("current")
+		builtVersions = ["current"]
 	} else {
-		builtVersions = buildForProduction(branch, versionsSpec)
+		// Production
+		if (versionsSpec) {
+			// Try to build from version tags
+			const tags = resolveTagsFromSpec(versionsSpec)
+
+			if (tags.length > 0) {
+				// Build all matching tags
+				// biome-ignore lint/suspicious/noConsole: build logging
+				console.log(chalk.cyan(`[prod] Building tags: ${tags.join(", ")}`))
+				for (const tag of tags) {
+					buildFromTag(tag)
+				}
+				builtVersions = tags
+			} else {
+				// No tags matched → fallback to main branch
+				// biome-ignore lint/suspicious/noConsole: build logging
+				console.log(chalk.yellow(`[prod] No tags matched "${versionsSpec}", falling back to branch`))
+				builtVersions = buildMainBranchFallback(branch)
+			}
+		} else {
+			// No versions specified → build main branch
+			// biome-ignore lint/suspicious/noConsole: build logging
+			console.log(chalk.cyan(`[prod] No versions specified, building branch '${branch}'`))
+			builtVersions = buildMainBranchFallback(branch)
+		}
 	}
 
 	writeVersionsFile(builtVersions)
