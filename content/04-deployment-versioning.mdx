@@ -192,34 +192,3 @@ fly status
 ```bash
 fly ssh console
 ```
-
-## Troubleshooting
-
-### Build Failures
-
-- Check that all environment variables are set in Fly secrets
-- Verify your `fly.toml` app name matches your Fly.io app
-- Review logs with `fly logs`
-
-### Missing Versions
-
-- Ensure git tags are pushed to your repository
-- Run `generate:docs -- --versions` to regenerate
-- Check that the `generated-docs/` folder contains version folders
-
-### GitHub Actions Not Running
-
-- Verify workflows are in root `.github/workflows/`, not `docs/.github/workflows/`
-- Check that `FLY_API_TOKEN` secret is set in GitHub
-- Review GitHub Actions logs for errors
-
-## Manual Deployment
-
-If you need to deploy manually:
-
-```bash
-# From the docs/ directory
-fly deploy
-```
-
-This builds and deploys your documentation directly to Fly.io without going through GitHub Actions.
