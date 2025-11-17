@@ -24,13 +24,6 @@ RUN pnpm install --prod=false
 
 COPY . .
 
-# Debug: Verify generated-docs exists
-RUN echo "=== Checking for generated-docs ===" && \
-    ls -la generated-docs/ || echo "ERROR: generated-docs not found!" && \
-    ls -la generated-docs/current/ || echo "ERROR: generated-docs/current not found!" && \
-    echo "=== Checking versions.ts ===" && \
-    cat app/utils/versions.ts || echo "ERROR: versions.ts not found!"
-
 RUN pnpm run build
 
 # Prune dev deps
