@@ -18,8 +18,8 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY .npmrc package.json ./
-RUN pnpm install --prod=false
+COPY .npmrc package.json pnpm-lock.yaml ./
+RUN pnpm install --prod=false --frozen-lockfile
 
 
 COPY . .

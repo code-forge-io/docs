@@ -10,7 +10,7 @@ const MASTER_REGEX = new RegExp(
 		// whitespace
 		"\\s+",
 		// single-line comment
-		"\\/\\/[^\\n\\r]*",
+		"\\/\\/[^\\n\\r]*(?=\\n|$)",
 		// multi-line comment
 		"\\/\\*[\\s\\S]*?\\*\\/",
 		// hash comment at start of line
