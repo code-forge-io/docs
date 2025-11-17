@@ -70,10 +70,10 @@ jobs:
         run: pnpm run generate:docs
 
       - name: Pack generated docs (tarball)
-			# FIXME adjust if working with monorepo structure
-			# run: |
-			#   tar -czf docs-generated.tgz -C docs generated-docs
-			#   ls -lh docs/docs-generated.tgz
+					# FIXME adjust if working with monorepo structure
+					# run: |
+					#   tar -czf docs-generated.tgz -C docs generated-docs
+					#   ls -lh docs/docs-generated.tgz
         run: |
           tar -czf docs-generated.tgz generated-docs
           ls -lh docs-generated.tgz
@@ -108,11 +108,11 @@ jobs:
           path: .
 
       - name: Unpack generated docs
-			# FIXME adjust if working with monorepo structure
-			# run: |
-			#   set -euxo pipefail
-      #   tar -xzf docs-generated.tgz -C docs
-      #   ls -laR docs/generated-docs | sed -n '1,200p'
+				# FIXME adjust if working with monorepo structure
+				# run: |
+				#   set -euxo pipefail
+				#   tar -xzf docs-generated.tgz -C docs
+				#   ls -laR docs/generated-docs | sed -n '1,200p'
         run: |
           tar -xzf docs-generated.tgz
           ls -laR generated-docs | sed -n '1,200p'
