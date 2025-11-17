@@ -45,11 +45,6 @@ try {
 	workspaceRelativePath = ""
 }
 
-// biome-ignore lint/suspicious/noConsole: TODO remove this
-console.log(chalk.cyan(`Docs workspace root: ${workspaceRoot}`))
-// biome-ignore lint/suspicious/noConsole: TODO remove this
-console.log("outputDir:", outputDir)
-
 const allTags = () => run("git tag --list").split("\n").filter(Boolean)
 
 function resolveTagsFromSpec(spec: string) {

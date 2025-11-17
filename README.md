@@ -110,3 +110,54 @@ pnpm run dev
 6. After you see that everything works with the current content inside the `content` folder, remove those files and add your own
 
 7. Happy coding!
+
+## Features
+
+### Versioned Documentation
+Generate per-tag version folders under `generated-docs/` (for example `v1.0.0/`) to publish and serve multiple doc versions.
+
+**Example:**
+````bash
+pnpm run generate:docs --versions "^1.0.0"
+````
+
+### Local Development Experience
+Run `pnpm run dev` to start the dev server and use the hot-reloading `.content-collections/` workflow for fast iteration. The dev server serves live content from `.content-collections/` (your working tree), so it usually shows only the current workspace docs.
+
+**If you need to preview versioned outputs locally, you have two simple options:**
+
+1. Run the generator and serve the `generated-docs/` output (example: `pnpm run generate:docs --branch main --versions="^1.0.0"`). This produces version folders under `generated-docs/` but disables hot-reloading because the site reads the generated output instead of the live `.content-collections/` folder.
+
+2. Create a PR which produces both the versioned `generated-docs/` artifacts and the current snapshot — this is useful for previewing how versioned docs and the live snapshot appear together.
+
+**Note:** When running the generator you must pass the default branch via `--branch` (for example `--branch main`) so the script can deterministically build the default-branch snapshot.
+
+
+### Automated Docs Generation
+The `pnpm run generate:docs` script automates:
+- Building the `generated-docs/` folder structure
+- Writing `app/utils/versions.ts` which the site consumes to show available versions
+
+### CI/CD Ready
+Includes example GitHub Actions workflows to:
+- Build documentation
+- Pack the `generated-docs` artifact
+- Deploy preview or release sites
+
+### Docker + Fly Deployment
+Includes `Dockerfile` and sample Fly workflows:
+- CI uploads the generated docs artifact
+- Deploy job unpacks it into the runner workspace
+- Image build includes `generated-docs/`
+
+### Type-Safe and Tested
+Built-in quality tooling:
+- TypeScript (`tsc`) for type checking
+- Biome for linting
+- Vitest for testing
+
+### Accessibility & Performance Focused
+Opinionated UI primitives and tooling optimized for:
+- Accessibility standards
+- Fast page loads
+- Great developer experience
