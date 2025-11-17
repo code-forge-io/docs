@@ -64,7 +64,7 @@ const MobileSidebarCloseButton = () => {
 		<button
 			type="button"
 			onClick={close}
-			className="absolute top-2 right-3 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
+			className="absolute top-1 right-1 z-10 rounded-full p-2 text-[var(--color-text-normal)] transition-colors duration-200 hover:text-[var(--color-text-hover)]"
 			aria-label="Close navigation menu"
 		>
 			<Icon name="X" className="size-5" />

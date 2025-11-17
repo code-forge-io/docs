@@ -14,9 +14,10 @@ type DocumentationNavLinkProps = {
 	to: string
 	depth?: number
 	onClick?: () => void
+	className?: string
 }
 
-export function DocumentationNavLink({ title, to, depth = 0, onClick }: DocumentationNavLinkProps) {
+export function DocumentationNavLink({ title, to, depth = 0, onClick, className }: DocumentationNavLinkProps) {
 	const indentClass = getIndentClass(depth)
 	return (
 		<NavLink
@@ -24,7 +25,7 @@ export function DocumentationNavLink({ title, to, depth = 0, onClick }: Document
 			to={to}
 			onClick={onClick}
 			className={({ isActive, isPending }) =>
-				`block rounded-md px-3 py-1 text-sm md:text-base ${indentClass}
+				`block rounded-md px-3 py-0.5 text-sm md:text-base ${indentClass} ${className}
          ${isPending ? "text-[var(--color-text-hover)]" : ""}
          ${
 						isActive
@@ -42,23 +43,24 @@ interface SectionItemProps {
 	item: SidebarSection
 	depth?: number
 	onItemClick?: () => void
+	className?: string
 }
 
 const SectionTitle = ({ title }: { title: string }) => {
 	return (
-		<h3 className="mb-3 ml-4 px-3 font-semibold text-[var(--color-text-active)] text-sm uppercase tracking-wide md:text-base">
+		<h3 className="my-2 ml-4 px-3 font-semibold text-[var(--color-text-active)] text-sm uppercase tracking-wide md:text-base">
 			{title}
 		</h3>
 	)
 }
 
-export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) => {
+export const SectionItem = ({ item, depth = 0, onItemClick, className = "my-1" }: SectionItemProps) => {
 	const isTopLevel = depth === 0
 	const version = useCurrentVersion()
 	const content = (
 		<div>
 			{item.documentationPages.length > 0 && (
-				<div className="mb-4 space-y-1">
+				<div className="flex flex-col">
 					{item.documentationPages.map((doc) => (
 						<DocumentationNavLink
 							key={doc.slug}
@@ -66,15 +68,22 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 							depth={depth}
 							onClick={onItemClick}
 							to={buildSectionedTo(version, doc.slug)}
+							className={className}
 						/>
 					))}
 				</div>
 			)}
 
 			{item.subsections.length > 0 && (
-				<div className="space-y-4">
+				<div>
 					{item.subsections.map((subsection) => (
-						<SectionItem key={subsection.slug} item={subsection} depth={depth + 1} onItemClick={onItemClick} />
+						<SectionItem
+							key={subsection.slug}
+							item={subsection}
+							depth={depth + 1}
+							onItemClick={onItemClick}
+							className={className}
+						/>
 					))}
 				</div>
 			)}
@@ -86,7 +95,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 			<AccordionItem
 				title={item.title}
 				titleElement="h5"
-				titleClassName=" font-semibold tracking-wide text-[var(--color-text-active)]"
+				titleClassName="font-semibold tracking-wide text-[var(--color-text-active)]"
 				content={content}
 				defaultOpen={true}
 			/>
@@ -94,7 +103,7 @@ export const SectionItem = ({ item, depth = 0, onItemClick }: SectionItemProps) 
 	}
 
 	return (
-		<div className="mb-6">
+		<div className="my-2 flex flex-col">
 			<SectionTitle title={item.title} />
 			{content}
 		</div>
