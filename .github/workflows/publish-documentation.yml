@@ -40,9 +40,10 @@ jobs:
 
       - name: Pack generated docs (tarball)
         # FIXME adjust if working with monorepo structure
-	  		# run: |
-		  	#   tar -czf docs-generated.tgz -C docs generated-docs
-			  #   ls -lh docs/docs-generated.tgz
+
+        # run: |
+        #   tar -czf docs-generated.tgz -C docs generated-docs
+        #   ls -lh docs/docs-generated.tgz
         run: |
           tar -czf docs-generated.tgz generated-docs
           ls -lh docs-generated.tgz
@@ -77,10 +78,11 @@ jobs:
 
       - name: Unpack generated docs into docs/
         # FIXME adjust if working with monorepo structure
-				# run: |
-				#   set -euxo pipefail
-    	  #   tar -xzf docs-generated.tgz -C docs
-    	  #   ls -laR docs/generated-docs | sed -n '1,200p'
+
+        # run: |
+        #   set -euxo pipefail
+        #   tar -xzf docs-generated.tgz -C docs
+        #   ls -laR docs/generated-docs | sed -n '1,200p'
         run: |
           tar -xzf docs-generated.tgz
           ls -laR generated-docs | sed -n '1,200p'
@@ -97,8 +99,8 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
-					# FIXME uncomment if working with monorepo structure
-					# workspace_name: docs
+          # FIXME uncomment if working with monorepo structure
+          # workspace_name: docs
           app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
           use_isolated_workspace: true
           env_vars: |
