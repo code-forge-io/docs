@@ -23,8 +23,9 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
 				<div className="flex items-start gap-3">
+					{/* FIXME Replace with your Logo */}
 					<Logo>
-						<span className="p-0">React Router Devtools</span>
+						<span className="p-0">Docs Template</span>
 					</Logo>
 				</div>
 				<div className="inline-flex items-center gap-2 xl:gap-3">

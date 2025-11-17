@@ -1,4 +1,4 @@
-# Welcome to Forge 42 Documentation Template
+# Welcome to Documentation Template
 
 This template is designed to support a flexible content structure using `.md` and `.mdx` files organized into folders. It enables deeply nested sections and subsections, making it easy to manage complex documentation with a clear and scalable hierarchy.
 

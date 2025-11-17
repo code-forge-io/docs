@@ -102,7 +102,7 @@ jobs:
           # FIXME uncomment if working with monorepo structure
           # workspace_name: docs
           app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
-          use_isolated_workspace: false
+          use_isolated_workspace: true
           env_vars: |
             APP_ENV=production
             GITHUB_OWNER=${{ github.repository_owner }}
