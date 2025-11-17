@@ -44,7 +44,6 @@ Add your environment variables to Fly:
 
 ```bash
 fly secrets set GITHUB_REPO_URL=https://github.com/your-org/your-repo
-fly secrets set GITHUB_BRANCH=main
 ```
 
 ### 6. Configure fly.toml
@@ -80,8 +79,8 @@ The template includes workflow files for automatic deployment. You need to place
 your-repo/
 ├── .github/
 │   └── workflows/
-│       ├── deploy.yml          # Main deployment
-│       └── deploy-release.yml  # Release deployment
+│       ├── ci.yml          # PR deployment
+│       └── publish-documentation.yml  # Release deployment
 ├── docs/
 │   └── ...
 └── ...
@@ -95,17 +94,6 @@ Add these secrets to your GitHub repository (Settings → Secrets and variables 
 
 - `FLY_API_TOKEN` - Your Fly.io API token (get it with `fly tokens create deploy`)
 
-### Deployment Triggers
-
-The template supports two deployment workflows:
-
-1. **Continuous Deployment** (`deploy.yml`)
-   - Triggers on every push to main branch
-   - Deploys latest documentation
-
-2. **Release Deployment** (`deploy-release.yml`)
-   - Triggers when you create a GitHub release
-   - Generates versioned documentation
 
 ## Versioning System
 
@@ -141,12 +129,12 @@ generated-docs/
 pnpm run generate:docs
 ```
 
-This creates only the `main/` folder with your latest documentation.
+This creates only the `latest/` folder with your latest documentation.
 
-#### With Versions (All Releases)
+#### With Versions
 
 ```bash
-pnpm run generate:docs -- --versions
+pnpm run generate:docs --versions "semver range or exact tags"
 ```
 
 This:
@@ -171,46 +159,6 @@ git push origin v1.0.0
 4. **Create a GitHub release** from that tag
 5. **Automatic deployment** will generate versioned docs
 
-### Including Docs in Release Workflow
-
-To automatically include documentation in your release workflow, modify your `.github/workflows/release.yml`:
-
-```yaml
-name: Release
-
-on:
-  release:
-    types: [published]
-
-jobs:
-  deploy-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
-      - name: Install dependencies
-        run: pnpm install
-      
-      - name: Generate versioned docs
-        run: pnpm run generate:docs -- --versions
-        working-directory: ./docs
-      
-      - name: Deploy to Fly.io
-        uses: superfly/flyctl-actions/setup-flyctl@master
-        with:
-          version: latest
-      
-      - run: flyctl deploy --remote-only
-        working-directory: ./docs
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-```
-
 ## SEO Configuration
 
 ### Robots.txt
@@ -218,11 +166,8 @@ jobs:
 By default, the template **prevents indexing** with `x-robots-tag` header. To enable indexing:
 
 1. Remove the header from your CDN/Fly.io configuration
-2. Or modify `robots.txt` in the `public/` folder
+2. Or modify `robots.txt`
 
-### Sitemaps
-
-Sitemaps are automatically generated for all your documentation pages. They're available at `/sitemap.xml`.
 
 ### llms.txt
 
