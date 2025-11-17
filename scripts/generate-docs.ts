@@ -174,7 +174,8 @@ function isOnDefaultBranch(defaultBranch: string): boolean {
 	const currentBranch = getCurrentBranch()
 	return currentBranch === defaultBranch
 }
-;(async () => {
+
+function parseCliArgs() {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
 		options: {
@@ -186,69 +187,65 @@ function isOnDefaultBranch(defaultBranch: string): boolean {
 	const defaultBranch = (values.branch as string | undefined)?.trim()
 	if (!defaultBranch) {
 		throw new Error(
-			`❌ Missing required --branch flag.
-   Please specify the default branch name (e.g., --branch main)
-   Example: pnpm run generate:docs --branch main`
+			"❌ Missing required --branch flag.\n" +
+				"   Please specify the default branch name (e.g., --branch main)\n" +
+				"   Example: pnpm run generate:docs --branch main"
 		)
 	}
 
-	const rawVersions = (values.versions as string | undefined)?.trim() ?? ""
-	const hasVersionsArg = rawVersions.length > 0
+	const versionsSpec = (values.versions as string | undefined)?.trim() || undefined
 
-	let builtVersions: string[] = []
+	return { defaultBranch, versionsSpec }
+}
+
+function buildLatestVersion(onDefaultBranch: boolean, defaultBranch: string) {
+	if (onDefaultBranch) {
+		buildBranch(defaultBranch, "latest")
+	} else {
+		buildDocs(workspaceRoot, join(outputDir, "latest"))
+	}
+}
+
+function writeVersionsFile(versions: string[]) {
+	const versionsFile = resolve("app/utils/versions.ts")
+	const content = `// Auto-generated file. Do not edit manually.\nexport const versions = ${JSON.stringify(versions, null, 2)} as const\n`
+
+	writeFileSync(versionsFile, content)
+}
+
+async function main() {
+	const { defaultBranch, versionsSpec } = parseCliArgs()
 
 	const onDefaultBranch = isOnDefaultBranch(defaultBranch)
-	const currentBranchToBuild = onDefaultBranch ? defaultBranch : getCurrentBranch()
 
-	// biome-ignore lint/suspicious/noConsole: keep for logging
-	console.log(chalk.cyan(`Building from branch: ${currentBranchToBuild}`))
+	let builtVersions: string[]
 
-	if (hasVersionsArg) {
-		const tags = resolveTagsFromSpec(rawVersions)
-		if (!tags.length) throw new Error(`No tags matched spec "${rawVersions}".`)
+	if (versionsSpec) {
+		const tags = resolveTagsFromSpec(versionsSpec)
+		if (tags.length === 0) {
+			throw new Error(`No tags matched spec "${versionsSpec}".`)
+		}
 
-		// biome-ignore lint/suspicious/noConsole: keep for logging
+		// biome-ignore lint/suspicious/noConsole: keep for debugging
 		console.log(chalk.cyan(`Building tags: ${tags.join(", ")}`))
-		for (const t of tags) buildTag(t)
-
-		if (onDefaultBranch) {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
-			buildBranch(defaultBranch, "current")
-		} else {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan("Building current workspace → current"))
-			buildDocs(workspaceRoot, join(outputDir, "current"))
+		for (const tag of tags) {
+			buildTag(tag)
 		}
 
-		builtVersions = ["current", ...tags]
+		buildLatestVersion(onDefaultBranch, defaultBranch)
+		builtVersions = ["latest", ...tags]
 	} else {
-		if (onDefaultBranch) {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
-			buildBranch(defaultBranch, "current")
-		} else {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan("Building current workspace → current"))
-			buildDocs(workspaceRoot, join(outputDir, "current"))
-		}
-
-		builtVersions = ["current"]
+		buildLatestVersion(onDefaultBranch, defaultBranch)
+		builtVersions = ["latest"]
 	}
 
-	const versionsFile = resolve("app/utils/versions.ts")
-	writeFileSync(
-		versionsFile,
-		`// Auto-generated file. Do not edit manually.
-export const versions = ${JSON.stringify(builtVersions, null, 2)} as const
-`
-	)
-	// biome-ignore lint/suspicious/noConsole: keep for logging
-	console.log(chalk.green(`✔ Wrote versions.ts → ${versionsFile}`))
-	// biome-ignore lint/suspicious/noConsole: keep for logging
+	writeVersionsFile(builtVersions)
+	// biome-ignore lint/suspicious/noConsole: keep for debugging
 	console.log(chalk.green("✅ Done"))
-})().catch((e) => {
-	// biome-ignore lint/suspicious/noConsole: keep for logging
-	console.error(chalk.red("❌ Build failed:"), e)
+}
+
+main().catch((error) => {
+	// biome-ignore lint/suspicious/noConsole: keep for debugging
+	console.error(chalk.red("❌ Build failed:"), error)
 	process.exit(1)
 })
