@@ -6,7 +6,7 @@ description: "Step-by-step guide to setting up and running the documentation tem
 
 ## Prerequisites
 
-- **Node.js** 18+ and **pnpm** installed
+- **Node.js** >= 22.17.0 and **pnpm** >= 10.18.0 installed
 - **Git** for version control
 - A repository where you want to add documentation
 
@@ -45,7 +45,7 @@ your-repo/
 
 ### 1. Install Dependencies
 
-From your repository root:
+From your repository root (or from inside the `docs/` folder if you unpacked the template there):
 
 ```bash
 pnpm install
@@ -53,10 +53,18 @@ pnpm install
 
 ### 2. Configure Environment Variables
 
-Copy `.env.example` to `.env`:
+Copy `.env.example` to `.env`.
+
+If you extracted the template into a `docs/` subfolder:
 
 ```bash
 cd docs
+cp .env.example .env
+```
+
+If the template is at the repository root, run:
+
+```bash
 cp .env.example .env
 ```
 
@@ -89,11 +97,12 @@ pnpm run dev
 # Build for production
 pnpm run build
 
-# Generate versioned docs (production)
-pnpm run generate:docs
+# Generate versioned docs (production). Note: the generator requires the default branch to be passed.
+# Example: build the snapshot for the `main` branch and produce versioned output.
+pnpm run generate:docs --branch main
 
-# Generate versioned docs with specific versions
-pnpm run generate:docs --versions "^1.0.0"
+# Generate versioned docs for specific semver tags (example)
+pnpm run generate:docs --branch main --versions "^1.0.0"
 
 # Rebuild content collections
 pnpm run content-collections:build

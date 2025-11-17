@@ -19,13 +19,23 @@ This is a production-ready documentation template designed to generate beautiful
 
 ## Key Features
 
-- 📝 **MDX/MD Support** - Write documentation in Markdown with React components
-- 🎨 **Beautiful UI** - Pre-built components including Command K, code blocks, and sidebar navigation
-- 📚 **Versioning** - Generate docs for multiple versions/releases
-- 🔍 **SEO Ready** - Automatic sitemaps, robots.txt, and llms.txt generation
-- ⚡ **Live Reload** - Hot module replacement during development
-- 🚀 **Auto Deploy** - GitHub Actions + Fly.io integration
-- 🔗 **GitHub Links** - Edit page and report issue links built-in
+- 📝 **MDX/MD Support** — Write documentation in Markdown with React components and custom MDX components.
+- 🎨 **Beautiful UI** — Pre-built components (Command K, code blocks, table-of-contents, sidebar) so docs look polished out of the box.
+- 📚 **Versioning** — Produce versioned documentation (e.g. `v1.0.0/`) via the generator so you can publish releases side-by-side.
+- 🔁 **Automated Docs Generation** — `scripts/generate-docs.ts` automates building `generated-docs/` and writes `app/utils/versions.ts`. Example:
+
+```bash
+pnpm run generate:docs --branch main --versions "^1.0.0"
+```
+
+- 🧭 **Local Development Experience** — Fast iteration using the auto-generated `.content-collections/` folder for hot reloading; run the generator when you want to preview versioned outputs locally.
+- 🔍 **SEO & Indexing** — Automatic sitemap, `robots.txt` and `llms.txt` support to improve search and crawler behavior.
+- ⚡ **Live Reload** — Hot module replacement during development for instant previews when editing content.
+- 🚀 **CI/CD Ready** — Example GitHub Actions workflows are included to build, pack, and publish `generated-docs/` artifacts for preview and release deployments.
+- 🐳 **Docker + Fly Deployment** — Includes `Dockerfile` and `fly.toml` so you can containerize and deploy the generated site easily.
+- ✅ **Type-safe & Tested** — Built with TypeScript, includes `tsc` type checks, `vitest` tests, and Biome linting to keep quality high.
+- ♿ **Accessibility & Performance Focused** — UI primitives and tooling tuned for accessibility and fast page loads.
+- 🔗 **GitHub Links** — Edit page and report issue links are built into pages to streamline contribution.
 
 ## Quick Start
 
