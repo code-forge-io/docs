@@ -34,7 +34,7 @@ export const SidebarContent = ({
 				</div>
 			)}
 
-			<Accordion>
+			<Accordion className="flex flex-col gap-1">
 				{sections.map((item) => (
 					<SectionItem key={item.slug} item={item} onItemClick={handle} />
 				))}
