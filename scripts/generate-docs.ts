@@ -38,7 +38,8 @@ let repoRoot = workspaceRoot
 let workspaceRelativePath = ""
 try {
 	repoRoot = run("git rev-parse --show-toplevel")
-	workspaceRelativePath = repoRoot === workspaceRoot ? "" : workspaceRoot.replace(`${repoRoot}/`, "")
+	// biome-ignore lint/style/useTemplate: <explanation>
+	workspaceRelativePath = repoRoot === workspaceRoot ? "" : workspaceRoot.replace(repoRoot + "/", "")
 } catch {
 	repoRoot = workspaceRoot
 	workspaceRelativePath = ""
@@ -178,26 +179,6 @@ function isOnDefaultBranch(defaultBranch: string): boolean {
 	const currentBranch = getCurrentBranch()
 	return currentBranch === defaultBranch
 }
-
-/**
- * Build the current workspace snapshot labelled `labelForOutDir`.
- * If we're on the default branch, fetch and build that branch; otherwise
- * build the working tree in-place (useful for PR/feature branches).
- */
-function buildCurrentSnapshot(defaultBranch: string, onDefaultBranch: boolean, labelForOutDir = "current") {
-	if (onDefaultBranch) {
-		// build from the remote/default branch so the snapshot exactly matches the
-		// default branch state (not the local working tree)
-		// biome-ignore lint/suspicious/noConsole: keep for logging
-		console.log(chalk.cyan(`Building default branch '${defaultBranch}' → ${labelForOutDir}`))
-		buildBranch(defaultBranch, labelForOutDir)
-	} else {
-		// build the current workspace directly
-		// biome-ignore lint/suspicious/noConsole: keep for logging
-		console.log(chalk.cyan(`Building current workspace → ${labelForOutDir}`))
-		buildDocs(workspaceRoot, join(outputDir, labelForOutDir))
-	}
-}
 ;(async () => {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
@@ -235,11 +216,27 @@ function buildCurrentSnapshot(defaultBranch: string, onDefaultBranch: boolean, l
 		console.log(chalk.cyan(`Building tags: ${tags.join(", ")}`))
 		for (const t of tags) buildTag(t)
 
-		buildCurrentSnapshot(defaultBranch, onDefaultBranch, "current")
+		if (onDefaultBranch) {
+			// biome-ignore lint/suspicious/noConsole: keep for logging
+			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
+			buildBranch(defaultBranch, "current")
+		} else {
+			// biome-ignore lint/suspicious/noConsole: keep for logging
+			console.log(chalk.cyan("Building current workspace → current"))
+			buildDocs(workspaceRoot, join(outputDir, "current"))
+		}
 
 		builtVersions = ["current", ...tags]
 	} else {
-		buildCurrentSnapshot(defaultBranch, onDefaultBranch, "current")
+		if (onDefaultBranch) {
+			// biome-ignore lint/suspicious/noConsole: keep for logging
+			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
+			buildBranch(defaultBranch, "current")
+		} else {
+			// biome-ignore lint/suspicious/noConsole: keep for logging
+			console.log(chalk.cyan("Building current workspace → current"))
+			buildDocs(workspaceRoot, join(outputDir, "current"))
+		}
 
 		builtVersions = ["current"]
 	}
