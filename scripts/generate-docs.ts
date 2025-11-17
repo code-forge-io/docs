@@ -63,15 +63,6 @@ function resolveTagsFromSpec(spec: string) {
 	return matched.sort(semver.rcompare)
 }
 
-function hasLocalRef(ref: string) {
-	try {
-		run(`git show-ref --verify --quiet ${ref}`)
-		return true
-	} catch {
-		return false
-	}
-}
-
 function buildDocs(sourceDir: string, outDir: string) {
 	if (!existsSync(sourceDir)) {
 		throw new Error(
@@ -152,16 +143,6 @@ function buildRef(ref: string, labelForOutDir: string) {
 	}
 }
 
-function buildBranch(branch: string, labelForOutDir: string) {
-	run(`git fetch --tags --prune origin ${branch}`, {
-		cwd: workspaceRoot,
-		inherit: true,
-	})
-	const localRef = `refs/heads/${branch}`
-	const targetRef = hasLocalRef(localRef) ? localRef : `origin/${branch}`
-	return buildRef(targetRef, labelForOutDir)
-}
-
 function buildTag(tag: string) {
 	return buildRef(`refs/tags/${tag}`, tag)
 }
@@ -173,11 +154,6 @@ function getCurrentBranch(): string {
 		throw new Error("Failed to get current branch")
 	}
 }
-
-function isOnDefaultBranch(defaultBranch: string): boolean {
-	const currentBranch = getCurrentBranch()
-	return currentBranch === defaultBranch
-}
 ;(async () => {
 	const { values } = parseArgs({
 		args: process.argv.slice(2),
@@ -187,22 +163,12 @@ function isOnDefaultBranch(defaultBranch: string): boolean {
 		},
 	})
 
-	const defaultBranch = (values.branch as string | undefined)?.trim()
-	if (!defaultBranch) {
-		throw new Error(
-			`❌ Missing required --branch flag.
-   Please specify the default branch name (e.g., --branch main)
-   Example: pnpm run generate:docs --branch main`
-		)
-	}
-
 	const rawVersions = (values.versions as string | undefined)?.trim() ?? ""
 	const hasVersionsArg = rawVersions.length > 0
 
 	let builtVersions: string[] = []
 
-	const onDefaultBranch = isOnDefaultBranch(defaultBranch)
-	const currentBranchToBuild = onDefaultBranch ? defaultBranch : getCurrentBranch()
+	const currentBranchToBuild = getCurrentBranch()
 
 	// biome-ignore lint/suspicious/noConsole: keep for logging
 	console.log(chalk.cyan(`Building from branch: ${currentBranchToBuild}`))
@@ -215,27 +181,15 @@ function isOnDefaultBranch(defaultBranch: string): boolean {
 		console.log(chalk.cyan(`Building tags: ${tags.join(", ")}`))
 		for (const t of tags) buildTag(t)
 
-		if (onDefaultBranch) {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
-			buildBranch(defaultBranch, "current")
-		} else {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan("Building current workspace → current"))
-			buildDocs(workspaceRoot, join(outputDir, "current"))
-		}
+		// biome-ignore lint/suspicious/noConsole: keep for logging
+		console.log(chalk.cyan("Building current workspace → current"))
+		buildDocs(workspaceRoot, join(outputDir, "current"))
 
 		builtVersions = ["current", ...tags]
 	} else {
-		if (onDefaultBranch) {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan(`Building default branch '${defaultBranch}' → current`))
-			buildBranch(defaultBranch, "current")
-		} else {
-			// biome-ignore lint/suspicious/noConsole: keep for logging
-			console.log(chalk.cyan("Building current workspace → current"))
-			buildDocs(workspaceRoot, join(outputDir, "current"))
-		}
+		// biome-ignore lint/suspicious/noConsole: keep for logging
+		console.log(chalk.cyan("Building current workspace → current"))
+		buildDocs(workspaceRoot, join(outputDir, "current"))
 
 		builtVersions = ["current"]
 	}

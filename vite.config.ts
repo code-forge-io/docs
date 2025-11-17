@@ -8,7 +8,7 @@ import babel from "vite-plugin-babel"
 import { iconsSpritesheet } from "vite-plugin-icons-spritesheet"
 import tsconfigPaths from "vite-tsconfig-paths"
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		// Run the react-compiler on .tsx files only when bundling
@@ -37,13 +37,11 @@ export default defineConfig(({ mode }) => ({
 			withTypes: true,
 			formatter: "biome",
 		}),
-		// Only load content-collections plugin in development
-		// In production, we load pre-generated docs from generated-docs/
-		...(mode === "development" ? [contentCollections()] : []),
+		contentCollections(),
 	],
 	server: {
 		open: true,
 		// biome-ignore lint/nursery/noProcessEnv: Its ok to use process.env here
 		port: Number(process.env.PORT || 4280),
 	},
-}))
+})
