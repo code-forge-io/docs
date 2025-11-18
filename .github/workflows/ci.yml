@@ -41,8 +41,12 @@ jobs:
         run: pnpm install
       - run: pnpm install --prefer-offline --frozen-lockfile
       - run: pnpm exec playwright install chromium --with-deps
-      - name: 🔎 Validate
+      - name: 🔎 Test
         run: pnpm run test
+      - name: 🔎 Type check
+        run: pnpm run typecheck
+      - name: ✂️ Check unused code
+        run: pnpm run knip
 
   build-docs:
     name: ⬆️ Build Docs
