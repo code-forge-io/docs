@@ -46,7 +46,7 @@ jobs:
       - name: 🔎 Type check
         run: pnpm run typecheck
       - name: ✂️ Check unused code
-        run: pnpm run knip
+        run: pnpm run check:unused
 
   build-docs:
     name: ⬆️ Build Docs
