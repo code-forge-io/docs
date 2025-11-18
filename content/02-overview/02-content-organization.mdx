@@ -1,0 +1,242 @@
+---
+title: "Content Organization"
+summary: "How to structure your documentation"
+description: "Learn how to organize your MDX/MD files for optimal documentation structure and navigation."
+---
+
+## Content Structure Rules
+
+The template uses a **prefix-based ordering system** to control how pages appear in the sidebar. This gives you complete control over your documentation hierarchy.
+
+## Naming Convention
+
+All files and folders should follow this pattern:
+
+```
+NN-descriptive-name.mdx
+```
+
+Where:
+- `NN` is a two-digit number (01, 02, 03, etc.)
+- `descriptive-name` describes the content
+- Extension is `.mdx` or `.md`
+
+## File Types
+
+### `.mdx` files
+Full documentation pages with frontmatter and content.
+
+**Required frontmatter:**
+```yaml
+---
+title: "Page Title"
+summary: "Short summary"
+description: "SEO description"
+---
+```
+
+### `.md` files (index files only)
+Section/subsection titles for sidebar navigation.
+
+**Required frontmatter:**
+```yaml
+---
+title: Section Title
+---
+```
+
+**Important:** Regular `index.md` files should only contain frontmatter—no body content.
+
+## Example Structure
+
+Here's a complete example showing all nesting levels:
+
+```
+content/
+├── _index.mdx                    # Homepage (special file)
+├── 01-changelog.mdx              # Top-level page
+├── 02-introduction.mdx           # Top-level page
+├── 03-getting-started/           # Section
+│   ├── index.md                  # Section title
+│   ├── 01-installation.mdx       # Page in section
+│   ├── 02-quick-start.mdx        # Page in section
+│   └── 03-configuration.mdx      # Page in section
+└── 04-core-features/             # Section
+    ├── index.md                  # Section title
+    ├── 01-authentication.mdx     # Page in section
+    ├── 02-data-management/       # Subsection
+    │   ├── index.md              # Subsection title
+    │   ├── 01-fetching.mdx       # Page in subsection
+    │   └── 02-caching.mdx        # Page in subsection
+    └── 03-ui-components/         # Subsection
+        ├── index.md              # Subsection title
+        ├── 01-buttons.mdx        # Page in subsection
+        └── 02-forms.mdx          # Page in subsection
+```
+
+## Hierarchy Levels
+
+### Level 1: Top-Level Pages
+
+Files directly in `content/`:
+
+```
+content/
+├── _index.mdx           # Special homepage
+├── 01-changelog.mdx     # Regular top-level page
+└── 02-introduction.mdx  # Regular top-level page
+```
+
+### Level 2: Sections
+
+Folders with an `index.md`:
+
+```
+content/
+└── 03-getting-started/
+    ├── index.md              # Defines "Getting Started" section
+    ├── 01-installation.mdx
+    └── 02-quick-start.mdx
+```
+
+### Level 3: Subsections
+
+Nested folders with an `index.md`:
+
+```
+content/
+└── 04-features/
+    ├── index.md
+    └── 01-data/                # Subsection
+        ├── index.md            # Defines "Data" subsection
+        ├── 01-fetching.mdx
+        └── 02-caching.mdx
+```
+
+## Special Files
+
+### `_index.mdx`
+
+The documentation homepage. Must be named exactly `_index.mdx` (with underscore prefix).
+
+### `index.md`
+
+Section and subsection titles. These should:
+- Only contain frontmatter (title)
+- Not include body content
+- Be present in every section/subsection folder
+
+## MDX Examples
+
+### Full Documentation Page
+
+```mdx
+---
+title: "Getting Started with Authentication"
+summary: "Learn how to implement authentication"
+description: "A comprehensive guide to implementing secure authentication in your application using our auth system."
+---
+
+## Introduction
+
+Authentication is a critical part of any application...
+
+## Basic Setup
+
+First, install the authentication package:
+
+```bash
+npm install @your-org/auth
+```
+
+Then initialize it in your app...
+
+<InfoAlert>
+Make sure to store your API keys securely!
+</InfoAlert>
+
+## Next Steps
+
+Now that you have authentication set up, you can...
+```
+
+### Section Index File
+
+```md
+---
+title: Getting Started
+---
+```
+
+That's it! No body content needed.
+
+## Custom Components in MDX
+
+You can use custom React components in your MDX files:
+
+```mdx
+<InfoAlert>
+This is helpful information for your users.
+</InfoAlert>
+
+<WarningAlert>
+Be careful with this configuration!
+</WarningAlert>
+```
+
+To add more custom components, edit the `MDXContent` component and pass them to the `components` prop.
+
+## Best Practices
+
+1. **Use descriptive names** - `01-installation.mdx` is better than `01-setup.mdx`
+2. **Keep numbering consistent** - Use 01, 02, 03 (not 1, 2, 3)
+3. **Group related content** - Use sections and subsections logically
+4. **Write complete frontmatter** - All three fields help with SEO and navigation
+5. **Start sections at 01** - Each folder's numbering should restart at 01
+
+## Common Mistakes
+
+❌ **Missing index.md in sections:**
+```
+content/
+└── getting-started/        # Missing index.md
+    └── 01-installation.mdx
+```
+
+✅ **Correct:**
+```
+content/
+└── 01-getting-started/
+    ├── index.md            # Required!
+    └── 01-installation.mdx
+```
+
+❌ **Body content in index.md:**
+```md
+---
+title: Getting Started
+---
+
+This section covers... ← Don't do this
+```
+
+✅ **Correct:**
+```md
+---
+title: Getting Started
+---
+```
+
+❌ **Inconsistent numbering:**
+```
+01-first.mdx
+2-second.mdx    # Missing leading zero
+03-third.mdx
+```
+
+✅ **Correct:**
+```
+01-first.mdx
+02-second.mdx
+03-third.mdx
+```

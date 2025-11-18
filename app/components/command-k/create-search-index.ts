@@ -1,4 +1,4 @@
-import type { Page } from "content-collections"
+import type { Page } from "content-collections-types"
 import slug from "slug"
 import { getPageSlug } from "~/utils/get-page-slug"
 

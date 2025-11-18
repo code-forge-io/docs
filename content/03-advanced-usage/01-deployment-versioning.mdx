@@ -1,0 +1,194 @@
+---
+title: "Deployment & Versioning"
+summary: "Deploy and version your documentation"
+description: "Learn how to deploy your documentation to Fly.io and manage multiple versions using git tags and releases."
+---
+
+## Deployment Overview
+
+The template comes with automated deployment to Fly.io using GitHub Actions. When you push changes or create a release, your documentation is automatically built and deployed.
+
+## Setting Up Fly.io
+
+### 1. Create a Fly.io Account
+
+Sign up at [fly.io](https://fly.io) if you haven't already.
+
+### 2. Install Fly CLI
+
+```bash
+# macOS/Linux
+curl -L https://fly.io/install.sh | sh
+
+# Windows
+powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
+```
+
+### 3. Login to Fly
+
+```bash
+fly auth login
+```
+
+### 4. Create Your App
+
+From the `docs/` directory:
+
+```bash
+fly apps create your-app-name
+```
+
+### 5. Set Environment Variables
+
+Add your environment variables to Fly:
+
+```bash
+fly secrets set GITHUB_REPO_URL=https://github.com/your-org/your-repo
+```
+
+### 6. Configure fly.toml
+
+Edit `fly.toml` and update the app name:
+
+```toml
+app = "your-app-name"  # ← Change this
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+```
+
+## GitHub Actions Setup
+
+The template includes workflow files for automatic deployment. You need to place them in the **root** of your repository.
+
+### Workflow Location
+
+```
+your-repo/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml          # PR deployment
+│       └── publish-documentation.yml  # Release deployment
+├── docs/
+│   └── ...
+└── ...
+```
+
+**Important:** Workflows must be in the **root `.github` folder**, not inside `docs/.github`.
+
+### Required GitHub Secrets
+
+Add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
+
+- `FLY_API_TOKEN` - Your Fly.io API token (get it with `fly tokens create deploy`)
+
+
+## Versioning System
+
+The template supports multiple documentation versions based on your git tags and releases.
+
+### How Versioning Works
+
+1. **Development Mode** (local)
+   - Uses `.content-collections/` folder
+   - No versioning, just live content
+
+2. **Production Mode** (deployed)
+   - Uses `generated-docs/` folder
+   - Organized by version
+
+### Generated Docs Structure
+
+```
+generated-docs/
+├── main/              # Latest from main branch (no tags)
+│   └── content/
+├── v1.0.0/           # Version 1.0.0 docs
+│   └── content/
+└── v2.0.0/           # Version 2.0.0 docs
+    └── content/
+```
+
+### Generating Versioned Docs
+
+#### Without Versions (Latest Only)
+
+```bash
+pnpm run generate:docs
+```
+
+This creates only the `latest/` folder with your latest documentation.
+
+#### With Versions
+
+```bash
+pnpm run generate:docs --versions "semver range or exact tags"
+```
+
+This:
+1. Fetches all git tags from your repository
+2. Checks out each tag
+3. Copies documentation for each version
+4. Organizes everything in `generated-docs/`
+
+### Creating a Versioned Release
+
+To create a new documentation version:
+
+1. **Update your documentation** in the `content/` folder
+2. **Commit and push** your changes
+3. **Create a git tag:**
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+4. **Create a GitHub release** from that tag
+5. **Automatic deployment** will generate versioned docs
+
+## SEO Configuration
+
+### Robots.txt
+
+By default, the template **prevents indexing** with `x-robots-tag` header. To enable indexing:
+
+1. Remove the header from your CDN/Fly.io configuration
+2. Or modify `robots.txt`
+
+
+### llms.txt
+
+An `llms.txt` file is automatically generated to help AI tools understand your documentation structure.
+
+## Monitoring Your Deployment
+
+### View Logs
+
+```bash
+fly logs
+```
+
+### Check Status
+
+```bash
+fly status
+```
+
+### SSH into Container
+
+```bash
+fly ssh console
+```

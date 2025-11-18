@@ -1,113 +1,66 @@
 ---
-title: "Forge42 Docs Template"
-summary: "High-level map and complete guide to configuring, customizing, and deploying the Forge42 Documentation Template."
-description: "Orientation guide for configuring docs, routing, SEO, versioning, deployment, customization, and contributions."
----
-<WarningAlert>
- Documentation for `docs-template` is still under construction. Some sections may be incomplete or change frequently.
-</WarningAlert>
-
-Welcome to the official documentation for the **Forge42 Documentation Template**!
-This template provides a modern, scalable solution for building beautiful documentation websites with **React Router v7**, **Content Collections**, and **Tailwind CSS**.
-
-It is **production‑ready** out of the box, with versioning, search, SEO, collaboration links, and deployment automation.
-
+title: "Documentation Template"
+summary: "Production-ready documentation template"
+description: "A modern documentation template built with React Router v7, Tailwind v4, and content-collections for seamless MDX-based documentation."
 ---
 
-## At a Glance
+## Welcome
 
-- Per‑page meta tags & SEO defaults
-- Versioned documentation system
-- Dynamic sidebar with previous/next navigation
-- Table of contents with active heading tracking
-- Command‑K search palette
-- Theme support with light/dark mode
-- Easy UI customization (layout & components)
-- Automatic docs build & deployment on GitHub release
-- Collaboration links (“Edit page”, “Report an issue”)
-- Fly.io deployment configuration & CI/CD automation
+This is a production-ready documentation template designed to generate beautiful, versioned documentation for your packages. Built on top of **@forge-42/base-stack**, it combines modern tools for a superior developer experience.
 
----
+## Tech Stack
+
+- **React Router v7** (Framework mode)
+- **Tailwind v4** with custom components
+- **React 19** with automatic optimizations
+- **content-collections** for MDX/MD processing
+- **Vite** for blazing-fast builds
+- **Vitest** for testing
+
+## Key Features
+
+- 📝 **MDX/MD Support** — Write documentation in Markdown with React components and custom MDX components.
+- 🎨 **Beautiful UI** — Pre-built components (Command K, code blocks, table-of-contents, sidebar) so docs look polished out of the box.
+- 📚 **Versioning** — Produce versioned documentation (e.g. `v1.0.0/`) via the generator so you can publish releases side-by-side.
+- 🔁 **Automated Docs Generation** — `scripts/generate-docs.ts` automates building `generated-docs/` and writes `app/utils/versions.ts`. Example:
+
+```bash
+pnpm run generate:docs --branch main --versions "^1.0.0"
+```
+
+- 🧭 **Local Development Experience** — Fast iteration using the auto-generated `.content-collections/` folder for hot reloading; run the generator when you want to preview versioned outputs locally.
+- 🔍 **SEO & Indexing** — Automatic sitemap, `robots.txt` and `llms.txt` support to improve search and crawler behavior.
+- ⚡ **Live Reload** — Hot module replacement during development for instant previews when editing content.
+- 🚀 **CI/CD Ready** — Example GitHub Actions workflows are included to build, pack, and publish `generated-docs/` artifacts for preview and release deployments.
+- 🐳 **Docker + Fly Deployment** — Includes `Dockerfile` and `fly.toml` so you can containerize and deploy the generated site easily.
+- ✅ **Type-safe & Tested** — Built with TypeScript, includes `tsc` type checks, `vitest` tests, and Biome linting to keep quality high.
+- ♿ **Accessibility & Performance Focused** — UI primitives and tooling tuned for accessibility and fast page loads.
+- 🔗 **GitHub Links** — Edit page and report issue links are built into pages to streamline contribution.
 
 ## Quick Start
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/forge42/docs-template my-docs
-   cd my-docs
-   ```
+```bash
+# 1. Unzip template under /docs folder
+# 2. Install dependencies
+pnpm install
 
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
+# 3. Start development server
+pnpm run dev
 
-3. **Generate documentation**
-   ```bash
-   pnpm run generate:docs --versions ">=v1.1.0 <=v2.1.0, v3.2.0"
-   ```
-
-	 or if you don't have releases yet:
-
-	 ```bash
-	 pnpm run generate:docs --branch main"
-	 ```
-
-4. **Start development server**
-   ```bash
-   pnpm run dev
-   ```
-
-Visit **[http://localhost:4280](http://localhost:4280)** to preview your site.
-
----
-
-## Project Structure
-
-```
-my-docs/
-├── app/              # React Router application
-├── content/          # Documentation content (Markdown/MDX)
-├── public/           # Static assets
-├── scripts/          # Build & utility scripts
-├── generated-docs/   # Auto-generated docs
-└── resources/        # Icons, photos, fonts...
+# 4. Build for production
+pnpm run build
 ```
 
----
+## FIXME Notes
 
-## Core Features
+We've left a few `FIXME` comments in the codebase marking small customization points. Run this command to find them all:
 
-### Content Management
-- Write in Markdown/MDX with frontmatter
-- Automatic sidebar and navigation generation
-- Built-in rich content components
+```bash
+grep -r "FIXME" --include="*.ts" --include="*.tsx" --include="*.css"
+```
 
-### Search & Navigation
-- Full‑text search with **Cmd+K / Ctrl+K**
-- Automatic table of contents
-- Previous/next page navigation
+These are quick 2-minute changes like updating your package name or branding colors.
 
-### SEO & Discovery
-- **llms.txt** route for AI crawlers
-- **robots.txt** with sitemap hints
-- **sitemap-index.xml** + per‑language `sitemap.xml`
-- Social meta tags (Open Graph / Twitter)
+## What's Next?
 
-### Collaboration & Contribution
-- One‑click links: **Edit page** / **Report issue**
-- Contribution guide included
-
-### Deployment & Automation
-- Example **Fly.io** config
-- Scripted docs generation
-- CI workflow ready for build + deploy
-
-### Customization
-- Update branding, theme, layout shell
-- Extend sidebar, meta builder, and contribution links
-- Tailwind tokens for typography & colors
-
----
-
-Built with ❤️ by the Forge42 team — [forge42.dev](https://forge42.dev)
+Follow the getting started guide to set up your documentation, understand the project structure, and learn how to organize your content effectively.

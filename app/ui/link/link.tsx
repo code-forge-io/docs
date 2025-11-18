@@ -2,7 +2,7 @@ import { Link as ReactRouterLink, type LinkProps as ReactRouterLinkProps } from 
 import type { Language } from "~/localization/resource"
 import { useEnhancedTo } from "./useEnhancedTo"
 
-export interface LinkProps extends ReactRouterLinkProps {
+interface LinkProps extends ReactRouterLinkProps {
 	keepSearchParams?: boolean
 	language?: Language
 }

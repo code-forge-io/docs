@@ -23,9 +23,9 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 		<div className="block min-h-screen bg-[var(--color-background)] 2xl:container 2xl:mx-auto">
 			<Header>
 				<div className="flex items-start gap-3">
+					{/* FIXME Replace with your Logo */}
 					<Logo>
-						{/* FIXME Replace with your Logo */}
-						<span className="p-0">DOCS-TEMPLATE</span>
+						<span className="p-0">Docs Template</span>
 					</Logo>
 				</div>
 				<div className="inline-flex items-center gap-2 xl:gap-3">
@@ -42,7 +42,6 @@ export default function DocumentationLayout({ loaderData }: Route.ComponentProps
 					<Outlet />
 				</main>
 			</div>
-			{/* FIXME You can add custom footer component here */}
 		</div>
 	)
 }

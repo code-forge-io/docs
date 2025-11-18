@@ -1,4 +1,4 @@
-import type { Page } from "content-collections"
+import type { Page } from "content-collections-types"
 import type { SidebarSection } from "~/utils/create-sidebar-tree"
 import { buildBreadcrumbs } from "../build-breadcrumbs"
 

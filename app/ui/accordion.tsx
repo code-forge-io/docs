@@ -66,7 +66,7 @@ export const AccordionItem = ({
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 
 	const buttonClasses =
-		"flex gap-2 items-center w-full p-2 transition-transform duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:cursor-pointer rounded-md"
+		"flex gap-2 items-center w-full px-2 transition-transform duration-200 text-[var(--color-text-normal)] hover:text-[var(--color-text-hover)] hover:cursor-pointer rounded-md"
 
 	const iconClasses = "w-4 h-4 transition-transform duration-300"
 

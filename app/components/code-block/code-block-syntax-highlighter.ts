@@ -10,23 +10,25 @@ const MASTER_REGEX = new RegExp(
 		// whitespace
 		"\\s+",
 		// single-line comment
-		"//.*?(?=\\n|$)",
+		"\\/\\/[^\\n\\r]*(?=\\n|$)",
 		// multi-line comment
-		"/\\*[\\s\\S]*?\\*/",
+		"\\/\\*[\\s\\S]*?\\*\\/",
 		// hash comment at start of line
 		"^\\s*#.*$",
+		// backtick inline code
+		"\\`(?:[^`\\\\]|\\\\.)*\\`",
 		// strings
 		"(['\"])(?:(?!\\1)[^\\\\]|\\\\.)*\\1",
 		// numbers
 		"\\d+\\.?\\d*",
 		// identifiers
 		"[a-zA-Z_$][a-zA-Z0-9_$]*",
-		// operators and punctuation
-		"===|!==|<=|>=|==|!=|&&|\\|\\||\\+\\+|--|[+\\-*/%=<>!?:(){}\\[\\];,.]|[+\\-*/%]=",
 		// arrow function
 		"=>",
+		// operators & punctuation
+		"===|!==|<=|>=|==|!=|&&|\\|\\||\\+\\+|--|[+\\-*%=<>!?:(){}\\[\\];,.]|\\/(?![/*])|[+\\-*/%]=",
 	].join("|"),
-	"g"
+	"gm"
 )
 
 const KEYWORDS = [

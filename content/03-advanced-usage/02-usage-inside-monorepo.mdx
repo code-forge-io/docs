@@ -1,0 +1,65 @@
+---
+title: "Usage inside a monorepo"
+summary: "Add the docs-template into an existing monorepo and run it locally (pnpm workspace, workflows, and content setup)."
+description: "Step-by-step guide for integrating the docs-template into a monorepo: add the `docs/` package to `pnpm-workspace.yaml`, move CI workflows to `.github/workflows`, resolve FIXME markers, replace example content under `docs/content`, and run the local dev server with pnpm."
+---
+
+## Usage inside a monorepo
+
+This page explains the minimal steps to install the docs-template into an existing monorepo and run the documentation locally. The template is designed to be dropped under the `/docs` folder of your repository and wired into pnpm workspaces.
+
+Follow these steps:
+
+1. Create a repository (or use an existing one)
+
+   - You can start from our example stack `@forge42/open-source-stack` or any repo you control. The important part is that you can add a `/docs` folder and control the repository root (where `.github`, `pnpm-workspace.yaml`, etc. live).
+
+2. Download and extract the docs-template into your monorepo
+
+   - Download the `docs-template` files from the main branch (or copy the template contents) and extract them into the repository root inside a `docs/` directory.
+
+   - Make sure your root `pnpm-workspace.yaml` includes the `docs` package so pnpm can hoist and link the docs project. Example snippet:
+
+   ```yaml
+   packages:
+      packages/*
+      test-apps/*
+     + docs
+   onlyBuiltDependencies:
+      '@biomejs/biome'
+      esbuild
+      lefthook
+   ```
+
+
+3. Move or add workflow files to `.github/workflows` in the monorepo root
+
+   - The template includes CI workflows (for example: `ci.yml`, `publish-documentation.yml`, and `pr-close.yml`). Move these into your repository root under `.github/workflows/` so GitHub Actions can find and run them.
+
+   - The workflows use Fly.io and the template `fly.toml` and `Dockerfile`. If you don't use Fly, you can customize the workflows or remove those steps.
+
+4. Check and resolve FIXME comments inside workflows
+
+   - Open the workflow files and search for `FIXME` markers. Resolve those before relying on the workflows.
+
+5. Make sure you have a `/content` folder with documentation pages
+
+   - The template ships with example content in `docs/content` that briefly explains how the template works. Remove those example files and add your own documentation content (for example: `01-getting-started.mdx`, `02-project-structure.mdx`, etc.).
+
+6. Install and run locally
+
+   - From the repository root run:
+
+   ```bash
+   pnpm install
+   pnpm run dev
+   ```
+
+   - After `pnpm run dev` the docs server will start (see terminal output for the local dev URL). Open the URL in your browser to preview the site.
+
+Notes and tips
+
+- If your monorepo already has a `docs/` package, merge carefully to avoid overwriting important files.
+- Keep `fly.toml` and `Dockerfile` at the root of the `docs` package (or where the workflows expect them). If you move them, update the workflow paths accordingly.
+- Verify `pnpm-workspace.yaml` indentation and syntax — YAML parsing errors can stop workspace linking.
+- If you use a different package manager or CI provider, adapt the commands and workflow steps.
