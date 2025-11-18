@@ -2,11 +2,23 @@
 
 This template is designed to support a flexible content structure using `.md` and `.mdx` files organized into folders. It enables deeply nested sections and subsections, making it easy to manage complex documentation with a clear and scalable hierarchy.
 
+<p align="center">
+  <img
+    src="./public/static/images/docs-template-photo.png"
+    alt="react-router-devtools"
+    style="display:block; width:100%; height:auto; margin:0 auto;"
+  />
+</p>
+
 The project is built using the [@forge-42/base-stack](https://github.com/forge-42/base-stack) and leverages the [content-collections](https://github.com/sdorra/content-collections).
 
 > **Note**:
 > We added a few `FIXME` comments in the codebase as notes to you. These simply mark small places where we expect you to make changes. Nothing major — it should only take you 2 minutes to go through them.
 
+## Documentation
+Detailed documentation can be found here:
+
+https://docs-main.fly.dev/
 
 ## Documentation Template Structure Overview
 
@@ -89,6 +101,15 @@ title: Getting Started
 
 ```
 
+We have already handled creating the sidebar for you, so based on your content, you will get a modern, automatically generated sidebar that looks like this:
+
+<p align="center">
+  <img
+    src="./public/static/images/docs-template-home.png"
+    alt="react-router-devtools"
+    style="display:block; width:100%; height:auto; margin:0 auto;"
+  />
+</p>
 
 ## Getting started
 
