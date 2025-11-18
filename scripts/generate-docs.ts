@@ -41,7 +41,6 @@ try {
 	// biome-ignore lint/style/useTemplate: <explanation>
 	workspaceRelativePath = repoRoot === workspaceRoot ? "" : workspaceRoot.replace(repoRoot + "/", "")
 } catch {
-	repoRoot = workspaceRoot
 	workspaceRelativePath = ""
 }
 
