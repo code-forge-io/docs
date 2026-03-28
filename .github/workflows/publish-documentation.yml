@@ -84,7 +84,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           FLY_REGION: ${{ vars.FLY_REGION }}
         with:
-          app_name: ${{github.event.repository.name}}-${{ github.ref_name }}
+          app_name: ${{ vars.FLY_APP_NAME || format('{0}-{1}', github.event.repository.name, github.ref_name) }}
           use_isolated_workspace: true
           env_vars: |
             APP_ENV=production
